@@ -6,8 +6,10 @@ class AccountMenu(State):
     ACCOUNT_MENU = """
 Account Menu
 
+list - list characters available to play
 play - play a character
-create - create a character
+
+create - create a new character
     """
 
     def introduction(self):

@@ -1,6 +1,6 @@
 import os
 
-class JsonSerializeable:
+class JsonSerializable:
     def __init__(self):
         pass
 

@@ -1,5 +1,6 @@
 from state import State
-from get_new_account_password import GetNewAccountPassword
+
+from menu import AccountMenu
 
 class CreateNewAccount(State):
 
@@ -16,3 +17,19 @@ class CreateNewAccount(State):
             return GetNewAccountPassword(self.player, self.library)
 
         return self
+
+# End CreateNewAccount
+
+class GetNewAccountPassword(State):
+
+    def introduction(self):
+        self.player.setPrompt("\n\nEnter New Password: ")
+
+    def execute(self, input):
+        if self.player.account:
+            self.player.account.password = input
+            return AccountMenu(self.player, self.library)
+        else:
+            raise RuntimeError('Players setting new passwords must have accounts!')
+
+# End GetNewAccountPassword

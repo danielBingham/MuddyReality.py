@@ -1,5 +1,5 @@
 import socket, select
-from client_socket import ClientSocket
+from client import ClientSocket
 
 class ServerSocket:
     'A socket server class, wrapping our select and polling logic.'

@@ -1,8 +1,9 @@
-from account_states.state import State
-from account_states.create_new_account import CreateNewAccount
-from account_states.get_account_password import GetAccountPassword
+from interpreter.state import State
 
-class GetAccountName(State):
+from creation import CreateNewAccount
+from menu import AccountMenu
+
+class WelcomeScreen(State):
 
     WELCOME_SCREEN = """
 Welcome to Python Mud!
@@ -27,3 +28,16 @@ If this is your first time, you'll need to create an account by typing "new".
         return self
 
 # EndGetAccountName
+
+class GetAccountPassword(State):
+
+    def introduction(self):
+        self.player.setPrompt("Password: ")
+
+    def execute(self, input):
+        if self.player.account.password == input:
+            return AccountMenu(self.player, self.library)
+        else:
+            player.write("Incorrect password.\n\n")
+
+# End GetAccountPassword

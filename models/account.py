@@ -1,8 +1,8 @@
 import json
 import os
 
-from model.model import Model 
-from model.character import Character
+from base import Model 
+from character import Character
 
 
 class Account(Model):

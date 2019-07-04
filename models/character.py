@@ -1,6 +1,7 @@
 import json
-from model.model import Model
-from model.model import JsonSerializable
+
+from base import Model
+from base import JsonSerializable
 
 class Abilities(JsonSerializable):
     'Represents a character\'s abilities and attributes.'
@@ -22,7 +23,7 @@ class Abilities(JsonSerializable):
         self.__dict__ = data
         return self
 
-class Reserves(JsonSerializeable):
+class Reserves(JsonSerializable):
     'Represents a characters reserves: their health, magic, and energy.'
 
     def __init__(self):

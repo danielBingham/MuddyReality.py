@@ -1,10 +1,10 @@
 import sys, traceback, time
 
-from sockets.server_socket import ServerSocket 
+from sockets.server import ServerSocket 
 from library import Library
 from player import Player
 from interpreter.state import StateInterpreter
-from account_states.get_account_name import GetAccountName
+from account.welcome import WelcomeScreen 
 
 HOST = ''
 PORT = 3000 

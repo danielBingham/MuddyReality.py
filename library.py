@@ -1,10 +1,10 @@
 import json
 import glob
 
-from model.account import Account
-from model.character import Character
+from models.account import Account
+from models.character import Character
 
-from commands.say import Say
+from game.commands.say import Say
 
 class Library:
     'A library of game content.'
@@ -57,14 +57,14 @@ class Library:
         print("Loading the game library.")
 
         print("Loading characters...")
-        character_list = glob(Character.getBasePath() + '*.json')
+        character_list = glob.glob(Character.getBasePath() + '*.json')
         for file_path in character_list:
             character = Character(self)
             character.load(file_path)
             self.characters[character.name] = character
 
         print("Loading accounts...")
-        account_list = glob(Account.getBasePath() + '*.json') 
+        account_list = glob.glob(Account.getBasePath() + '*.json') 
         for file_path in account_list:
             account = Account(self)
             account.load(file_path)
