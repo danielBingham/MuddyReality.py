@@ -22,13 +22,19 @@ class CommandInterpreter:
 
         tokens = input.split(' ', 1)
 
+        if not tokens: 
+            return
+
         command = tokens[0].lower()
-        arguments = tokens[1]
+        if len(tokens) > 1:
+            arguments = tokens[1]
+        else:
+            arguments = ''
 
         command_object = self.library.getCommand(command)
         if command_object:
             command_object.execute(self.player, arguments)
         else:
-            player.write("I don't think you can do that...")
+            self.player.write("I don't think you can do that...")
 
 # End CommandInterpreter

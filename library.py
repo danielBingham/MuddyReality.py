@@ -1,3 +1,6 @@
+import json
+import glob
+
 from model.account import Account
 from model.character import Character
 
@@ -26,21 +29,43 @@ class Library:
         else:
             return None
 
-
     def createAccount(self, name):
-        account = Account()
+        account = Account(self)
         account.name = name
         self.accounts[account.name] = account
         return account
 
     def getAccountByName(self, name):
         if name in self.accounts:
-            return self.account[name]
+            return self.accounts[name]
+        else:
+            return None
+
+    def createCharacter(self, name):
+        character = Character(self)
+        character.name = name
+        self.characters[name] = character
+        return character
+
+    def getCharacterByName(self, name):
+        if name in self.characters:
+            return self.characters[name]
         else:
             return None
 
     def load(self):
-        pass
+        print("Loading the game library.")
 
-    def save(self):
-        pass
+        print("Loading characters...")
+        character_list = glob(Character.getBasePath() + '*.json')
+        for file_path in character_list:
+            character = Character(self)
+            character.load(file_path)
+            self.characters[character.name] = character
+
+        print("Loading accounts...")
+        account_list = glob(Account.getBasePath() + '*.json') 
+        for file_path in account_list:
+            account = Account(self)
+            account.load(file_path)
+            self.accounts[account.name] = account
