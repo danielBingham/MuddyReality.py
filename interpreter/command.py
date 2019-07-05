@@ -31,7 +31,7 @@ class CommandInterpreter:
         else:
             arguments = ''
 
-        command_object = self.library.getCommand(command)
+        command_object = self.library.findCommand(command)
         if command_object:
             command_object.execute(self.player, arguments)
         else:

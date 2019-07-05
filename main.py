@@ -7,7 +7,12 @@ from interpreter.state import StateInterpreter
 from account.welcome import WelcomeScreen 
 
 HOST = ''
-PORT = 3000 
+PORT = 3001 
+
+# A method called on every loop that can be used for actions that need to take place every so many
+# loops.  Used to control autonomous timing in the game world.
+def heartbeat(library, loop_counter, loops_a_second):
+    pass
 
 def gameLoop(serverSocket, library):
 
@@ -15,11 +20,10 @@ def gameLoop(serverSocket, library):
     # to perform certain tasks.
     loop_counter = 0
 
-    # Max value to allow the counter to reach before resetting it
-    max_counter = 100000000
-
     # Number of loops we want to perform each second. 
     loops_a_second = 10
+
+    # The lenght of a single loop in milliseconds.
     loop_length = 1000/loops_a_second
 
     # The Game Loop
@@ -37,7 +41,7 @@ def gameLoop(serverSocket, library):
         if serverSocket.hasNewConnection():
             newConnection = serverSocket.accept() 
             player = Player(newConnection)
-            player.interpreter = StateInterpreter(player, library, GetAccountName(player, library))
+            player.interpreter = StateInterpreter(player, library, WelcomeScreen(player, library))
             library.players.append(player)
 
         serverSocket.resetPollSets()
@@ -47,12 +51,13 @@ def gameLoop(serverSocket, library):
             if player.hasInput():
                 player.interpret()
 
-        if loop_counter % (5 * loops_a_second) == 0:
-            library.save()
-
+        # Reset the loop counter at a value well below max int.  We only need it to continue to
+        # increment, it doesn't matter what the value is.
         loop_counter = loop_counter + 1
-        if loop_counter == max_counter:
+        if loop_counter == 100000*loops_a_second:
             loop_counter = 0
+
+        heartbeat(library, loop_counter, loops_a_second)
 
         # Once we reach the end of the loop, calculate how long it took and sleep the remainder of
         # the time.  This makes sure we don't loop more than we want to.  If we're going too slow,
@@ -74,6 +79,11 @@ def main():
     except KeyboardInterrupt:
         print("Shutting down.")
         serverSocket.shutdown()
+    except Exception as ex:
+        print("Shutting down due to error.")
+        serverSocket.shutdown()
+        raise ex 
+
 
 
 if __name__ == '__main__':

@@ -1,4 +1,4 @@
-import socket
+import socket, telnetlib
 
 ###
 # ClientSocket
@@ -15,7 +15,8 @@ class ClientSocket:
     # both the socket and address for later use.  Also take the parent server socket that accepted
     # the connection.
     ###
-    def __init__(self, (socket, address), server):
+    def __init__(self, socket_tuple, server):
+        socket, address = socket_tuple
         self.socket = socket
         self.address = address
         self.socket.setblocking(0)
@@ -62,6 +63,15 @@ class ClientSocket:
     def popInput(self):
         return self.inputQueue.pop()
 
+    def disableEcho(self):
+        seq = telnetlib.IAC + telnetlib.DONT + telnetlib.ECHO
+        self.socket.send(seq)
+
+    def enableEcho(self):
+        seq = telnetlib.IAC + telnetlib.WILL + telnetlib.ECHO
+        self.socket.send(seq)
+
+
     ###
     # Read whatever text currently exists on this socket, and place it in the Player's input queue,
     # where it can be processed by any command interpreters.
@@ -69,7 +79,7 @@ class ClientSocket:
     def read(self):
         data = self.socket.recv(4096)
         if data:
-            self.inputQueue.append(data)
+            self.inputQueue.append(data.decode())
         else:
             # We're in an error state.  Close down the socket.
             self.close()
@@ -83,7 +93,7 @@ class ClientSocket:
             if not self.player.hasPromptInBuffer():
                 self.appendToOutputBuffer(self.player.getPrompt())
 
-            self.socket.send(self.outputBuffer)
+            self.socket.send(self.outputBuffer.encode())
             self.clearOutputBuffer()
 
             self.player.setPromptInBuffer(False)

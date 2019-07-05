@@ -1,7 +1,7 @@
 from interpreter.state import State
 
-from creation import CreateNewAccount
-from menu import AccountMenu
+from account.creation import CreateNewAccount
+from account.menu import AccountMenu
 
 class WelcomeScreen(State):
 
@@ -13,13 +13,13 @@ If this is your first time, you'll need to create an account by typing "new".
 
     def introduction(self):
         self.player.write(self.WELCOME_SCREEN)
-        self.player.setPrompt("\n\nAccount Name: ")
+        self.player.setPrompt("Account Name: ")
 
     def execute(self, input):
         if input == "new":
             return CreateNewAccount(self.player, self.library)
         else:
-            account = self.library.getAccountByName(input)
+            account = self.library.accounts.getById(input)
             if account:
                 self.player.account = account
                 return GetAccountPassword(self.player, self.library)
@@ -32,12 +32,15 @@ If this is your first time, you'll need to create an account by typing "new".
 class GetAccountPassword(State):
 
     def introduction(self):
+        self.player.write("Please enter the password for the account '" + self.player.account.name + "'.")
         self.player.setPrompt("Password: ")
 
     def execute(self, input):
-        if self.player.account.password == input:
+        if self.player.account.isPassword(input):
             return AccountMenu(self.player, self.library)
         else:
-            player.write("Incorrect password.\n\n")
+            self.player.write("Incorrect password.")
+        
+        return self
 
 # End GetAccountPassword

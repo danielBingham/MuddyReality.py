@@ -1,4 +1,5 @@
 import os
+import json
 
 class JsonSerializable:
     def __init__(self):
@@ -16,6 +17,13 @@ class Model(JsonSerializable):
         self.library = library
         self.id = ''  
 
+    def getId(self):
+        return self.id
+
+    def setId(self, id):
+        self.id = id
+        return self
+
     @staticmethod
     def getBasePath():
        return 'data/' 
@@ -29,7 +37,7 @@ class Model(JsonSerializable):
 
         file = open(self.getFilePath(), 'w')
         try:
-            json.dump(file, self.toJson())    
+            json.dump(self.toJson(), file)    
         finally:
             file.close()
 
@@ -44,3 +52,13 @@ class Model(JsonSerializable):
 
         return self
 
+class NamedModel(Model):
+
+    def __init__(self, library):
+        super(NamedModel, self).__init__(library)
+        self.name = ''
+
+    def setId(self, name):
+        self.id = name
+        self.name = name
+        return self

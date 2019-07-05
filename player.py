@@ -10,7 +10,7 @@ from textwrap import TextWrapper
 class Player:
     'A wrapper class for player data, used to track who is playing the game.'
 
-    wrapper = TextWrapper(width=80, replace_whitespace=False, initial_indent='')
+    wrapper = TextWrapper(width=80, replace_whitespace=False, initial_indent='', break_on_hyphens=False)
 
     def __init__(self, socket):
         self.socket = socket
@@ -23,6 +23,9 @@ class Player:
         self.promptInBuffer = False
         self.defaultPrompt = "\n\n> "
         self.prompt = self.defaultPrompt
+
+    def quit(self):
+        self.socket.close()
  
     def interpret(self):
         input = self.read().strip()
@@ -41,7 +44,9 @@ class Player:
 
     def write(self, text, wrap=True):
         if wrap: 
-            text = self.wrapper.fill(str(text))
+            # Wrap will blow away any trailing white space. We want each call to `write` to define a
+            # new line, however, so we need to add a newline.
+            text = self.wrapper.fill(str(text)) + "\n"
 
         # Add the output to the player output batch.  It will be send and cleared in the next cycle.
         self.socket.appendToOutputBuffer(text)
@@ -62,7 +67,7 @@ class Player:
         return self.prompt
 
     def setPrompt(self, prompt):
-        self.prompt = prompt
+        self.prompt = "\n\n" + prompt
         self.setPromptInBuffer(False)
         return self
 
@@ -70,5 +75,13 @@ class Player:
         self.prompt = self.defaultPrompt
         self.setPromptInBuffer(False)
         return self
+
+    def disableEcho(self):
+        #self.socket.disableEcho()
+        pass
+
+    def enableEcho(self):
+        #self.socket.enableEcho()
+        pass
 
 ## End Player
