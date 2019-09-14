@@ -53,19 +53,6 @@ class Reserves(JsonSerializable):
 class Character(NamedModel):
     'Represents a single character in the game.'
 
-    EQUIPMENT_LOCATIONS = [
-        'left-hand',
-        'right-hand',
-        'forearms',
-        'torso',
-        'legs',
-        'feet',
-        'head',
-        'back',
-        'waist',
-        'neck'
-    ]
-
     def __init__(self, library):
         super(Character, self).__init__(library)
         
@@ -84,6 +71,18 @@ class Character(NamedModel):
         self.inventory = []
 
         self.room = None
+
+    def wield(self, object):
+        return False
+
+    def describe(self):
+        return ("%s %s\n" % (self.name, self.title))
+
+    def detail(self):
+        details = ("%s %s\n" % (self.name, self.title))
+        for item in equipment:
+            details += ("%s on %s\n" % (item, self.equipment[item].name))
+        return details
 
     def leave(self, room, direction=''):
         room.occupants.remove(self)

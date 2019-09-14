@@ -31,3 +31,31 @@ class Look(Command):
         else:
             player.write(player.character.room.describe(player), wrap=False)
 
+class Examine(Command):
+    'Get detailed information about a room, or object.'
+
+    def execute(self, player, arguments):
+        if not arguments:
+            proxy = Look(self.library)
+            proxy.execute(player, arguments)
+        elif arguments:
+            if arguments in Look.DIRECTIONS:
+                proxy = Look(self.library)
+                proxy.execute(player, arguments)
+            elif player.character.room.isOccupant(arguments):
+                occupant = player.character.room.getOccupant(arguments)
+                player.write(occupant.detail()) 
+            elif player.character.room.isObject(arguments):
+                object = player.character.room.getObject(arguments)
+                player.write(object.detail())
+
+class Inventory(Command):
+    'List the items in a character\'s inventory.'
+
+    def execute(self, player, arguments):
+        player.write("You are carrying:\n")
+        if player.character.inventory:
+            for object in player.character.inventory:
+                player.write(object.name)
+        else:
+            player.write("Nothing.")

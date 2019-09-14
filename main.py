@@ -7,7 +7,7 @@ from interpreter.state import StateInterpreter
 from account.welcome import WelcomeScreen 
 
 HOST = ''
-PORT = 3001 
+PORT = 3000 
 
 # A method called on every loop that can be used for actions that need to take place every so many
 # loops.  Used to control autonomous timing in the game world.

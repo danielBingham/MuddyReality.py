@@ -1,9 +1,11 @@
 import json
 import glob
+import copy
 
 from models.account import Account
 from models.character import Character
 from models.room import Room
+from models.object import Object
 
 import game.commands.communication as communication 
 import game.commands.information as information 
@@ -46,6 +48,15 @@ class NamedModelIndex(ModelIndex):
         id = str(id).lower()
         return super(NamedModelIndex, self).create(id)
 
+class PrototypeIndex(ModelIndex):
+
+    # Create a new instance of this model from the prototype.
+    def instance(self, id):
+        if self.hasId(id):
+            return copy.deepcopy(self.getById(id))
+        else:
+            return None
+
 class Library:
     'A library of game content.'
 
@@ -59,7 +70,7 @@ class Library:
         self.characters = NamedModelIndex(self, Character)
         self.rooms = ModelIndex(self, Room) 
         self.mobs = {}
-        self.objects = {}
+        self.objects = PrototypeIndex(self, Object) 
 
 
     def loadCommands(self):
@@ -74,6 +85,9 @@ class Library:
         self.commands['look'] = information.Look(self)
         self.commands['say'] = communication.Say(self)
         self.commands['report'] = information.Report(self)
+        self.commands['get'] = manipulation.Get(self)
+        self.commands['drop'] = manipulation.Drop(self)
+        self.commands['inventory'] = information.Inventory(self)
 
     def getCommand(self, command_name):
         if command_name in self.commands:
@@ -91,6 +105,14 @@ class Library:
 
     def load(self):
         print("Loading the game library.")
+
+        print("Loading objects...")
+        object_list = glob.glob(Object.getBasePath() + '*.json')
+        for file_path in object_list:
+            print("Loading object " + file_path + "...")
+            object = Object(self)
+            object.load(file_path)
+            self.objects.add(object)
 
         print("Loading rooms...")
         room_list = glob.glob(Room.getBasePath() + '*.json') 
@@ -119,5 +141,6 @@ class Library:
             account = Account(self)
             account.load(file_path)
             self.accounts.add(account)
+
 
 
