@@ -72,9 +72,6 @@ class Character(NamedModel):
 
         self.room = None
 
-    def wield(self, object):
-        return False
-
     def describe(self):
         return ("%s %s\n" % (self.name, self.title))
 
@@ -83,26 +80,6 @@ class Character(NamedModel):
         for item in equipment:
             details += ("%s on %s\n" % (item, self.equipment[item].name))
         return details
-
-    def leave(self, room, direction=''):
-        room.occupants.remove(self)
-        self.room = None
-        for occupant in room.occupants:
-            if occupant.player:
-                if direction:
-                    occupant.player.write(self.name.title() + " leaves to the " + direction + ".")
-                else:
-                    occupant.player.write(self.name.title() + " leaves.")
-
-    def enter(self, room, direction=''):
-        for occupant in room.occupants:
-            if occupant.player:
-                if direction:
-                    occupant.player.write(self.name.title() + " enters from the " + room.INVERT_DIRECTION[direction])
-                else:
-                    occupant.player.write(self.name.title() + " enters.")
-        room.occupants.append(self)
-        self.room = room
 
     def initialize(self):
         self.reserves.health = int(self.abilities.constitution*1.5) \
@@ -114,7 +91,6 @@ class Character(NamedModel):
         self.reserves.vigor = int(self.abilities.constitution * 4) \
             + int(self.abilities.willpower * 3.5) \
             + int(self.abilities.strength * 2.5) 
-
 
     def toJson(self):
         json = {}

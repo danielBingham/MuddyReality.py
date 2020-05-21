@@ -1,5 +1,6 @@
 from interpreter.state import State
 from interpreter.command import CommandInterpreter
+from services.movement import MovementService
 
 import account.password
 import account.character.creation
@@ -58,11 +59,13 @@ quit                - Leave the game.
                 self.player.character.player = self.player
                 self.player.interpreter = CommandInterpreter(self.player, self.library)
 
+                movement = MovementService()
+
                 # If they aren't in the game world yet, send em to room 1.
                 if not self.player.character.room:
-                    self.player.character.enter(self.library.rooms.getById(1))
+                    movement.enter(self.player.character, self.library.rooms.getById(1))
                 else:
-                    self.player.character.enter(self.player.character.room)
+                    movement.enter(self.player.character, self.player.character.room)
 
                 self.player.write("Welcome back, %s!" % self.player.character.name.title())
                 self.player.write(self.player.character.room.describe(self.player), wrap=False)

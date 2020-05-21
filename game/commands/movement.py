@@ -1,6 +1,10 @@
 from interpreter.command import Command
+from services.movement import MovementService
 
 def move(direction, player, arguments):
+
+    movement = new MovementService()
+
     if not player.character.room:
         raise RuntimeException("Player should have a room if they're trying to move!")
 
@@ -11,8 +15,8 @@ def move(direction, player, arguments):
             return 
 
         player.write("You go " + direction + ".")
-        player.character.leave(player.character.room, direction=direction)
-        player.character.enter(room.exits[direction].room_to, direction=direction)
+        movement.leave(player.character, player.character.room, direction=direction)
+        movement.enter(player.character, room.exits[direction].room_to, direction=direction)
         player.write("\n" + player.character.room.describe(player), wrap=False)
     else:
         player.write("You can't got that way.")
