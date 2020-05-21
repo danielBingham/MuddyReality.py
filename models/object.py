@@ -1,15 +1,40 @@
 from models.base import JsonSerializable
 from models.base import Model
 
-class Combat(JsonSerializable):
-    'Represents the characteristics of an object that can be used in combat.'
+class MeleeWeapon(JsonSerializable):
+    'Contains the properties of a melee weapon.  Composable into an Object to give it the use as a Melee Weapon.''
+
+    SLASHING = 'slashing'
+    CRUSHING = 'crushing'
+    HACKING = 'hacking'
+    SMITING = 'smiting'
+    STABBING = 'stabbing'
+    NONE = 'none'
+
+    WEAPON_TYPES = [
+        MeleeWeapon.SLASHING,
+        MeleeWeapon.CRUSHING,
+        MeleeWeapon.HACKING,
+        MeleeWeapon.SMITING, 
+        MeleeWeapon.STABBING
+    ]
 
     def __init__(self):
-        self.hit = 0
-        self.dodge = 0
-        self.parry = 0
 
-        self.armor = 0
+        # The minimum damage the weapon does on striking.
+        self.minDamage = 0
+
+        # The maximum damage the weapon can do on striking.
+        self.maxDamage = 0
+
+        # What type of weapon this is, what kind of damage does it do?
+        self.type = MeleeWeapon.NONE
+
+    def toPrototypeJson(self):
+        return self.toJson()
+
+    def fromPrototypeJson(self, data):
+        return self.fromJson(data)
 
     def toJson(self):
         return self.__dict__
@@ -19,27 +44,47 @@ class Combat(JsonSerializable):
        return self
 
 class Wearable(JsonSerializable):
-    'Represents the characteristics of an object that can be worn.'
+    'Contains the properties of a wearable object.  Composable into an Object to make it Wearable.'
+    
+    HANDS = 'hands'
+    FOREARMS = 'forearms'
+    TORSO = 'torso'
+    LEGS = 'legs'
+    FEET = 'feet'
+    HEAD = 'head'
+    BACK = 'back'
+    WAIST = 'waist'
+    NECK = 'neck'
+    NONE = 'none'
 
-    EQUIPMENT_LOCATIONS = [
-        'wielded',
-        'held',
-        'hands',
-        'forearms',
-        'torso',
-        'legs',
-        'feet',
-        'head',
-        'back',
-        'waist',
-        'neck'
+    LOCATIONS = [
+        Wearable.HANDS,
+        Wearable.FOREARMS,
+        Wearable.TORSO,
+        Wearable.LEGS, 
+        Wearable.FEET,
+        Wearable.HEAD,
+        Wearable.BACK,
+        Wearable.WAIST,
+        Wearable.NECK 
     ]
 
     def __init__(self):
-        self.locations = []
-        
+
+        # The location this object may be worn on.
+        self.location = Wearable.NONE
+       
+        # The warmth wearing this object grants.
         self.warmth = 0
+
+        # The armor protection wearing this object grants.
         self.armor = 0
+
+    def toPrototypeJson(self):
+        return self.toJson()
+
+    def fromPrototypeJson(self, data):
+        return self.fromJson(data)
 
     def toJson(self):
         return self.__dict__
@@ -49,15 +94,37 @@ class Wearable(JsonSerializable):
        return self
 
 class Container(JsonSerializable):
-    'Represents the characteristics of objects that are containers.'
+    'Provides the properties of objects that are containers.  Composable into an Object to make it a Container.'
 
     def __init__(self):
+
+        # An array of objects currently contained with in the container.
         self.contents = []
 
+        # The volume the container can hold.
         self.volume = 0
 
+        # The weight the container can hold.
+        self.weightLimit = 0
+
+    def toPrototypeJson(self):
+        json = {}
+        json['volume'] = self.volume
+        json['weightLimit'] = self.weightLimit
+        return json
+
+    def fromPrototypeJson(self, data):
+        self.volume = json['volume']
+        self.weightLimit = json['weightLimit']
+        return self
+
     def toJson(self):
-        return self.__dict__
+        json = {}
+        json['volume'] = self.volume
+        json['weightLimit'] = self.weightLimit
+        json['contents'] = []
+        for item in self.contents:
+            json['contents'].append(item.toJson())
 
     def fromJson(self, data):
        self.__dict__ = data
@@ -69,11 +136,22 @@ class Object(Model):
     def __init__(self, library):
         super(Object, self).__init__(library)
 
+        # The name of the object, displayed as the short name in lists.
         self.name = ''
+
+        # The short description of the object.  Displayed when the object is looked at.
         self.description = ''
+
+        # The long description of the object.  Displayed when the object is examined closely.
         self.details = ''
+
+        # The list of keywords that may be used to reference the object in commands.
         self.keywords = [] 
 
+        # The volume the object takes up.
+        self.bulk = 0
+
+        # How heavy the object is.
         self.weight = 0
 
         self.uses = {} 
