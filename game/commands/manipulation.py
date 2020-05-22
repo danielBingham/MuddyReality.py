@@ -2,7 +2,7 @@ from interpreter.command import Command
 
 
 class Open(Command):
-    'Open a door or an object'
+    'Open a door or an item'
     
     def execute(self, player, arguments):
         room = player.character.room
@@ -14,7 +14,7 @@ class Open(Command):
         player.write("That doesn't appear to be something you can open.")
 
 class Close(Command):
-    'Close a door or an object'
+    'Close a door or an item'
     
     def execute(self, player, arguments):
         room = player.character.room
@@ -26,20 +26,19 @@ class Close(Command):
         player.write("That doesn't appear to be something you can close.")
 
 class Get(Command):
-    'Get an object from the environment.'
+    'Get an item from the environment.'
 
     def execute(self, player, arguments):
         if not arguments:
             player.write("Get what?")
             return
 
-
-        objects = player.character.room.objects
-        for object in objects:
-            if arguments in object.keywords:
-                objects.remove(object)
-                player.character.inventory.append(object)
-                player.write("You pick up " + object.name + ".")
+        items = player.character.room.items
+        for item in items:
+            if arguments in item.keywords:
+                items.remove(item)
+                player.character.inventory.append(item)
+                player.write("You pick up " + item.name + ".")
                 return
 
         player.write("There doesn't seem to be a " + arguments + " to get.")
@@ -47,18 +46,18 @@ class Get(Command):
 
 
 class Drop(Command):
-    'Drop an object you are carrying.'
+    'Drop an item you are carrying.'
 
     def execute(self, player, arguments):
         if not arguments:
             player.write("Drop what?")
             return
 
-        for object in player.character.inventory:
-            if arguments in object.keywords:
-                player.character.inventory.remove(object)
-                player.character.room.objects.append(object)
-                player.write("You drop " + object.name + ".")
+        for item in player.character.inventory:
+            if arguments in item.keywords:
+                player.character.inventory.remove(item)
+                player.character.room.items.append(item)
+                player.write("You drop " + item.name + ".")
                 return
 
         player.write("You don't seem to be carrying a " + arguments + ".")
@@ -72,16 +71,21 @@ class Wield(Command):
             return
 
         inventory = player.character.inventory
-        for object in inventory:
-            if arguments in object.keywords:
-                if player.character.wield(object):
-                    player.write("You wield " + object.name + ".")
-                    inventory.remove(object)
+        for item in inventory:
+            if arguments in item.keywords:
+                if "MeleeWeapon" in item.uses:
+                    player.write("You wield " + item.name + ".")
+                    inventory.remove(item)
+                    player.character.equipment['wield'] = item
+
+                    for occupant in player.character.room.occupants:
+                        if occupant.player:
+                            occupant.player.write(player.character.name + ' wields ' + item.name + '.')
                 else:
-                    player.write("You can't wield " + object.name + ".")
+                    player.write("You can't wield " + item.name + ".")
                 return
 
-        player.write("You don't seem to have a " + arguments + '.")
+        player.write("You don't seem to have a " + arguments + ".")
 
 
 

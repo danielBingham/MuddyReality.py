@@ -5,7 +5,7 @@ import copy
 from models.account import Account
 from models.character import Character
 from models.room import Room
-from models.object import Object
+from models.item import Item 
 
 import game.commands.communication as communication 
 import game.commands.information as information 
@@ -70,7 +70,7 @@ class Library:
         self.characters = NamedModelIndex(self, Character)
         self.rooms = ModelIndex(self, Room) 
         self.mobs = {}
-        self.objects = PrototypeIndex(self, Object) 
+        self.items = PrototypeIndex(self, Item) 
 
 
     def loadCommands(self):
@@ -87,7 +87,9 @@ class Library:
         self.commands['report'] = information.Report(self)
         self.commands['get'] = manipulation.Get(self)
         self.commands['drop'] = manipulation.Drop(self)
+        self.commands['equipment'] = information.Equipment(self)
         self.commands['inventory'] = information.Inventory(self)
+        self.commands['wield' ] = manipulation.Wield(self)
 
     def getCommand(self, command_name):
         if command_name in self.commands:
@@ -106,13 +108,13 @@ class Library:
     def load(self):
         print("Loading the game library.")
 
-        print("Loading objects...")
-        object_list = glob.glob(Object.getBasePath() + '*.json')
-        for file_path in object_list:
-            print("Loading object " + file_path + "...")
-            object = Object(self)
-            object.load(file_path)
-            self.objects.add(object)
+        print("Loading items...")
+        item_list = glob.glob(Item.getBasePath() + '*.json')
+        for file_path in item_list:
+            print("Loading item " + file_path + "...")
+            item = Item(self)
+            item.load(file_path)
+            self.items.add(item)
 
         print("Loading rooms...")
         room_list = glob.glob(Room.getBasePath() + '*.json') 

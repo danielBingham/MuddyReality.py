@@ -19,7 +19,7 @@ If this is your first time, you'll need to create an account by typing "new".
         if input == "new":
             return CreateNewAccount(self.player, self.library)
         else:
-            account = self.library.accounts.getById(input)
+            account = self.library.accounts.getById(input.lower())
             if account:
                 self.player.account = account
                 return GetAccountPassword(self.player, self.library)

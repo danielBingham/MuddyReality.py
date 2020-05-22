@@ -59,3 +59,16 @@ class Inventory(Command):
                 player.write(object.name)
         else:
             player.write("Nothing.")
+
+class Equipment(Command):
+    'List the items the character currently has equipped.'
+
+    def execute(self, player, arguments):
+        equipment = player.character.equipment
+        player.write("You are wearing: ")
+        if ( equipment ):
+            for location in equipment:
+                player.write("%s on your %s" % (equipment[location].name, location))
+        else:
+            player.write("Nothing.")
+

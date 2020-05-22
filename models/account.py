@@ -21,17 +21,17 @@ class Account(NamedModel):
         return self
 
     def setPassword(self, password):
-        self.password_hash = bcrypt.hashpw(password, bcrypt.gensalt())
+        self.password_hash = bcrypt.hashpw(password.encode('utf-8'), bcrypt.gensalt())
         return self
 
     def isPassword(self, password):
-        return bcrypt.checkpw(password, self.password_hash)
+        return bcrypt.checkpw(password.encode('utf-8'), self.password_hash)
 
     def toJson(self):
         json = {}
         json['name'] = self.name 
 
-        json['password_hash'] = self.password_hash
+        json['password_hash'] = self.password_hash.decode('utf-8', 'strict')
 
         json['characters'] = []
         for name in self.characters:
@@ -42,7 +42,7 @@ class Account(NamedModel):
     def fromJson(self, data):
         self.setId(data['name'])
         
-        self.password_hash = data['password_hash']
+        self.password_hash = data['password_hash'].encode('utf-8')
 
         for name in data['characters']:
             self.characters[name] = self.library.characters.getById(name)

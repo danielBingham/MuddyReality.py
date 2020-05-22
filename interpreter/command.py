@@ -4,6 +4,9 @@ class Command:
     def __init__(self, library):
         self.library = library 
 
+    def help(self):
+        pass
+
     def execute(self, player, arguments):
         pass
 

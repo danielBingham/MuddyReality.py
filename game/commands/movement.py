@@ -1,9 +1,7 @@
 from interpreter.command import Command
-from services.movement import MovementService
+import services.movement as movement 
 
 def move(direction, player, arguments):
-
-    movement = new MovementService()
 
     if not player.character.room:
         raise RuntimeException("Player should have a room if they're trying to move!")

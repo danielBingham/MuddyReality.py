@@ -1,0 +1,16 @@
+{
+    "id": 1,
+    "title": "A Grand Plaza",
+    "description": "In the middle of this small city stands a grand plaza. It is surrounded on all sides by stone buildings that range in height from two stories to five stories. Streets lead out away from it in all directions. In the center of the plaza is a large fountain, spraying water high into the air so that it cascades down as rain into the pool below.",
+    "exits": {
+        "north": {
+            "direction": "north",
+            "name": "A cobblestone street.",
+            "description": "A cobblestone street leads north between the buildings.",
+            "room_to": 2,
+            "is_door": false,
+            "is_open": true
+        }
+    },
+    "items": [1]
+}

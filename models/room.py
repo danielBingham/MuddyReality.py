@@ -142,7 +142,7 @@ class Room(Model):
         self.exits = {}
 
         self.occupants = []
-        self.objects = []
+        self.items = []
 
 
     ###
@@ -167,8 +167,8 @@ class Room(Model):
         for occupant in self.occupants:
             if occupant != player.character:
                 output += occupant.name.title() + " is here.\n"
-        for object in self.objects:
-            output += object.name.title() + " is laying here.\n"
+        for item in self.items:
+            output += item.name.title() + " is laying here.\n"
         output += "Exits: "
         for exit in self.exits:
             if self.exits[exit].is_door:
@@ -194,11 +194,12 @@ class Room(Model):
         for direction in self.exits:
             json['exits'][direction] = self.exits[direction].toJson()
 
-        json['objects'] = []
-        for object in self.objects:
-            json['objects'].append(object.getId())
+        json['items'] = []
+        for item in self.items:
+            json['items'].append(item.getId())
 
         return json
+
     ###
     # Convert a json serialization back to a room object.
     ###
@@ -211,8 +212,8 @@ class Room(Model):
             self.exits[direction] = Exit(self, self.library)
             self.exits[direction].fromJson(data['exits'][direction])
 
-        for id in data['objects']:
-            self.objects.append(self.library.objects.instance(id))
+        for id in data['items']:
+            self.items.append(self.library.items.instance(id))
 
         return self
 

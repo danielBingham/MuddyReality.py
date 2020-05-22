@@ -2,7 +2,7 @@ from models.base import JsonSerializable
 from models.base import Model
 
 class MeleeWeapon(JsonSerializable):
-    'Contains the properties of a melee weapon.  Composable into an Object to give it the use as a Melee Weapon.''
+    'Contains the properties of a melee weapon.  Composable into an Item to give it the use as a Melee Weapon.'
 
     SLASHING = 'slashing'
     CRUSHING = 'crushing'
@@ -11,12 +11,12 @@ class MeleeWeapon(JsonSerializable):
     STABBING = 'stabbing'
     NONE = 'none'
 
-    WEAPON_TYPES = [
-        MeleeWeapon.SLASHING,
-        MeleeWeapon.CRUSHING,
-        MeleeWeapon.HACKING,
-        MeleeWeapon.SMITING, 
-        MeleeWeapon.STABBING
+    TYPES = [
+        'slashing',
+        'crushing',
+        'hacking',
+        'smiting',
+        'stabbing'
     ]
 
     def __init__(self):
@@ -44,7 +44,7 @@ class MeleeWeapon(JsonSerializable):
        return self
 
 class Wearable(JsonSerializable):
-    'Contains the properties of a wearable object.  Composable into an Object to make it Wearable.'
+    'Contains the properties of a wearable item.  Composable into an Item to make it Wearable.'
     
     HANDS = 'hands'
     FOREARMS = 'forearms'
@@ -58,26 +58,26 @@ class Wearable(JsonSerializable):
     NONE = 'none'
 
     LOCATIONS = [
-        Wearable.HANDS,
-        Wearable.FOREARMS,
-        Wearable.TORSO,
-        Wearable.LEGS, 
-        Wearable.FEET,
-        Wearable.HEAD,
-        Wearable.BACK,
-        Wearable.WAIST,
-        Wearable.NECK 
+        'hands',
+        'forearms',
+        'torso',
+        'legs',
+        'feet',
+        'head',
+        'back',
+        'waist',
+        'neck'
     ]
 
     def __init__(self):
 
-        # The location this object may be worn on.
+        # The location this item may be worn on.
         self.location = Wearable.NONE
        
-        # The warmth wearing this object grants.
+        # The warmth wearing this item grants.
         self.warmth = 0
 
-        # The armor protection wearing this object grants.
+        # The armor protection wearing this item grants.
         self.armor = 0
 
     def toPrototypeJson(self):
@@ -94,11 +94,11 @@ class Wearable(JsonSerializable):
        return self
 
 class Container(JsonSerializable):
-    'Provides the properties of objects that are containers.  Composable into an Object to make it a Container.'
+    'Provides the properties of items that are containers.  Composable into an Item to make it a Container.'
 
     def __init__(self):
 
-        # An array of objects currently contained with in the container.
+        # An array of items currently contained with in the container.
         self.contents = []
 
         # The volume the container can hold.
@@ -131,27 +131,28 @@ class Container(JsonSerializable):
        return self
 
 
-class Object(Model):
+class Item(Model):
+    'Represents an item in a game.'
 
     def __init__(self, library):
-        super(Object, self).__init__(library)
+        super(Item, self).__init__(library)
 
-        # The name of the object, displayed as the short name in lists.
+        # The name of the item, displayed as the short name in lists.
         self.name = ''
 
-        # The short description of the object.  Displayed when the object is looked at.
+        # The short description of the item.  Displayed when the item is looked at.
         self.description = ''
 
-        # The long description of the object.  Displayed when the object is examined closely.
+        # The long description of the item.  Displayed when the item is examined closely.
         self.details = ''
 
-        # The list of keywords that may be used to reference the object in commands.
+        # The list of keywords that may be used to reference the item in commands.
         self.keywords = [] 
 
-        # The volume the object takes up.
+        # The volume the item takes up.
         self.bulk = 0
 
-        # How heavy the object is.
+        # How heavy the item is.
         self.weight = 0
 
         self.uses = {} 
@@ -181,7 +182,7 @@ class Object(Model):
         self.keywords = data['keywords']
         
         for use in data['uses']:
-            classRef = globals()[use.title()]
+            classRef = globals()[use]
             instance = classRef()
             instance.fromJson(data['uses'][use])
             self.uses[use] = instance
@@ -190,6 +191,6 @@ class Object(Model):
 
     @staticmethod
     def getBasePath():
-        return 'data/objects/'
+        return 'data/items/'
 
 

@@ -1,0 +1,16 @@
+{
+    "id": 2,
+    "title": "A Cobblestone Street",
+    "description": "A narrow cobblestone street runs north to south between stone buildings here.",
+    "exits": {
+        "south": {
+            "direction": "south",
+            "name": "A grant plaza.",
+            "description": "A grand plaza opens up between the buildings.",
+            "room_to": 1,
+            "is_door": false,
+            "is_open": true
+        }
+    },
+    "items": []
+}

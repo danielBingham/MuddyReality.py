@@ -1,0 +1,14 @@
+{
+    "id": 1,
+    "name": "a short sword",
+    "description": "A simple, steel short sword.",
+    "details": "A steel short sword, crafted with a modicum of skill.  The blade is about two feet long, with a carved wooden hilt adding an additional six inches.  The blade has two sharp edges for cutting, and it comes to a triangular point for stabbing.",
+    "keywords": "sword, short, short sword",
+    "uses": {
+        "MeleeWeapon": {
+            "minDamage": 2,
+            "maxDamage": 6,
+            "type": "stabbing"
+        }
+    }
+}
