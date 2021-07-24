@@ -13,6 +13,31 @@ import game.commands.movement as movement
 import game.commands.manipulation as manipulation
 
 class ModelIndex:
+    """Wraps and provides access to a collection of models of a certain type.
+
+    Serves as a wrapper around models of a certain type, managing the
+    dictionary of instances, allowing access to existing instances and reation
+    of new ones.  In a Model index, each instance stored represents a unique
+    instance of that model - only one copy of that instance will ever exist in
+    the game.
+
+    Attributes
+    ----------
+    library: Library
+        A reference back to the game library which contains this ModelIndex.
+    type: Object
+        The class that this will be a collection of.  This is the object that
+        we'll instantiate when adding new instances.
+    index: dictionary[type]
+        A dictionary of instances of "type" keyed to each item's in-game ID
+        number.  This represents the collection of all instances of that type
+        of object that exist in the game.
+
+    TODO This should be renamed.  This is really a KeyedCollection.  Or a
+    ManagedDictionary.  Or a DatabaseTable.  In any case, "ModelIndex" is a bad
+    name and we should find a better one.
+        
+    """
 
     def __init__(self, library, type):
         self.library = library
@@ -43,6 +68,13 @@ class ModelIndex:
             return False
 
 class NamedModelIndex(ModelIndex):
+    """A model collection that uses the name of the object as the key.
+
+    Extends ModelIndex, but uses the name of the object as the key rather than
+    its in-game id.
+
+    TODO Rename me. See TODO on ModelIndex. 
+    """
 
     def create(self, id):
         id = str(id).lower()
@@ -58,7 +90,24 @@ class PrototypeIndex(ModelIndex):
             return None
 
 class Library:
-    'A library of game content.'
+    """A library object containing and providing access to the game's content.
+
+    Effectively an ingame database of all of the games models - accounts,
+    character, objects, locations, and npcs.  Also handles loading and saving
+    of those models.
+
+    Attributes
+    ----------
+    players: list[Player]
+        A list of players currently logged into the game and playing.
+    commands: list[Command]
+        A list of all commands the players may execute in the game.
+    rooms: list[Room]
+        A list of all Room locations that exist in the game.
+
+    TODO Finish me.  Also probably rename me.  Database?  Library works well
+    enough, but there's probably a better name.
+    """
 
     def __init__(self):
         self.players = []
@@ -74,6 +123,18 @@ class Library:
 
 
     def loadCommands(self):
+        """Loads the game's command objects.
+
+        The command objects are loaded into a list keyed by the in-game command
+        used to execute them.
+
+        Order is important here, because it will be the order in which
+        commands are matched.  So if someone just types "n", they'll get
+        "north" before they get any of the other commands starting with "n".
+        You'll want to order these to optimize player shortcut by putting more
+        used commands above less used commands.
+        """
+
         self.commands['north'] = movement.North(self)
         self.commands['east'] = movement.East(self)
         self.commands['south'] = movement.South(self)
@@ -143,6 +204,4 @@ class Library:
             account = Account(self)
             account.load(file_path)
             self.accounts.add(account)
-
-
 
