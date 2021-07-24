@@ -12,19 +12,20 @@ import game.commands.information as information
 import game.commands.movement as movement
 import game.commands.manipulation as manipulation
 
-class ModelIndex:
-    """Wraps and provides access to a collection of models of a certain type.
+class ModelRepository:
+    """Manages and provides access to a collection of models of type ``type``.
 
-    Serves as a wrapper around models of a certain type, managing the
-    dictionary of instances, allowing access to existing instances and reation
-    of new ones.  In a Model index, each instance stored represents a unique
-    instance of that model - only one copy of that instance will ever exist in
-    the game.
+    Serves as a combination factory and repository for models of type ``type``,
+    managing the dictionary of instances, allowing access to existing instances
+    and creation of new ones.  
+
+    Each instance stored represents a unique instance of that model - only one
+    copy of that instance will ever exist in the game.
 
     Attributes
     ----------
     library: Library
-        A reference back to the game library which contains this ModelIndex.
+        A reference back to the game library which contains this ModelRepository.
     type: Object
         The class that this will be a collection of.  This is the object that
         we'll instantiate when adding new instances.
@@ -34,56 +35,134 @@ class ModelIndex:
         of object that exist in the game.
 
     TODO This should be renamed.  This is really a KeyedCollection.  Or a
-    ManagedDictionary.  Or a DatabaseTable.  In any case, "ModelIndex" is a bad
+    ManagedDictionary.  Or a DatabaseTable.  In any case, "ModelRepository" is a bad
     name and we should find a better one.
         
     """
 
     def __init__(self, library, type):
+        """Initialize the ModelRepository.
+
+        Initializes the ModelRepository with its parent library and with the
+        type of the model it will wrap.
+
+        Parameters
+        ----------
+        library: Library
+            The Library that will contain this ModelRepository.  Responsible
+            for loading the repositories saved data files to populate it, and
+            for saving the repositories contents back to those data files.
+        type: Class 
+           The class of Model that this repository will manage. 
+        """
+
         self.library = library
         self.type = type
         
-        self.index = {}
+        self.repo = {}
 
     def add(self, model):
-        self.index[model.getId()] = model
+        """Add a model to the repository.
+
+        Adds an instance of ``type`` to the repository, using its ID as the key.
+
+        Parameters
+        ----------
+        model: <Type>
+            An instance of model ``Type`` to be added to the repository.  Must
+            have an ID set and a `getId` method implemented.
+        """
+
+        self.repo[model.getId()] = model
         return self
 
     def create(self, id):
+        """Create an instance of model ``type`` identified by ``id`` and add it to the repository.
+
+        Creates a new instance of model ``type`` identified by ``id``, adds it
+        to the repository, and then returns it. 
+
+        Parameters
+        ----------
+        id: integer or string
+            The identifier we want to use to key this model.  In the case of a
+            positive integer, it will be treated as an ID number.  In all other
+            cases, it will be treated as a string identifier and converted to
+            lower case.
+        """
+
+        # If we weren't given an integer id, then treat it as a string identifier.
+        if !id.isdigit():
+            id = str(id).lower()
+
         model = self.type(self.library)
         model.setId(id)
         self.add(model)
         return model 
 
     def getById(self, id):
-        if id in self.index:
-            return self.index[id]
+        """Get the instance identified by ``id`` from the repository.
+
+        Returns the instance identified by the integer ``id`` from the
+        repository and returns it.  Returns ``None`` if no such instance
+        exists.
+
+        Parameters
+        ----------
+        id: integer or string
+            The identification number of the model we'd like to retrieve.
+        """
+
+        if id in self.repo:
+            return self.repo[id]
         else:
             return None
 
     def hasId(self, id):
-        if id in self.index:
+        """Determine whether a model identified by ``id`` exists in the repository.
+
+        Checks the repository for a model identified by ``id``.  Returns True
+        if it finds one, False otherwise.
+
+        Parameters
+        ----------
+        id: integer or string
+            The identifier of the model we're seeking.
+        """
+
+        if id in self.repo:
             return True
         else:
             return False
 
-class NamedModelIndex(ModelIndex):
-    """A model collection that uses the name of the object as the key.
+class PrototypeRepository(ModelRepository):
+    """Manages and provides access to a repository of model prototypes of type ``type``. 
 
-    Extends ModelIndex, but uses the name of the object as the key rather than
-    its in-game id.
+    Extends ModelRepository to allow management of a collection of model
+    prototypes of type ``type``.  This is a model where there can be 0..N
+    copies of each prototypical instance stored in this repository.  Instances
+    are not considered unique.  Also provides a method for creating new copies
+    of the prototypes stored with in.
 
-    TODO Rename me. See TODO on ModelIndex. 
+    For further information, see ModelRepository.
     """
-
-    def create(self, id):
-        id = str(id).lower()
-        return super(NamedModelIndex, self).create(id)
-
-class PrototypeIndex(ModelIndex):
 
     # Create a new instance of this model from the prototype.
     def instance(self, id):
+        """Creates a new instance of a prototype in the repository.
+
+        Attempts to create a new instance of a prototype identified by ``id``.
+        If no such prototype is found in the repository, then returns None.
+        Creates a deep copy of the prototype, so that it can act as a
+        completely idependent instance of the model.
+        
+        Parameters
+        ----------
+        id: integer or string
+            The identifier used to identify the model prototype we want to
+            create an instance of.
+        """
+
         if self.hasId(id):
             return copy.deepcopy(self.getById(id))
         else:
@@ -92,34 +171,41 @@ class PrototypeIndex(ModelIndex):
 class Library:
     """A library object containing and providing access to the game's content.
 
-    Effectively an ingame database of all of the games models - accounts,
-    character, objects, locations, and npcs.  Also handles loading and saving
-    of those models.
+    A database of all of the game's models - accounts, character, objects,
+    locations, npcs, etc.  Also handles loading and saving of those models.
 
     Attributes
     ----------
-    players: list[Player]
+    players: list<Player> 
         A list of players currently logged into the game and playing.
-    commands: list[Command]
+    commands: list<Command>
         A list of all commands the players may execute in the game.
-    rooms: list[Room]
-        A list of all Room locations that exist in the game.
-
-    TODO Finish me.  Also probably rename me.  Database?  Library works well
-    enough, but there's probably a better name.
+    rooms: ModelRepository<Room> 
+        A ModelRepository of all Room locations that exist in the game.
+    mobs: ModelPrototypeRepository<Character>
+        A ModelPrototypeRepository of all the NPC characters that can exist in
+        the game.
+    items: ModelPrototypeRepository<Item>
+        A ModelPrototypeRepository of all the Items that can exist in the game.
     """
 
     def __init__(self):
+        """Initialize the Library.
+
+        Initializes the library by creating the repositories for each type of
+        Model stored.  Also loads the commands.
+        """
+
         self.players = []
         self.commands = {}
 
         self.loadCommands()
 
-        self.accounts = NamedModelIndex(self, Account) 
-        self.characters = NamedModelIndex(self, Character)
-        self.rooms = ModelIndex(self, Room) 
-        self.mobs = {}
-        self.items = PrototypeIndex(self, Item) 
+        self.accounts = ModelRepository(self, Account) 
+        self.characters = ModelRepository(self, Character)
+        self.rooms = ModelRepository(self, Room) 
+        self.mobs = PrototypeRepository(self, Character) 
+        self.items = PrototypeRepository(self, Item) 
 
 
     def loadCommands(self):
@@ -185,8 +271,16 @@ class Library:
             room.load(file_path)
             self.rooms.add(room)
 
+        # This runs the `connect()` method on every room we've loaded into the
+        # Rooms repository.  This method creates object links for each of the
+        # exits that go from one room to another, so that we can easily access
+        # to the connected rooms with out having to search for the models.
+        #
+        # We can only run this once we've fully loaded all of the saved rooms
+        # into the repository.  Otherwise, the room referenced by an exit may
+        # not exist yet.
         print("Connecting rooms...")
-        for id in self.rooms.index:
+        for id in self.rooms.repo:
             self.rooms.getById(id).connect()
 
         print("Loading characters...")
