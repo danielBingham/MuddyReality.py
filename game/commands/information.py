@@ -37,17 +37,30 @@ class Examine(Command):
     def execute(self, player, arguments):
         if not arguments:
             proxy = Look(self.library)
-            proxy.execute(player, arguments)
-        elif arguments:
-            if arguments in Look.DIRECTIONS:
-                proxy = Look(self.library)
-                proxy.execute(player, arguments)
-            elif player.character.room.isOccupant(arguments):
-                occupant = player.character.room.getOccupant(arguments)
-                player.write(occupant.detail()) 
-            elif player.character.room.isObject(arguments):
-                object = player.character.room.getObject(arguments)
-                player.write(object.detail())
+            return proxy.execute(player, arguments)
+
+        if arguments in Look.DIRECTIONS:
+            proxy = Look(self.library)
+            return proxy.execute(player, arguments)
+
+        for item in player.character.inventory:
+            for key in item.keywords:
+                if key.startswith(arguments):
+                    player.write(item.detail())
+                    return
+
+        for occupant in player.character.room.occupants:
+            if occupant.name.startswith(arguments):
+                player.write(occupant.detail())
+                return
+
+        for item in player.character.room.items:
+            for key in item.keywords:
+                if key.startswith(arguments):
+                    player.write(item.detail())
+                    return
+
+        player.write("There doesn't seem to be a " + arguments + " to examine.")
 
 class Inventory(Command):
     'List the items in a character\'s inventory.'

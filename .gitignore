@@ -1,3 +1,4 @@
 *.pyc
 data/accounts/*
+data/characters/*
 *.swp

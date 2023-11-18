@@ -16,7 +16,6 @@ class Player:
         self.socket = socket
         self.socket.player = self
 
-        self.adminInterpreter = None
         self.interpreter = None 
         self.account = None
         self.character = None
@@ -34,10 +33,7 @@ class Player:
         # If we don't have input at this point, it means the player just sent white space.  So we'll
         # skip interpreting it and just send a new prompt.
         if input:
-            if input[0] == "/" and self.adminInterpreter !== None:
-                self.adminInterpreter.interpret(input[1:])
-            else:
-                self.interpreter.interpret(input)
+            self.interpreter.interpret(input)
         
         if not self.hasPromptInBuffer():
             self.write(self.getPrompt(), wrap=False)

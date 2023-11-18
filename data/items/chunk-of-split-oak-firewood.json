@@ -1,0 +1,18 @@
+{
+    "name": "chunk of split oak firewood",
+    "description": "a chunk of split oak firewood",
+    "details": "This is a piece of split, oak firewood, about a third of a meter in length and 10 centimeters in diameter. It is excellent for burning.",
+    "keywords": [ "chunk of split oak firewood", "wood" , "chunk", "split", "firewood", "oak" ],
+    "length": 0.3,
+    "height": 0.1,
+    "width": 0.1,
+    "weight": 2.3,
+    "traits": {
+        "Material": {
+            "name": "oak fire log",
+            "types": [ "oak", "firewood", "log" ]
+        }
+    }
+} 
+
+

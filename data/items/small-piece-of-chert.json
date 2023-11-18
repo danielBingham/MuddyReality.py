@@ -1,0 +1,16 @@
+{
+    "name": "small piece of chert",
+    "description": "a small piece of chert",
+    "details": "This is a small piece of chert, a rock that flakes rather easily making it potentially useful.",
+    "keywords": [ "chert", "small piece chert", "piece chert", "rock"],
+    "length": 0.1,
+    "width": 0.2,
+    "height": 0.1,
+    "weight": 1,
+    "traits": {
+        "Material": {
+            "name": "chert",
+            "types": [ "chert" ]
+        }
+    }
+}

@@ -1,16 +1,16 @@
 {
     "id": 2,
-    "title": "A Cobblestone Street",
-    "description": "A narrow cobblestone street runs north to south between stone buildings here.",
+    "title": "A Rocky Beach",
+    "description": "A thin strip of rocky shoreline between a large body of water and dense, old growth forest.",
     "exits": {
         "south": {
             "direction": "south",
-            "name": "A grant plaza.",
-            "description": "A grand plaza opens up between the buildings.",
+            "name": "A rocky beach.",
+            "description": "A rocky beach continues to the north.",
             "room_to": 1,
             "is_door": false,
             "is_open": true
         }
     },
-    "items": []
+    "items": [ "medium sized rock", "medium sized rock" ]
 }

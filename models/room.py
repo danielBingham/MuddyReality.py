@@ -158,6 +158,13 @@ class Room(Model):
         for direction in self.exits:
             self.exits[direction].connect()
 
+    def isOccupant(self, argument):
+        for occupant in self.occupants:
+            if occupant.name.startswith(argument):  
+                return True
+        return False
+
+
     ###
     # Describe the room to a player.
     ###
@@ -168,7 +175,7 @@ class Room(Model):
             if occupant != player.character:
                 output += occupant.name.title() + " is here.\n"
         for item in self.items:
-            output += item.name.title() + " is laying here.\n"
+            output += item.name.capitalize() + " is laying here.\n"
         output += "Exits: "
         for exit in self.exits:
             if self.exits[exit].is_door:

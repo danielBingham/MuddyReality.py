@@ -1,0 +1,16 @@
+{
+    "name": "medium sized rock",
+    "description": "a medium sized rock",
+    "details": "This is a medium sized rock, probably some sort of granite.  It's roughly round and fits well in the hand, though it's dense and so still pretty heavy.  With a little forming, it could potentially be useful.",
+    "keywords": [ "medium sized rock", "rock", "medium" ],
+    "length": 0.1,
+    "width": 0.1,
+    "height": 0.1,
+    "weight": 1,
+    "traits": {
+        "Material": {
+            "name": "rock",
+            "types": [ "stone" ]
+        }
+    }
+}

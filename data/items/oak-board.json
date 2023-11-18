@@ -1,0 +1,30 @@
+{
+    "name": "oak board",
+    "description": "an oak board",
+    "details": "A long, straight board made of oak wood. It has been well hewn, likely by an axe.",
+    "keywords": [ "wood" , "oak" , "board" ],
+    "length": 2,
+    "width": 0.15,
+    "height": 0.03,
+    "weight": 6,
+    "traits": {
+        "Material": {
+            "name": "oak board",
+            "types": [ "wood", "board", "oak" ]
+        },
+        "Craftable": {
+            "requiredMaterials": [
+                {
+                    "types": [ "oak", "log" ],
+                    "bulk": 0.15,
+                    "weight": -1
+                }
+            ],
+            "requiredTools": [
+                {
+                    "types": [ "axe" ]
+                }
+            ]
+        }
+    }
+}

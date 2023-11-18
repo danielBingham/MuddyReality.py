@@ -1,5 +1,6 @@
 from interpreter.command import Command
-
+import services.environment as environment
+import services.equipment as equipment
 
 class Open(Command):
     'Open a door or an item'
@@ -33,16 +34,14 @@ class Get(Command):
             player.write("Get what?")
             return
 
-        items = player.character.room.items
-        for item in items:
-            if arguments in item.keywords:
-                items.remove(item)
-                player.character.inventory.append(item)
-                player.write("You pick up " + item.name + ".")
-                return
-
-        player.write("There doesn't seem to be a " + arguments + " to get.")
-
+        item = environment.findItemInRoom(player, arguments)
+        if item:
+            player.character.room.items.remove(item)
+            player.character.inventory.append(item)
+            player.write("You pick up " + item.description + ".")
+            environment.writeToRoom(player, player.character.name + ' picks up ' + item.description+ '.')
+        else:
+            player.write("There doesn't seem to be a " + arguments + " to get.")
 
 
 class Drop(Command):
@@ -53,14 +52,14 @@ class Drop(Command):
             player.write("Drop what?")
             return
 
-        for item in player.character.inventory:
-            if arguments in item.keywords:
-                player.character.inventory.remove(item)
-                player.character.room.items.append(item)
-                player.write("You drop " + item.name + ".")
-                return
-
-        player.write("You don't seem to be carrying a " + arguments + ".")
+        item = environment.findItemInInventory(player, arguments)
+        if item: 
+            player.character.inventory.remove(item)
+            player.character.room.items.append(item)
+            player.write("You drop " + item.description + ".")
+            environment.writeToRoom(player, player.character.name + ' drops ' + item.description+ '.')
+        else:
+            player.write("You don't seem to be carrying a " + arguments + ".")
 
 class Wield(Command):
     'Wield a weapon.'
@@ -70,22 +69,17 @@ class Wield(Command):
             player.write("Wield what?")
             return
 
-        inventory = player.character.inventory
-        for item in inventory:
-            if arguments in item.keywords:
-                if "MeleeWeapon" in item.uses:
-                    player.write("You wield " + item.name + ".")
-                    inventory.remove(item)
-                    player.character.equipment['wield'] = item
-
-                    for occupant in player.character.room.occupants:
-                        if occupant.player:
-                            occupant.player.write(player.character.name + ' wields ' + item.name + '.')
-                else:
-                    player.write("You can't wield " + item.name + ".")
-                return
-
-        player.write("You don't seem to have a " + arguments + ".")
+        item = equipment.findItemInInventory(player, arguments)
+        if item:
+            if "MeleeWeapon" in item.traits:
+                player.character.inventory.remove(item)
+                player.character.equipment['wield'] = item
+                player.write("You wield " + item.name + ".")
+                environment.writeToRoom(player, player.character.name + ' wields ' + item.description+ '.')
+            else:
+                player.write("You can't wield " + item.description + ".")
+        else:
+            player.write("You don't seem to have a " + arguments + ".")
 
 
 

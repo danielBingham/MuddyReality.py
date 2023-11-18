@@ -11,6 +11,7 @@ import game.commands.communication as communication
 import game.commands.information as information 
 import game.commands.movement as movement
 import game.commands.manipulation as manipulation
+#import game.commands.crafting as crafting
 
 class ModelRepository:
     """Manages and provides access to a collection of models of type ``type``.
@@ -29,7 +30,7 @@ class ModelRepository:
     type: Object
         The class that this will be a collection of.  This is the object that
         we'll instantiate when adding new instances.
-    index: dictionary[type]
+    repo: dictionary[type]
         A dictionary of instances of "type" keyed to each item's in-game ID
         number.  This represents the collection of all instances of that type
         of object that exist in the game.
@@ -92,7 +93,7 @@ class ModelRepository:
         """
 
         # If we weren't given an integer id, then treat it as a string identifier.
-        if !id.isdigit():
+        if not id.isdigit():
             id = str(id).lower()
 
         model = self.type(self.library)
@@ -230,13 +231,15 @@ class Library:
         self.commands['open'] = manipulation.Open(self)
         self.commands['close'] = manipulation.Close(self)
         self.commands['look'] = information.Look(self)
+        self.commands['examine'] = information.Examine(self)
         self.commands['say'] = communication.Say(self)
         self.commands['report'] = information.Report(self)
         self.commands['get'] = manipulation.Get(self)
         self.commands['drop'] = manipulation.Drop(self)
         self.commands['equipment'] = information.Equipment(self)
         self.commands['inventory'] = information.Inventory(self)
-        self.commands['wield' ] = manipulation.Wield(self)
+        self.commands['wield'] = manipulation.Wield(self)
+        #self.commands['craft'] = crafting.Craft(self)
 
     def getCommand(self, command_name):
         if command_name in self.commands:

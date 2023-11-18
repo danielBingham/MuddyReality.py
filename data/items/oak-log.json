@@ -1,0 +1,16 @@
+{
+    "name": "oak log",
+    "description": "a large log of oak",
+    "details": "A large log of oak, about 3 meters long and half a meter in diameter.",
+    "keywords": [ "wood", "log", "oak" ],
+    "length": 4,
+    "width": 0.5,
+    "height": 0.5,
+    "weight": 745,
+    "traits": {
+        "Material": {
+            "name": "oak log",
+            "types": [ "wood", "log", "oak" ]
+        }
+    }
+}
