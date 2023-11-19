@@ -9,22 +9,19 @@
     "weight": 6,
     "traits": {
         "Material": {
-            "name": "oak board",
             "types": [ "wood", "board", "oak" ]
         },
         "Craftable": {
             "requiredMaterials": [
                 {
-                    "types": [ "oak", "log" ],
-                    "bulk": 0.15,
-                    "weight": -1
+                    "type": "oak",
+                    "length": 2,
+                    "width": 0.15,
+                    "height": 0.03,
+                    "weight": 6
                 }
             ],
-            "requiredTools": [
-                {
-                    "types": [ "axe" ]
-                }
-            ]
+            "requiredTools": [ "axe" ]
         }
     }
 }

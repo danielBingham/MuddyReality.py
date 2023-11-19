@@ -2,7 +2,7 @@
     "name": "knapped chert axe",
     "description": "a knapped chert axe",
     "details": "This is a knapped chert axe.  The head has been painstakingly knapped to a rough edge. The edge is not very sharp, but with enough force it will cut wood. Against flesh, it would act more as a bludgeon or a scaper.  A rough half meter wood handle has been tied on to the stone using some sort of cordage.  It's not immediately clear what kind.",
-    "keywords": [ "knapped chert axe", "axe" , "chert" ],
+    "keywords": [ "axe" , "chert" ],
     "length": 0.5,
     "width": 0.15,
     "height": 0.05,
@@ -14,18 +14,30 @@
             "type": "chopping"
         },
         "Tool": {
-            "name": "knapped stone axe",
-            "types": [ "axe" ]
+            "type": "axe"
         },
         "Craftable": {
             "requiredMaterials": [
                 {
-                  "name":  "chert",
-                  "types": [ "chert" ],
+                  "type": "chert",
                   "length": 0.1,
                   "width": 0.2,
                   "height": 0.1,
                   "weight": 1
+                },
+                {
+                    "type": "stave",
+                    "length": 1,
+                    "width": 0.1,
+                    "height": 0.1,
+                    "weight": 1
+                },
+                {
+                    "type": "cordage",
+                    "length": 1,
+                    "width": 0.1,
+                    "height": 0.1,
+                    "weight": 1
                 }
             ],
             "requiredTools": [ "knapper" ]

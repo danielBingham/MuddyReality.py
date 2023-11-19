@@ -9,7 +9,6 @@
     "weight": 745,
     "traits": {
         "Material": {
-            "name": "oak log",
             "types": [ "wood", "log", "oak" ]
         }
     }

@@ -1,0 +1,27 @@
+{
+    "name": "oak stave",
+    "description": "an oak stave",
+    "details": "A cleaned oak stave, reasonably straight.",
+    "keywords": [ "wood", "stave", "oak" ],
+    "length": 2,
+    "width": 0.1,
+    "height": 0.1,
+    "weight": 2,
+    "traits": {
+        "Material": {
+            "types": [ "wood", "oak", "stave" ]
+        },
+        "Craftable": {
+            "requiredMaterials": [
+                {
+                    "type": "oak",
+                    "length": 2,
+                    "width": 0.1,
+                    "height": 0.1,
+                    "weight": 2
+                }
+            ],
+            "requiredTools": []
+        }
+    }
+}

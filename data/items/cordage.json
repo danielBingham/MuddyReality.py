@@ -1,0 +1,27 @@
+{
+    "name": "cordage",
+    "description": "a length of cordage",
+    "details": "This is a length of cordage, wound from some sort of fiberous plant material.",
+    "keywords": [ "cordage" ],
+    "length": 0.1,
+    "width": 0.1,
+    "height": 0.1,
+    "weight": 1,
+    "traits": {
+        "Material": {
+            "types": [ "cordage" ]
+        },
+        "Craftable": {
+            "requiredMaterials": [
+                {
+                    "type": "fiber",
+                    "length": 0.1,
+                    "width": 0.1,
+                    "height": 0.1,
+                    "weight": 0.1
+                }
+            ],
+            "requiredTools": []
+        }
+    }
+}

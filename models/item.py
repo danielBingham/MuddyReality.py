@@ -5,9 +5,6 @@ class Material(JsonSerializable):
     'A material that can be used for crafting.'
 
     def __init__(self):
-        # The name of the material that this item provides.
-        self.name = ''
-
         # An array of types this material fulfils 
         self.types = [] 
 
@@ -28,9 +25,6 @@ class Tool(JsonSerializable):
     'A tool that can be used for crafting.'
 
     def __init__(self):
-        # The name of the tool that this item provides.
-        self.name = ''
-
         # The an array of types this tool fulfills. 
         self.types = [] 
 
@@ -51,19 +45,11 @@ class RequiredMaterial(JsonSerializable):
     'A material requirement for crafting'
 
     def __init__(self):
-        # A name for this requirement.  Used as a key. Must be unique with in
-        # the set of requirements for a craftable.
-        self.name = ''
-
         # The types of material required.  All of the types listed must be
         # included by the material.  For example, if the requiredMartial types
         # are 'oak' and 'wood'.  Then a material must have both 'oak' and
         # 'wood' types to fulfill this requirement.
-        self.types = [] 
-
-        # If both weight and bulk are required, the user must have enough of
-        # the material to satisfy both requirements.  If only one is required
-        # they must meet only that requirement.
+        self.type = None 
 
         # The amount of the material required in weight (kilograms). 
         self.weight = 0 

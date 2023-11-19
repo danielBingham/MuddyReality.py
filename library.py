@@ -11,7 +11,7 @@ import game.commands.communication as communication
 import game.commands.information as information 
 import game.commands.movement as movement
 import game.commands.manipulation as manipulation
-#import game.commands.crafting as crafting
+import game.commands.crafting as crafting
 
 class ModelRepository:
     """Manages and provides access to a collection of models of type ``type``.
@@ -239,7 +239,7 @@ class Library:
         self.commands['equipment'] = information.Equipment(self)
         self.commands['inventory'] = information.Inventory(self)
         self.commands['wield'] = manipulation.Wield(self)
-        #self.commands['craft'] = crafting.Craft(self)
+        self.commands['craft'] = crafting.Craft(self)
 
     def getCommand(self, command_name):
         if command_name in self.commands:

@@ -1,0 +1,16 @@
+{
+    "id": 3,
+    "title": "A Rocky Beach",
+    "description": "A thin strip of rocky shoreline between a large body of water and dense, old growth forest.",
+    "exits": {
+        "north": {
+            "direction": "north",
+            "name": "A rocky beach.",
+            "description": "A rocky beach continues to the north.",
+            "room_to": 1,
+            "is_door": false,
+            "is_open": true
+        }
+    },
+    "items": [ "medium sized rock" ]
+}
