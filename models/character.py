@@ -31,16 +31,41 @@ class Abilities(JsonSerializable):
         return self
 
 class Reserves(JsonSerializable):
-    'Represents a characters reserves: their health, magic, and energy.'
+    'Represents a characters reserves: how well fed and well rested they are.'
 
     def __init__(self):
-        self.health = 0
-        self.mana = 0
-        self.vigor = 0
+        self.calories = 2400
+        self.sleep = 16 
 
     def toString(self):
-        return ("You have %d health, %d mana, and %d vigor." %
-            (self.health, self.mana, self.vigor))
+        hunger = 'well fed'
+        if self.calories > 1600:
+            hunger = 'well fed'
+        elif self.calories > 1200:
+            hunger = 'a little hungry'
+        elif self.calories > 800:
+            hunger = 'hungry'
+        elif self.calories > 400:
+            hunger = 'very hungry'
+        elif self.calories > 0:
+            hunger = 'extremely hungry'
+        elif self.calories == 0:
+            hunger = 'starving'
+
+        tired = 'well rested'
+        if self.sleep > 12:
+            tired = 'well rested'
+        elif self.sleep > 8:
+            tired = 'rested'
+        elif self.sleep > 4:
+            tired = 'a little tired'
+        elif self.sleep > 0:
+            tired = 'tired'
+        else:
+            tired = 'exhausted'
+
+        return ("You are %s and %s." %
+            (hunger, tired))
 
     def toJson(self):
         return self.__dict__
@@ -53,8 +78,16 @@ class Reserves(JsonSerializable):
 class Character(NamedModel):
     'Represents a single character in the game.'
 
-    def __init__(self, library):
-        super(Character, self).__init__(library)
+    POSITION_SPRINTING = 'sprinting'
+    POSITION_RUNNING = 'running'
+    POSITION_WALKING = 'walking'
+    POSITION_STANDING = 'standing'
+    POSITION_SITTING = 'sitting'
+    POSITION_LAYING_DOWN = 'laying down'
+    POSITION_SLEEPING = 'sleeping'
+
+    def __init__(self):
+        super(Character, self).__init__()
         
         self.account = None
         self.player = None
@@ -63,6 +96,8 @@ class Character(NamedModel):
        
         self.level = 1
         self.experience = 0
+
+        self.position = self.POSITION_STANDING
 
         self.abilities = Abilities()
         self.reserves = Reserves()
@@ -81,17 +116,6 @@ class Character(NamedModel):
             details += ("%s on %s\n" % (item, self.equipment[item].name))
         return details
 
-    def initialize(self):
-        self.reserves.health = int(self.abilities.constitution*1.5) \
-                + int(self.abilities.strength*0.5) 
-        self.reserves.mana = self.abilities.intelligence \
-            + int(self.abilities.wisdom * 0.75) \
-            + int(self.abilities.willpower * 0.5) \
-            + int(self.abilities.perception * 0.25) 
-        self.reserves.vigor = int(self.abilities.constitution * 4) \
-            + int(self.abilities.willpower * 3.5) \
-            + int(self.abilities.strength * 2.5) 
-
     def toJson(self):
         json = {}
 
@@ -99,6 +123,7 @@ class Character(NamedModel):
         json['title'] = self.title
 
         json['experience'] = self.experience
+        json['position'] = self.position
         
         json['abilities'] = self.abilities.toJson()
         json['reserves'] = self.reserves.toJson()
@@ -115,6 +140,7 @@ class Character(NamedModel):
         self.title = data['title']
 
         self.experience = data['experience']
+        self.position = data['position']
 
         self.abilities = Abilities()
         self.abilities.fromJson(data['abilities'])
@@ -124,7 +150,7 @@ class Character(NamedModel):
 
         # lazy migrations
         if 'room' in data:
-            self.room = self.library.rooms.getById(data['room'])
+            self.room = data['room']
 
         return self
 

@@ -82,7 +82,7 @@ class SetCharacterStats(State):
         return None
 
     def initializeCharacter(self):
-        self.player.character.initialize()
+        pass
 
     def resetCurrentStat(self):
         self.current_stat = ''

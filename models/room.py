@@ -10,8 +10,7 @@ from models.base import Model
 ###
 class Exit(JsonSerializable):
 
-    def __init__(self, room, library):
-        self.library = library
+    def __init__(self, room):
         self.room_from = room
 
         self.is_door = False
@@ -68,12 +67,6 @@ class Exit(JsonSerializable):
 
     def describe(self, player):
         return self.description
-
-    def connect(self):
-        self.room_to = self.library.rooms.getById(self.room_to)
-        if Room.INVERT_DIRECTION[self.direction] in self.room_to.exits:
-            self.exit_to = self.room_to.exits[Room.INVERT_DIRECTION[self.direction]]
-        return self
 
     def toJson(self):
         json = {}
@@ -133,8 +126,8 @@ class Room(Model):
     ###
     # Initialize the room.  
     ###
-    def __init__(self, library):
-        super(Room, self).__init__(library)
+    def __init__(self ):
+        super(Room, self).__init__()
 
         self.title = ''
         self.description = ''
@@ -144,19 +137,6 @@ class Room(Model):
         self.occupants = []
         self.items = []
 
-
-    ###
-    # Connect this rooms exits after they've been loaded.
-    #
-    # TECHDEBT: This method is techdebt.    Exit connections are loaded as ID numbers and converted
-    # to object links on load.  However, when rooms are first loaded, we have no guaranetee that the
-    # room the exit connects to has also been loaded.  It might not be in the library yet.  So we
-    # have to load all of the rooms initially with out converting any of the IDS to object links and
-    # then walk the room list to convert all the ids to object links.
-    ###
-    def connect(self):
-        for direction in self.exits:
-            self.exits[direction].connect()
 
     def isOccupant(self, argument):
         for occupant in self.occupants:
@@ -175,7 +155,7 @@ class Room(Model):
             if occupant != player.character:
                 output += occupant.name.title() + " is here.\n"
         for item in self.items:
-            output += item.name.capitalize() + " is laying here.\n"
+            output += item.description + " is laying here.\n"
         output += "Exits: "
         for exit in self.exits:
             if self.exits[exit].is_door:
@@ -216,11 +196,12 @@ class Room(Model):
         self.description = data['description']
 
         for direction in data['exits']:
-            self.exits[direction] = Exit(self, self.library)
+            self.exits[direction] = Exit(self)
             self.exits[direction].fromJson(data['exits'][direction])
 
-        for id in data['items']:
-            self.items.append(self.library.items.instance(id))
+        # Library will convert the list of ids into object references in
+        # Library::load
+        self.items = data['items']
 
         return self
 

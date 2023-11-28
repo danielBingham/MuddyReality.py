@@ -12,6 +12,8 @@ import game.commands.information as information
 import game.commands.movement as movement
 import game.commands.manipulation as manipulation
 import game.commands.crafting as crafting
+import game.commands.reserves as reserves
+import game.commands.system as system
 
 class ModelRepository:
     """Manages and provides access to a collection of models of type ``type``.
@@ -222,24 +224,42 @@ class Library:
         used commands above less used commands.
         """
 
-        self.commands['north'] = movement.North(self)
-        self.commands['east'] = movement.East(self)
-        self.commands['south'] = movement.South(self)
-        self.commands['west'] = movement.West(self)
-        self.commands['up'] = movement.Up(self)
-        self.commands['down'] = movement.Down(self)
-        self.commands['open'] = manipulation.Open(self)
         self.commands['close'] = manipulation.Close(self)
-        self.commands['look'] = information.Look(self)
-        self.commands['examine'] = information.Examine(self)
-        self.commands['say'] = communication.Say(self)
-        self.commands['report'] = information.Report(self)
-        self.commands['get'] = manipulation.Get(self)
-        self.commands['drop'] = manipulation.Drop(self)
-        self.commands['equipment'] = information.Equipment(self)
-        self.commands['inventory'] = information.Inventory(self)
-        self.commands['wield'] = manipulation.Wield(self)
         self.commands['craft'] = crafting.Craft(self)
+
+        self.commands['down'] = movement.Down(self)
+        self.commands['drop'] = manipulation.Drop(self)
+
+        self.commands['east'] = movement.East(self)
+        self.commands['eat'] = reserves.Eat(self)
+        self.commands['equipment'] = information.Equipment(self)
+        self.commands['examine'] = information.Examine(self)
+
+        self.commands['get'] = manipulation.Get(self)
+
+        self.commands['harvest'] = crafting.Harvest(self)
+        self.commands['help'] = system.Help(self)
+
+        self.commands['inventory'] = information.Inventory(self)
+
+        self.commands['look'] = information.Look(self)
+
+        self.commands['north'] = movement.North(self)
+
+        self.commands['open'] = manipulation.Open(self)
+
+        self.commands['quit'] = system.Quit(self)
+
+        self.commands['report'] = information.Report(self)
+
+        self.commands['south'] = movement.South(self)
+        self.commands['say'] = communication.Say(self)
+        self.commands['sleep'] = reserves.Sleep(self)
+
+        self.commands['west'] = movement.West(self)
+        self.commands['wield'] = manipulation.Wield(self)
+
+        self.commands['up'] = movement.Up(self)
 
     def getCommand(self, command_name):
         if command_name in self.commands:
@@ -259,10 +279,10 @@ class Library:
         print("Loading the game library.")
 
         print("Loading items...")
-        item_list = glob.glob(Item.getBasePath() + '*.json')
+        item_list = glob.glob(Item.getBasePath() + '/**/*.json', recursive=True)
         for file_path in item_list:
             print("Loading item " + file_path + "...")
-            item = Item(self)
+            item = Item()
             item.load(file_path)
             self.items.add(item)
 
@@ -270,7 +290,7 @@ class Library:
         room_list = glob.glob(Room.getBasePath() + '*.json') 
         for file_path in room_list:
             print("Loading room " + file_path + "...")
-            room = Room(self)
+            room = Room()
             room.load(file_path)
             self.rooms.add(room)
 
@@ -282,23 +302,47 @@ class Library:
         # We can only run this once we've fully loaded all of the saved rooms
         # into the repository.  Otherwise, the room referenced by an exit may
         # not exist yet.
-        print("Connecting rooms...")
+        print("Connecting rooms and loading items into rooms...")
         for id in self.rooms.repo:
-            self.rooms.getById(id).connect()
+            room = self.rooms.getById(id)
+            
+            print("Connecting exits for Room(" + str(id) + ") '" + room.title + "'...")
+            for direction in room.exits:
+                exit = room.exits[direction]
+                exit.room_to = self.rooms.getById(exit.room_to)
+                if Room.INVERT_DIRECTION[exit.direction] in exit.room_to.exits:
+                    exit.exit_to = exit.room_to.exits[Room.INVERT_DIRECTION[exit.direction]]
+
+            print("Loading items into Room(" + str(id) + ") '" + room.title + "'...")
+            items = room.items
+            room.items = []
+            for id in items:
+                room.items.append(self.items.instance(id))
 
         print("Loading characters...")
         character_list = glob.glob(Character.getBasePath() + '*.json')
         for file_path in character_list:
             print("Loading character " + file_path + "...")
-            character = Character(self)
+            character = Character()
             character.load(file_path)
+            if character.room:
+                  character.room = self.rooms.getById(character.room)
             self.characters.add(character)
 
         print("Loading accounts...")
         account_list = glob.glob(Account.getBasePath() + '*.json') 
         for file_path in account_list:
             print("Loading account " + file_path + "...")
-            account = Account(self)
+            account = Account()
             account.load(file_path)
+            
+            characters = account.characters
+            account.characters = {} 
+            for name in characters:
+                  account.characters[name] = self.characters.getById(name)
+                  account.characters[name].account = account
+
             self.accounts.add(account)
+
+
 

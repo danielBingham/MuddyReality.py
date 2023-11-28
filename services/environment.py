@@ -1,16 +1,15 @@
-def findItemInRoom(player, keywords):
-    'Find an item in the players current room given a set of keyword'
+def findItemInRoom(character, keywords):
+    "Find an item in the character's current room given a set of keywords."
 
-    for item in player.character.room.items:
+    for item in character.room.items:
         for key in item.keywords:
             if key.startswith(keywords):
                 return item
     return None
 
-def writeToRoom(player, text):
-    """Write a message to all occupants sharing the player's room, excluding player.
-    """
+def writeToRoom(character, text):
+    "Write a message to all occupants with players sharing the character's room, excluding character."
 
-    for occupant in player.character.room.occupants:
-        if occupant.player and occupant.player != player:
+    for occupant in character.room.occupants:
+        if occupant != character and occupant.player and occupant.position != occupant.POSITION_SLEEPING: 
             occupant.player.write(text)

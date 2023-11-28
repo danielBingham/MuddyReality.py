@@ -1,0 +1,12 @@
+{
+    "name": "young european oak tree",
+    "description": "a young tree with greyish-brown, closely grooved bark and oblong, lobed leaves",
+    "details": "A young tree with a small, speading canopy. Its bark is greyish brown, closely groved with vertical plates.  Its leaves are a deep, dark green on top and paler underneath. They are arranged alternately along the twigs, and are broadly oblong with three to six lobes.",
+    "keywords": [ "young tree", "tree", "greyish-brown closely grooved bark", "closely grooved bark", "grooved bark", "oblong lobed leaves", "lobed leaves", "european oak tree", "oak tree" ],
+    "length": 10,
+    "width": 10,
+    "height": 10,
+    "weight": 4162,
+    "can_pick_up": false,
+    "traits": { }
+}

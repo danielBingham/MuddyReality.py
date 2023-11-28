@@ -1,0 +1,23 @@
+{
+    "name": "sea kale plant",
+    "description": "a sea kale plant",
+    "details": "A mounding plant with deep blue-green, fleshy leaves and white flowers.",
+    "keywords": [ "kale", "sea", "plant" ],
+    "length": 0.6,
+    "width": 0.6,
+    "height": 0.75,
+    "weight": 0.5, 
+    "can_pick_up": true,
+    "traits": {
+        "Harvestable": {
+            "products": [
+                {
+                    "product": "bunch of sea kale leaves",
+                    "amount": 5
+                }
+            ],
+            "action": "pick",
+            "required_tools": []
+        }
+    }
+}

@@ -1,0 +1,27 @@
+{
+    "name": "ancient european oak tree",
+    "description": "a huge, ancient tree with greyish-brown, closely grooved bark and oblong, lobed leaves",
+    "details": "A huge, ancient tree standing tall into the sky with a wide spreading canopy. Its bark is greyish brown, closely groved with vertical plates.  Its leaves are a deep, dark green on top and paler underneath. They are arranged alternately along the twigs, and are broadly oblong with three to six lobes. There are large burrs on the truck, from which many small shoots grow.",
+    "keywords": [ "huge ancient tree", "ancient tree", "tree", "greyish-brown closely grooved bark", "closely grooved bark", "grooved bark", "oblong lobed leaves", "lobed leaves", "oak tree" ],
+    "length": 45,
+    "width": 45,
+    "height": 40,
+    "weight": 4356000,
+    "can_pick_up": false,
+    "traits": {
+        "Harvestable": {
+            "products": [
+                {
+                    "product": "large oak log",
+                    "amount": 2 
+                },
+                {
+                    "product": "oak limb",
+                    "amount": 15
+                }
+            ],
+            "action": "fell",
+            "required_tools": [ "axe" ]
+        }
+    }
+}

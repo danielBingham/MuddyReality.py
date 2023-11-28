@@ -3,6 +3,9 @@ class Command:
 
     def __init__(self, library):
         self.library = library 
+    
+    def describe(self):
+        pass
 
     def help(self):
         pass

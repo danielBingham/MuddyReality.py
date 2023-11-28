@@ -1,6 +1,83 @@
 from models.base import JsonSerializable
 from models.base import Model
 
+class HarvestProduct(JsonSerializable):
+    'A product from an item that can be harvested.'
+
+    def __init__(self):
+        self.product = None
+        self.amount = 0
+
+    def toPrototypeJson(self):
+        return self.toJson()
+    
+    def fromPrototypeJson(self, data):
+        return self.fromJson(data)
+
+    def toJson(self):
+        return self.__dict__
+
+    def fromJson(self, data):
+        self.__dict__ = data
+        return self
+
+class Harvestable(JsonSerializable):
+    'An item that can be harvested.'
+
+    def __init__(self):
+        self.products = []
+        self.action = 'harvest'
+        self.required_tools = []
+
+    def toPrototypeJson(self):
+        return self.toJson()
+    
+    def fromPrototypeJson(self, data):
+        return self.fromJson(data)
+
+    def toJson(self):
+        json = {}
+
+        json['products'] = []
+        for product in self.products:
+            json['products'].append(product.toJson())
+
+        json['action'] = self.action
+        json['required_tools'] = self.required_tools
+
+        return json
+
+    def fromJson(self, data):
+
+        self.action = data['action']
+        self.required_tools = data['required_tools']
+
+        for product_json in data['products']:
+            product = HarvestProduct()
+            product.fromJson(product_json)
+            self.products.append(product)
+
+        return self
+
+class Food(JsonSerializable):
+    'A food that can be eaten for calories.'
+
+    def __init__(self):
+        self.calories = 0
+
+    def toPrototypeJson(self):
+        return self.toJson()
+    
+    def fromPrototypeJson(self, data):
+        return self.fromJson(data)
+
+    def toJson(self):
+        return self.__dict__
+
+    def fromJson(self, data):
+        self.__dict__ = data
+        return self
+
 class Material(JsonSerializable):
     'A material that can be used for crafting.'
 
@@ -246,8 +323,8 @@ class Container(JsonSerializable):
 class Item(Model):
     'Represents an item in a game.'
 
-    def __init__(self, library):
-        super(Item, self).__init__(library)
+    def __init__(self):
+        super(Item, self).__init__()
 
         # The name of the item, displayed as the short name in lists.
         # Also serves as the item's identifier - so must be universally unique.
@@ -269,6 +346,9 @@ class Item(Model):
         # How heavy the item is in kilograms.
         self.weight = 0
 
+        # Can you pick up this item and carry it around?
+        self.can_pick_up = True
+
         # The traits of this item.  Various traits may be composed on to each
         # items to give it a variety of uses and features.
         self.traits = {} 
@@ -288,7 +368,8 @@ class Item(Model):
         json['width'] = self.width
         json['height'] = self.height
         json['weight'] = self.weight
-
+        
+        json['can_pick_up'] = self.can_pick_up
 
         json['traits'] = {}
         for trait in self.traits:
@@ -307,6 +388,9 @@ class Item(Model):
         self.width = data['width']
         self.height = data['height']
         self.width = data['weight']
+
+        if "can_pick_up" in data:
+            self.can_pick_up = data['can_pick_up']
         
         for trait in data['traits']:
             classRef = globals()[trait]

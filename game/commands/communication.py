@@ -2,6 +2,16 @@ from interpreter.command import Command
 
 class Say(Command):
     'Say something to the room.'
+    
+    def describe(self):
+        return "say - say something to everyone in the vicinity"
+
+    def help(self):
+        return """
+say [text]
+
+Your character will say `[text]` outloud so that everyone in the vicinity (your current room) can hear it.
+        """
 
     def execute(self, player, arguments):
         for occupant in player.character.room.occupants: 

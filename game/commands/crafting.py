@@ -5,13 +5,17 @@ import services.environment as environment
 class Craft(Command):
     'Create a new item from materials in inventory or room.'
 
-    def execute(self, player, arguments):
-        """
-            > craft <item> with <material>, <material>, ...
-        
-            Craft <item> from the listed materials, if possible.  
+    def describe(self):
+        return "craft - create new items from a set of materials"
+
+    def help(self):
+        return """
+craft [target] with [op:tool], [op:material], [op:material], [op:etc...]
+
+Attempt to craft a material or tool with materials or tools.  If the [target] can be crafted with the listed [materials] and [tools] and  all materials and tools are in the character's inventory, then a new [target] will be created.  Materials will be used up to create the [target], but tools will remain in the character's inventory.
         """
 
+    def execute(self, player, arguments):
         if not arguments:
             player.write("You can't craft nothing!")
             return
@@ -19,15 +23,22 @@ class Craft(Command):
         # Split the arguments on white space.
         splitArguments = arguments.split('with')
 
+        if len(splitArguments) != 2:
+            player.write("What do you want to craft with?")
+            return
+
         # Keywords describing the item to be crafted
-        craftKeywords = splitArguments[0]
+        craftKeywords = splitArguments[0].strip()
+
+        print(craftKeywords)
 
         # Keywords describing the materials to craft the item.
         materialKeywords = splitArguments[1].split(',')
+        materialKeywords[:] = [keyword.strip() for keyword in materialKeywords]
 
         materials = []
         for keyword in materialKeywords:
-            material = equipment.findItemInInventory(player, keyword)
+            material = equipment.findItemInInventory(player.character, keyword)
             if material:
                 materials.append(material)
             else:
@@ -35,6 +46,10 @@ class Craft(Command):
 
         # Get the craft target assuming the keyword is the whole name.
         craftTarget = self.library.items.getById(craftKeywords)
+
+        if not craftTarget:
+            player.write(craftKeywords + " is not something you can craft.")
+            return
       
         # Determine whether we have the materials necessary to craft the target.
         matchedMaterials = [] 
@@ -79,11 +94,56 @@ class Craft(Command):
 
         # Success message.
         player.write("You craft " + crafted.name)
-        environment.writeToRoom(player, player.character.name + " crafts " + crafted.name)
+        environment.writeToRoom(player.character, player.character.title + " crafts " + crafted.name)
 
+class Harvest(Command):
+    'Harvest materials.'
 
+    def describe(self):
+        return "harvest - harvest materials"
 
+    def help(self):
+        return """
+harvest [target]
 
+Harvest materials from an object in your environment.  The object can be either in your inventory or in the room your character currently occupies.
+        """
 
+    def execute(self, player, arguments):
+        if not arguments:
+            player.write("Harvest what?")
+            return
+        
+        item = equipment.findItemInInventory(player.character, arguments)
+        inventory = True
+        if not item:
+            item = environment.findItemInRoom(player.character, arguments)
+            inventory = False
+
+        if not item:
+            player.write("You can't find a " + arguments + " to harvest.")
+            return
+
+        if "Harvestable" not in item.traits:
+            player.write("You can't harvest " + item.description)
+            return
+
+        results = ""
+        for product in item.traits["Harvestable"].products:
+            if len(results) > 0:
+                results += ", "
+            results += str(product.amount) + " " + product.product
+           
+            for instance in range(0, product.amount): 
+                productItem = self.library.items.instance(product.product)
+                player.character.inventory.append(productItem)
+
+        if inventory:
+            player.character.inventory.remove(item)
+        else:
+            player.character.room.items.remove(item)
+
+        player.write("You " + item.traits["Harvestable"].action + results + " from " + item.description + ".")
+        environment.writeToRoom(player.character, player.character.name + " " + item.traits["Harvestable"].action + " from " + item.description + ".")
 
 

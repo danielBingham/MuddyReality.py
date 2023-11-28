@@ -2,6 +2,16 @@ from interpreter.command import Command
 
 class Report(Command):
     'Get information about your character.'
+
+    def describe(self):
+        return "report - get information about your character"
+
+    def help(self):
+        return """
+report
+
+Get detailed information about your character.
+        """
     
     def execute(self, player, arguments):
         character = player.character
@@ -22,6 +32,16 @@ class Look(Command):
         'down'
     ]
 
+    def describe(self):
+        return "look - look around your environment"
+
+    def help(self):
+        return """
+look [op:direction]
+
+Look around.  If [direction] is excluded, then you will look at your current room.  If [direction] is included, you will look in that direction.
+        """
+
     def execute(self, player, arguments):
         if arguments and arguments in self.DIRECTIONS:
             if arguments in player.character.room.exits:
@@ -33,6 +53,16 @@ class Look(Command):
 
 class Examine(Command):
     'Get detailed information about a room, or object.'
+
+    def describe(self):
+        return "examine - get detailed information about a room or object"
+
+    def help(self):
+        return """
+examine [op:object]
+
+Get detailed information about a room or object.  If [object] is excluded, the room will be described.  Otherwise [object] will be examined.
+        """
 
     def execute(self, player, arguments):
         if not arguments:
@@ -63,25 +93,45 @@ class Examine(Command):
         player.write("There doesn't seem to be a " + arguments + " to examine.")
 
 class Inventory(Command):
-    'List the items in a character\'s inventory.'
+    "List the items in a character's inventory."
+
+    def describe(self):
+        return "inventory - list your current inventory"
+
+    def help(self):
+        return """
+inventory
+
+List the current contents of your inventory.
+        """
 
     def execute(self, player, arguments):
         player.write("You are carrying:\n")
         if player.character.inventory:
-            for object in player.character.inventory:
-                player.write(object.name)
+            for item in player.character.inventory:
+                player.write(item.description)
         else:
             player.write("Nothing.")
 
 class Equipment(Command):
     'List the items the character currently has equipped.'
 
+    def describe(self):
+        return "equipment - list current equipment"
+
+    def help(self):
+        return """
+equipment
+
+List the equipment you are currently wearing, carrying, and wielding.
+        """
+
     def execute(self, player, arguments):
         equipment = player.character.equipment
         player.write("You are wearing: ")
         if ( equipment ):
             for location in equipment:
-                player.write("%s on your %s" % (equipment[location].name, location))
+                player.write("%s on your %s" % (equipment[location].description, location))
         else:
             player.write("Nothing.")
 

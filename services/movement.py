@@ -1,19 +1,19 @@
+import services.environment as environment
+
 def enter(character, room, direction=''):
-    for occupant in room.occupants:
-        if occupant.player:
-            if direction:
-                occupant.player.write(character.name.title() + " enters from the " + room.INVERT_DIRECTION[direction] + ".")
-            else:
-                occupant.player.write(character.name.title() + " enters.")
     room.occupants.append(character)
     character.room = room
+
+    if direction:
+        environment.writeToRoom(character, character.name.title() + " enters from the " + room.INVERT_DIRECTION[direction] + ".")
+    else:
+        environment.writeToRoom(character, character.name.title() + " enters.")
 
 def leave(character, room, direction=''):
     room.occupants.remove(character)
     character.room = None
-    for occupant in room.occupants:
-        if occupant.player:
-            if direction:
-                occupant.player.write(character.name.title() + " leaves to the " + direction + ".")
-            else:
-                occupant.player.write(character.name.title() + " leaves.")
+
+    if direction:
+        environment.writeToRoom(character, character.name.title() + " leaves to the " + direction + ".")
+    else:
+        environment.writeToRoom(character, character.name.title() + " leaves.")

@@ -7,8 +7,8 @@ from models.character import Character
 class Account(NamedModel):
     'Represents the account of a player, organizing their characters.'
 
-    def __init__(self, library):
-        super(Account, self).__init__(library)
+    def __init__(self):
+        super(Account, self).__init__()
 
         self.password_hash = ''
 
@@ -44,9 +44,9 @@ class Account(NamedModel):
         
         self.password_hash = data['password_hash'].encode('utf-8')
 
-        for name in data['characters']:
-            self.characters[name] = self.library.characters.getById(name)
-            self.characters[name].account = self
+        # Library will convert the list of names to actual object references in
+        # Library::load
+        self.characters = data['characters']
 
         return self
 
