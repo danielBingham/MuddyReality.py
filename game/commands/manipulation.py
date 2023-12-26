@@ -1,6 +1,6 @@
-from interpreter.command import Command
-import services.environment as environment
-import services.equipment as equipment
+from game.interpreters.command import Command
+import game.library.environment as environment
+import game.library.equipment as equipment
 
 class Open(Command):
     'Open a door or an item'

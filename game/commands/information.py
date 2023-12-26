@@ -1,4 +1,4 @@
-from interpreter.command import Command
+from game.interpreters.command import Command
 
 class Report(Command):
     'Get information about your character.'
@@ -45,7 +45,7 @@ Look around.  If [direction] is excluded, then you will look at your current roo
     def execute(self, player, arguments):
         if arguments and arguments in self.DIRECTIONS:
             if arguments in player.character.room.exits:
-                player.write(player.character.room.exits[arguments].describe(player))
+                player.write(player.character.room.exits[arguments].room_to.describe(player))
             else:
                 player.write("Nothing there.")
         else:

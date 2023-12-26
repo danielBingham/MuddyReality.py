@@ -1,0 +1,32 @@
+{
+    "id": 4,
+    "title": "A Rocky Beach",
+    "description": "A thin strip of rocky shoreline between a large body of water and dense, old growth forest.",
+    "exits": {
+        "north": {
+            "direction": "north",
+            "name": "A rocky beach.",
+            "description": "A rocky beach continues to the north.",
+            "room_to": 1,
+            "is_door": false,
+            "is_open": true
+        },
+        "east": {
+            "direction": "east",
+            "name": "An old growth forest.",
+            "description": "A dark, dense old-growth forest.",
+            "room_to": 5,
+            "is_door": false,
+            "is_open": true
+        },
+        "south": {
+            "direction": "south",
+            "name": "A rocky beach.",
+            "description": "A rocky beach continues to the north.",
+            "room_to": 7,
+            "is_door": false,
+            "is_open": true
+        }
+    },
+    "items": [ "medium sized rock", "medium sized rock", "sea kale plant" ]
+}

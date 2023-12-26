@@ -1,10 +1,12 @@
-import sys, traceback, time, random
+#!/usr/bin/python3
 
-from sockets.server import ServerSocket 
-from library import Library
-from player import Player
-from interpreter.state import StateInterpreter
-from account.welcome import WelcomeScreen 
+import sys, traceback, time, random, argparse
+
+from game.sockets.server import ServerSocket 
+from game.library.library import Library
+from game.library.player import Player
+from game.interpreters.state import StateInterpreter
+from game.account_menu.welcome import WelcomeScreen 
 
 HOST = ''
 PORT = 3000 
@@ -19,14 +21,10 @@ def heartbeat(library, loop_counter, loops_a_second):
 
     # Do hunger calculations once a game minute.
     if loop_counter % loops_a_game_minute == 0:
-        for name in library.characters.repo:
-            character = library.characters.getById(name)
-
-            # Only do calculations for characters actively in the game.
-            if not character.player:
+        for player in library.players:
+            if not player.character:
                 continue
-
-            character.reserves.calories -= 2
+            player.character.reserves.calories -= 2
 
     # Do tired calculations once a game hour. 
     #
@@ -43,13 +41,11 @@ def heartbeat(library, loop_counter, loops_a_second):
     # rested (16+248 = 264), the record number of hours any human has remained
     # awake.
     if loop_counter % loops_a_game_hour == 0:
-        for name in library.characters.repo:
-            character = library.characters.getById(name)
-            
-            # Only do tiredness calculations for characters actively being
-            # played.
-            if not character.player:
+        for player in library.players:
+            if not player.character:
                 continue
+
+            character = player.character
 
             # If they're awake, then get more tired.
             if character.position != character.POSITION_SLEEPING:
@@ -65,8 +61,7 @@ def heartbeat(library, loop_counter, loops_a_second):
                 chance = random.randint(0,248)
                 if abs(character.reserves.sleep) < chance:
                     character.position = character.POSITION_SLEEPING
-                    if character.player:
-                        character.player.write("You can't stay awake anymore.  You fall asleep.")
+                    character.player.write("You can't stay awake anymore.  You fall asleep.")
  
 
 def gameLoop(serverSocket, library):
@@ -124,10 +119,18 @@ def gameLoop(serverSocket, library):
 
 
 def main():
+    parser = argparse.ArgumentParser(
+                    prog='main',
+                    description='Run the Muddy Reality Server.')
+
+    parser.add_argument('--world', default='base', help='The name of the world we want to run the server for.') 
+
+    arguments = parser.parse_args()
+
     random.seed()
 
     serverSocket = ServerSocket(HOST, PORT)
-    library = Library()
+    library = Library(arguments.world)
     library.load()
 
     print('Starting up the server on port ' + repr(PORT))

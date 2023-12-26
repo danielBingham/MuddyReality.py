@@ -1,7 +1,7 @@
-from models.character import Character
-from interpreter.command import Command
-import services.equipment as equipment
-import services.environment as environment
+from game.library.models.character import Character
+from game.interpreters.command import Command
+import game.library.equipment as equipment
+import game.library.environment as environment
 
 class Eat(Command):
     'Get a food item from the inventory.'

@@ -1,0 +1,21 @@
+{
+    "name": "ocean",
+    "titles": [ "Deep Ocean", "Ocean" ],
+    "descriptions": [ "Out on the deep ocean." ],
+    "trees": [],
+    "treeDensity": 0.0,
+    "shrubs": [],
+    "shrubDensity": 0.0,
+    "herbs": [],
+    "herbDensity": 1.0,
+    "debris": [],
+    "debrisDensity": 0.25, 
+    "water": "salt-water",
+    "waterDepth": 100,
+    "succession": null,
+    "successionTime": 0,
+    "disruptions": []
+}
+
+
+

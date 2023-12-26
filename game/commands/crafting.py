@@ -1,6 +1,6 @@
-from interpreter.command import Command
-import services.equipment as equipment
-import services.environment as environment
+from game.interpreters.command import Command
+import game.library.equipment as equipment
+import game.library.environment as environment
 
 class Craft(Command):
     'Create a new item from materials in inventory or room.'
@@ -29,8 +29,6 @@ Attempt to craft a material or tool with materials or tools.  If the [target] ca
 
         # Keywords describing the item to be crafted
         craftKeywords = splitArguments[0].strip()
-
-        print(craftKeywords)
 
         # Keywords describing the materials to craft the item.
         materialKeywords = splitArguments[1].split(',')

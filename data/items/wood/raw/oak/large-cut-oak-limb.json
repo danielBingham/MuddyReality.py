@@ -18,7 +18,9 @@
                     "product": "oak log",
                     "amount": 2
                 }
-            ]
+            ],
+            "action": "cut",
+            "required_tools": [ "axe" ]
         }
     }
 }

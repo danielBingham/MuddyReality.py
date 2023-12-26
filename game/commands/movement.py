@@ -1,5 +1,5 @@
-from interpreter.command import Command
-import services.movement as movement 
+from game.interpreters.command import Command
+import game.library.movement as movement 
 
 def move(direction, player, arguments):
 
@@ -15,7 +15,7 @@ def move(direction, player, arguments):
         player.write("You go " + direction + ".")
         movement.leave(player.character, player.character.room, direction=direction)
         movement.enter(player.character, room.exits[direction].room_to, direction=direction)
-        player.character.reserves.calories -= 2
+        player.character.reserves.calories -= 4
         player.write("\n" + player.character.room.describe(player), wrap=False)
     else:
         player.write("You can't got that way.")

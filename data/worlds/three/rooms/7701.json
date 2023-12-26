@@ -1,0 +1,1 @@
+{"id": 7701, "title": "Ocean", "description": "Out on the deep ocean.", "exits": {"west": {"is_door": false, "is_open": true, "direction": "west", "room_to": 7601}, "east": {"is_door": false, "is_open": true, "direction": "east", "room_to": 7801}, "south": {"is_door": false, "is_open": true, "direction": "south", "room_to": 7702}}, "items": []}

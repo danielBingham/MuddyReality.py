@@ -1,0 +1,32 @@
+{
+    "id": 8,
+    "title": "Old Growth Forest",
+    "description": "This is a patch of old growth forest.  Several towering trees stand, spaced well apart.  The ground is covered by rotting debris and fallen branches.",
+    "exits": {
+        "north": {
+            "direction": "north",
+            "name": "old growth forest",
+            "description": "A dark, dense old-growth forest.",
+            "room_to": 5,
+            "is_door": false,
+            "is_open": true
+        },
+        "east": {
+            "direction": "east",
+            "name": "old growth forest",
+            "description": "A dark, dense old-growth forest.",
+            "room_to": 9,
+            "is_door": false,
+            "is_open": true
+        },
+        "west": {
+            "direction": "west",
+            "name": "rocky beach",
+            "description": "A rocky beach.",
+            "room_to": 7,
+            "is_door": false,
+            "is_open": true
+        }
+    },
+    "items": [ ]
+}

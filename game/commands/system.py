@@ -1,7 +1,7 @@
-from interpreter.command import Command
-from interpreter.state import StateInterpreter
-from account.menu import AccountMenu
-import services.environment as environment
+from game.interpreters.command import Command
+from game.interpreters.state import StateInterpreter
+from game.account_menu.menu import AccountMenu
+import game.library.environment as environment
 
 class Quit(Command):
     'Leave the game.'

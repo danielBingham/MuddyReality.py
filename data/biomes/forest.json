@@ -1,0 +1,27 @@
+{
+    "name": "forest",
+    "titles": [ "Dense Forest", "Forest" ],
+    "descriptions": [ "A dense forest." ],
+    "trees": [ "ancient european oak tree", "european oak sapling", "european oak tree", "mature european oak tree", "young european oak tree" ],
+    "treeDensity": 0.5,
+    "shrubs": [],
+    "shrubDensity": 0.0,
+    "herbs": [],
+    "herbDensity": 1.0,
+    "debris": [],
+    "debrisDensity": 0.25, 
+    "water": "no-water",
+    "waterDepth": 0,
+    "succession": null,
+    "successionTime": 0,
+    "disruptions": [
+        { 
+            "name": "fire",
+            "chance": 10,
+            "biome": "meadow"
+        }
+    ]
+}
+
+
+

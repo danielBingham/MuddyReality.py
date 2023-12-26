@@ -1,0 +1,21 @@
+{
+    "name": "beach",
+    "titles": [ "Rocky Beach", "Beach" ],
+    "descriptions": [ "A rocky beach." ],
+    "trees": [],
+    "treeDensity": 0.0,
+    "shrubs": [],
+    "shrubDensity": 0.0,
+    "herbs": [],
+    "herbDensity": 1.0,
+    "debris": [],
+    "debrisDensity": 0.25, 
+    "water": "no-water",
+    "waterDepth": 0,
+    "succession": null,
+    "successionTime": 0,
+    "disruptions": []
+}
+
+
+

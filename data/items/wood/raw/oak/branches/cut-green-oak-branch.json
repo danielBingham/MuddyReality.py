@@ -1,0 +1,15 @@
+{
+    "name": "STUB cut green oak branch",
+    "description": "a cut, dry greyish-brown branch",
+    "details": "A cut branch with greyish-brown bark, hairless twigs, and pointed, brownish buds.  It lacks leaves, having been dead long enough that they've browned and fallen off.",
+    "keywords": [ "cut dry greyish-brown branch", "dry greyish-brown branch", "greyish-brown branch", "branch", "wood", "oak" ],
+    "length": 2,
+    "width": 0.1,
+    "height": 0.1,
+    "weight": 18,
+    "traits": {
+        "Material": {
+            "types": [ "dry-wood", "wood", "oak" ]
+        }
+    }
+}

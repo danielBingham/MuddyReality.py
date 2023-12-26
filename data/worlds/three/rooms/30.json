@@ -1,0 +1,1 @@
+{"id": 30, "title": "Rocky Beach", "description": "A rocky beach.", "exits": {"north": {"is_door": false, "is_open": true, "direction": "north", "room_to": 29}, "east": {"is_door": false, "is_open": true, "direction": "east", "room_to": 130}, "south": {"is_door": false, "is_open": true, "direction": "south", "room_to": 31}}, "items": []}
