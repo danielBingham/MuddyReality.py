@@ -1,4 +1,5 @@
 *.pyc
 data/accounts/*
 data/characters/*
+data/worlds/*
 *.swp
