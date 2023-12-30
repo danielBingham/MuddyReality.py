@@ -1,13 +1,19 @@
 import os
 import json
+import numpy as np
 
 class World:
 
-    def __init__(self, name, width):
+    def __init__(self, name, width, room_width):
         self.name = name
         self.width = width
+        self.room_width = room_width
 
-        self.terrain = []
+        self.initial_water = 0
+
+        self.terrain = np.empty([1,1]) 
+        self.heights = []
+        self.water = np.empty([1,1]) 
         self.biomes = []
         self.rooms = []
 
@@ -16,8 +22,13 @@ class World:
 
         json['name'] = self.name
         json['width'] = self.width
+        json['roomWidth'] = self.room_width
+        json['initialWater'] = self.initial_water
 
-        json['terrain'] = self.terrain
+
+        json['terrain'] = self.terrain.tolist()
+        json['heights'] = self.heights
+        json['water'] = self.water.tolist()
         json['biomes'] = self.biomes
         json['rooms'] = self.rooms
 
@@ -26,8 +37,12 @@ class World:
     def fromJson(self, json):
         self.name = json['name']
         self.width = json['width']
+        self.room_width = json['roomWidth']
+        self.initial_water = json['initialWater']
 
-        self.terrain = json['terrain']
+        self.terrain = np.array(json['terrain'])
+        self.heights = json['heights']
+        self.water = np.array(json['water'])
         self.biomes = json['biomes']
         self.rooms = json['rooms']
 

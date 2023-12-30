@@ -1,0 +1,24 @@
+{
+    "name": "burned-arid-plain",
+    "color": [ 100, 100, 90 ],
+    "titles": [ "Burned Arid Plain", "Burned Dry Plain" ],
+    "descriptions": {
+        "initial": [ "A burned, dry plain." ],
+        "flavor": [ "The ground is black, charred, and covered by piles of ashes.", "The soil beneath the ash is rocky and rough.", "The ground is uneven.", "Here and there, hardy poineer plants and grasses poke up through the ash and char." ]
+    },
+    "trees": [],
+    "treeDensity": 0.0,
+    "shrubs": [],
+    "shrubDensity": 0.0,
+    "herbs": [],
+    "herbDensity": 0.2,
+    "debris": [],
+    "debrisDensity": 0.25, 
+    "water": "no-water",
+    "succession": "arid-short-grass-plain",
+    "successionTime": 5,
+    "disruptions": {} 
+}
+
+
+

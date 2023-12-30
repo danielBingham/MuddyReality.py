@@ -1,0 +1,32 @@
+{
+    "name": "river",
+    "color": [ 30, 100, 200 ],
+    "titles": [ 
+        "River", 
+        "Flowing River" 
+    ],
+    "descriptions": {
+        "initial": [ "A wide, shallow river." ],
+        "flavor": [ 
+            "The river carves a path through the land.",
+            "The water flows steadily down slope.",
+            "The river is shallow enough to be easily forded."
+        ]
+    },
+    "trees": [],
+    "treeDensity": 0.0,
+    "shrubs": [],
+    "shrubDensity": 0.0,
+    "herbs": [],
+    "herbDensity": 0.0,
+    "debris": [],
+    "debrisDensity": 0.25, 
+    "water": "fresh-water",
+    "succession": null,
+    "successionTime": 0,
+    "disruptions": {} 
+}
+
+
+
+

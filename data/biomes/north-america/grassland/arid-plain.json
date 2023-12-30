@@ -1,0 +1,39 @@
+{
+    "name": "arid-plain",
+    "color": [ 160,160,100],
+    "titles": [ 
+        "Arid Plain", 
+        "Dry Plain" 
+    ],
+    "descriptions": {
+        "initial": [ "A dry plain of mixed, mid-height grasses." ],
+        "flavor": [ 
+            "A variety of grasses compete for space here.", 
+            "The grasses vary in height from short to mid-height, around a meter and a half tall.", 
+            "Wilflowers and forbs compete for space in among the grasses.", 
+            "The soil is almost completely covered, but where it is exposed it is dry and sandy." 
+        ]
+    },
+    "trees": [],
+    "treeDensity": 0.0,
+    "shrubs": [],
+    "shrubDensity": 0.0,
+    "herbs": [],
+    "herbDensity": 0.2,
+    "debris": [],
+    "debrisDensity": 0.25, 
+    "water": "no-water",
+    "succession": null,
+    "successionTime": 0,
+    "disruptions": {
+        "fire": {
+            "name": "fire",
+            "ignition": 1,
+            "spread": 75,
+            "biome": "burned-arid-plain"
+        }
+    }
+}
+
+
+

@@ -1,0 +1,31 @@
+{
+    "name": "stream",
+    "color": [ 60, 150, 210 ],
+    "titles": [ 
+        "Shallow Stream", 
+        "Flowing Stream" 
+    ],
+    "descriptions": {
+        "initial": [ "A bubbling, flowing stream." ],
+        "flavor": [ 
+            "The stream cascades down the land.",
+            "The water is shallow and clear."
+        ]
+    },
+    "trees": [],
+    "treeDensity": 0.0,
+    "shrubs": [],
+    "shrubDensity": 0.0,
+    "herbs": [],
+    "herbDensity": 0.0,
+    "debris": [],
+    "debrisDensity": 0.25, 
+    "water": "fresh-water",
+    "succession": null,
+    "successionTime": 0,
+    "disruptions": {} 
+}
+
+
+
+

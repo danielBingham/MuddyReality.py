@@ -7,27 +7,8 @@ import collections
 import csv
 import json
 
-from matplotlib.colors import LightSource, LinearSegmentedColormap
-import matplotlib.pyplot as plt
-
 import numpy as np
-
 import scipy as sp
-import scipy.spatial
-
-
-# Print the terrain to the command line. Useful for debugging small worlds.
-def printTerrain(terrain):
-    output = "---: "
-    for y in range(len(world_heights[0])):
-        output += ("%4d " % y)
-    output += ("\n")
-    for x in range(len(world_heights)):
-        output += ("%4d: " % x)
-        for y in range(len(world_heights[0])):
-            output += ("%4d " % world_heights[x][y])
-        output += ("\n")
-    print(output) 
 
 # Open CSV file as a dict.
 def read_csv(csv_path):
@@ -122,32 +103,6 @@ def load_from_file(path):
     return (result['height'], result['land_mask'])
   else:
     return (result, None)
-
-
-# Saves the array as a PNG image. Assumes all input values are [0, 1]
-def save_as_png(a, path):
-  image = Image.fromarray(np.round(a * 255).astype('uint8'))
-  image.save(path)
-
-
-# Creates a hillshaded RGB array of heightmap `a`.
-_TERRAIN_CMAP = LinearSegmentedColormap.from_list('my_terrain', [
-    (0.00, (0.15, 0.3, 0.45)),
-    (0.09, (0.25, 0.5, 1.00)),
-    (0.10, (0.15, 0.3, 0.15)),
-    (0.25, (0.3, 0.45, 0.3)),
-    (0.50, (0.5, 0.5, 0.35)),
-    (0.80, (0.4, 0.36, 0.33)),
-    (1.00, (1.0, 1.0, 1.0)),
-])
-def hillshaded(a, land_mask=None, angle=270):
-  if land_mask is None: land_mask = np.ones_like(a)
-  ls = LightSource(azdeg=angle, altdeg=30)
-  land = ls.shade(a, cmap=_TERRAIN_CMAP, vert_exag=10.0,
-                  blend_mode='overlay')[:, :, :3]
-  water = np.tile((0.25, 0.35, 0.55), a.shape + (1,))
-  return lerp(water, land, land_mask[:, :, np.newaxis])
-
 
 # Linear interpolation of `x` to `y` with respect to `a`
 def lerp(x, y, a): return (1.0 - a) * x + a * y

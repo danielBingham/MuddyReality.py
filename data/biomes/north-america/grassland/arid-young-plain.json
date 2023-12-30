@@ -1,0 +1,35 @@
+{
+    "name": "arid-young-plain",
+    "color": [ 200, 180, 160 ],
+    "titles": [ 
+        "Dry Rough Plain", 
+        "Arid Rough Plain", 
+        "Dry Patchy Plain", 
+        "Arid Patchy Plain" 
+    ],
+    "descriptions": {
+        "initial": [ "A patchy plain with a scattering of hardy grasses." ],
+        "flavor": [ 
+            "The ground is dry, uneven, and rocky.", 
+            "The soil is thin and sandy.", 
+            "The grasses that grow here are small, tough and hardy.", 
+            "Lichen grows on the rocks.",
+            "Small, hardy pioneer plants grow among the rocks and grasses."
+        ]
+    },
+    "trees": [],
+    "treeDensity": 0.0,
+    "shrubs": [],
+    "shrubDensity": 0.0,
+    "herbs": [],
+    "herbDensity": 0.2,
+    "debris": [],
+    "debrisDensity": 0.25, 
+    "water": "no-water",
+    "succession": "arid-short-grass-plain",
+    "successionTime": 20,
+    "disruptions": {} 
+}
+
+
+

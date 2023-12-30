@@ -11,9 +11,10 @@ class Biome:
 
         # The name of the biome.
         self.name = ''
+        self.color = ()
 
-        self.titles = [ '' ]
-        self.descriptions = [ '' ]  
+        self.titles = []
+        self.descriptions = []  
 
         # An array of Item.id that represents trees that can spawn in this
         # biome.
@@ -52,9 +53,6 @@ class Biome:
         # Is there water in this biome?  How much?
         self.water = Biome.WATER_NONE
 
-        # The depth of the water in meters.
-        self.water_depth = 0 
-
         ###  Biome Evolution ###
         # Values managing the way the biome evolves over time.
         ###
@@ -75,6 +73,7 @@ class Biome:
         json = {}
 
         json['name'] = self.name
+        json['color'] = self.color
 
         json['titles'] = self.titles
         json['descriptions'] = self.descriptions
@@ -92,7 +91,6 @@ class Biome:
         json['debrisDensity'] = self.debris_density
 
         json['water'] = self.water
-        json['waterDepth'] = self.water_depth
 
         json['succession'] = self.succession
         json['successionTime'] = self.succession_time
@@ -103,6 +101,7 @@ class Biome:
 
     def fromJson(self, data):
         self.name = data['name']
+        self.color = tuple(data['color'])
 
         self.titles = data['titles']
         self.descriptions = data['descriptions']
@@ -120,7 +119,6 @@ class Biome:
         self.debris_density = data['debrisDensity']
 
         self.water = data['water']
-        self.water_depth = data['waterDepth']
 
         self.succession = data['succession']
         self.succession_time = data['successionTime']
@@ -136,6 +134,8 @@ class Biome:
         file = open(base_path + self.name + '.json', 'w')
         try:
             json.dump(self.toJson(), file)    
+        except Exception:
+            raise
         finally:
             file.close()
 

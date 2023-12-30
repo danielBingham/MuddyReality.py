@@ -1,0 +1,32 @@
+{
+    "name": "pioneer-meadow",
+    "color": [ 180, 220, 180 ],
+    "titles": [ 
+        "Damp Rocky Plain", 
+        "Moist Rocky Plain" 
+    ],
+    "descriptions": {
+        "initial": [ "A damp, rocky plain." ],
+        "flavor": [ 
+            "The ground is mostly rocks and dirt with a hardy pioneer plant here or there.", 
+            "The soil is moist, thin, and sandy.",
+            "The wet, mossy rocks make for a rough, uneven walking surface.", 
+            "Not much is growing here yet." 
+        ]
+    },
+    "trees": [],
+    "treeDensity": 0.0,
+    "shrubs": [],
+    "shrubDensity": 0.0,
+    "herbs": [],
+    "herbDensity": 0.1,
+    "debris": [],
+    "debrisDensity": 0.25, 
+    "water": "no-water",
+    "succession": "young-meadow",
+    "successionTime": 50,
+    "disruptions": { }
+}
+
+
+

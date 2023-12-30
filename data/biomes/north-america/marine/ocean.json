@@ -1,0 +1,24 @@
+{
+    "name": "ocean",
+    "color": [ 50, 50, 200 ],
+    "titles": [ "Deep Ocean", "Ocean" ],
+    "descriptions": {
+        "initial": [ "Out on the deep ocean." ],
+        "flavor": [ "Waves roll by on the deep ocean." ]
+    },
+    "trees": [],
+    "treeDensity": 0.0,
+    "shrubs": [],
+    "shrubDensity": 0.0,
+    "herbs": [],
+    "herbDensity": 1.0,
+    "debris": [],
+    "debrisDensity": 0.25, 
+    "water": "salt-water",
+    "succession": null,
+    "successionTime": 0,
+    "disruptions": {} 
+}
+
+
+

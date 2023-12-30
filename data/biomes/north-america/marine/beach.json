@@ -1,0 +1,24 @@
+{
+    "name": "beach",
+    "color": [ 250, 250, 180 ],
+    "titles": [ "Rocky Beach", "Beach" ],
+    "descriptions": {
+        "initial": [ "A rocky beach." ],
+        "flavor": [ "The beach slopes gently down into the water.", "Rocks rounded smooth by the lapping water litter the beach.", "Rockson the beach vary in size from tiny pebbles to sizeable boulders." ]
+    },
+    "trees": [],
+    "treeDensity": 0.0,
+    "shrubs": [],
+    "shrubDensity": 0.0,
+    "herbs": [],
+    "herbDensity": 1.0,
+    "debris": [],
+    "debrisDensity": 0.25, 
+    "water": "no-water",
+    "succession": null,
+    "successionTime": 0,
+    "disruptions": {} 
+}
+
+
+

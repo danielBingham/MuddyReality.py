@@ -7,9 +7,6 @@
 
 import numpy as np
 import scipy as sp
-import matplotlib.pyplot as plt
-import os
-import sys
 
 import generator.utils.util as util
 
@@ -24,16 +21,24 @@ def apply_slippage(terrain, repose_slope, cell_width):
   return result
 
 
-def erode(terrain, width):
+def erode(world):
+    """
+    :returns:   `void`
+    """
+
+    print("Eroding heightmap for world %s..." % world.name)
+    
+    terrain = world.terrain
+    
     # Grid dimension constants
-    dim = width 
-    shape = [ width ] * 2
-    cell_width = 1 
+    dim = world.width 
+    shape = [ world.width ] * 2
+    cell_width = world.room_width 
     cell_area = cell_width ** 2
 
     # Water-related constants
-    rain_rate = 0.0008 * cell_area
-    evaporation_rate = 0.0005
+    rain_rate = 0.0008 * cell_area 
+    evaporation_rate = 0.0005 
 
     # Slope constants
     min_height_delta = 0.05
@@ -71,9 +76,9 @@ def erode(terrain, width):
         # water and sediment will be moving.
         gradient = np.zeros_like(terrain, dtype='complex')
         gradient = util.simple_gradient(terrain)
-        gradient = np.select([np.abs(gradient) < 1e-10],
-                             [np.exp(2j * np.pi * np.random.rand(*shape))],
-                             gradient)
+        #gradient = np.select([np.abs(gradient) < 1e-10],
+        #                     [np.exp(2j * np.pi * np.random.rand(*shape))],
+        #                     gradient)
         gradient /= np.abs(gradient)
 
         # Compute the difference between teh current height the height offset by
@@ -87,6 +92,7 @@ def erode(terrain, width):
         sediment_capacity = (
             (np.maximum(height_delta, min_height_delta) / cell_width) * velocity *
             water * sediment_capacity_constant)
+
         deposited_sediment = np.select(
             [
                 height_delta < 0, 
@@ -104,6 +110,7 @@ def erode(terrain, width):
         # Update terrain and sediment quantities.
         sediment -= deposited_sediment
         terrain += deposited_sediment
+
         sediment = util.displace(sediment, gradient)
         water = util.displace(water, gradient)
 
@@ -116,4 +123,4 @@ def erode(terrain, width):
         # Apply evaporation
         water *= 1 - evaporation_rate
 
-    return terrain
+    world.terrain = terrain

@@ -1,0 +1,29 @@
+{
+    "name": "arid-pioneer-plain",
+    "color": [ 220, 210, 200 ],
+    "titles": [ "Dry Rocky Plain", "Arid Rocky Plain", "Dry Rough Plain", "Arid Rough Plain" ],
+    "descriptions": {
+        "initial": [ "A rough, rocky plain with a scattering of hardy plants, lichen, and algae." ],
+        "flavor": [ 
+            "The ground is mostly rocks and dirt with a hardy pioneer plant here or there.", 
+            "The soil is thin and sandy.",
+            "The rocks make for a rough, uneven walking surface.", 
+            "Not much is growing here yet." 
+        ]
+    },
+    "trees": [],
+    "treeDensity": 0.0,
+    "shrubs": [],
+    "shrubDensity": 0.0,
+    "herbs": [],
+    "herbDensity": 0.05,
+    "debris": [],
+    "debrisDensity": 0.25, 
+    "water": "no-water",
+    "succession": "arid-young-plain",
+    "successionTime": 50,
+    "disruptions": {} 
+}
+
+
+

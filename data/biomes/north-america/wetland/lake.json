@@ -1,0 +1,31 @@
+{
+    "name": "lake",
+    "color": [ 30, 70, 210 ],
+    "titles": [ 
+        "Lake Shallows", 
+        "Shallows of a Lake" 
+    ],
+    "descriptions": {
+        "initial": [ "In the shallows of a fresh water lake." ],
+        "flavor": [ 
+            "The water is clear and shallow enough that the bottom is visible here.",
+            "The bottom of the lake is rocky and silty."
+        ]
+    },
+    "trees": [],
+    "treeDensity": 0.0,
+    "shrubs": [],
+    "shrubDensity": 0.0,
+    "herbs": [],
+    "herbDensity": 0.0,
+    "debris": [],
+    "debrisDensity": 0.25, 
+    "water": "fresh-water",
+    "succession": null,
+    "successionTime": 0,
+    "disruptions": {} 
+}
+
+
+
+

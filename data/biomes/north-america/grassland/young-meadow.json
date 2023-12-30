@@ -1,0 +1,38 @@
+{
+    "name": "young-meadow",
+    "color": [ 160, 220, 160 ],
+    "titles": [ 
+        "Damp Patchy Meadow", 
+        "Moist Patchy Meadow" 
+    ],
+    "descriptions": {
+        "initial": [ "A damp, patchy meadow." ],
+        "flavor": [ 
+            "Lush, short grasses grow here in thick patches.",
+            "Betwen the patches, the soil is moist, thin, and sandy.",
+            "The wet, mossy rocks make for a rough, uneven walking surface."
+        ]
+    },
+    "trees": [],
+    "treeDensity": 0.0,
+    "shrubs": [],
+    "shrubDensity": 0.0,
+    "herbs": [],
+    "herbDensity": 0.25,
+    "debris": [],
+    "debrisDensity": 0.25, 
+    "water": "no-water",
+    "succession": "meadow",
+    "successionTime": 20,
+    "disruptions": [
+        "fire": { 
+            "name": "fire",
+            "ignition": 0,
+            "spread": 10,
+            "biome": "pioneer-meadow"
+        }
+    ]
+}
+
+
+

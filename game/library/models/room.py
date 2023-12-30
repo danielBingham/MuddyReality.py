@@ -150,14 +150,17 @@ class Room(Model):
             output += item.description + " is laying here.\n"
         output += "---\n"
         output += "Exits: "
-        for exit in self.exits:
-            if self.exits[exit].is_door:
-                if self.exits[exit].is_open:
-                    output += "(" + exit + ") "
+        for direction in Room.DIRECTIONS:
+            if not direction in self.exits:
+                continue
+
+            if self.exits[direction].is_door:
+                if self.exits[direction].is_open:
+                    output += "(" + direction + ") "
                 else:
-                    output += "[" + exit + "] "
+                    output += "[" + direction + "] "
             else:
-                output += exit + " "
+                output += direction + " "
         output += "\n"
         return output
 

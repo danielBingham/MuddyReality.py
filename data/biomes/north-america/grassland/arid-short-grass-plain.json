@@ -1,0 +1,41 @@
+{
+    "name": "arid-short-grass-plain",
+    "color": [ 180, 170, 100 ],
+    "titles": [ 
+        "Dry Short Grass Plain", 
+        "Dry Plain of Short Grasses", 
+        "Arid Short Grass Plain", 
+        "Arid Plain of Short Grasses" 
+    ],
+    "descriptions": {
+        "initial": [ "A dry plain of short, hardy grasses." ],
+        "flavor": [ 
+            "The grasses that grow here are short and stiff.", 
+            "The soil is thin, dry, and sandy.",
+            "Rocks poke up through the stems here and there.", 
+            "Occassional wildflowers grow in among the grasses." 
+        ]
+    },
+    "trees": [],
+    "treeDensity": 0.0,
+    "shrubs": [],
+    "shrubDensity": 0.0,
+    "herbs": [],
+    "herbDensity": 0.2,
+    "debris": [],
+    "debrisDensity": 0.25, 
+    "water": "no-water",
+    "succession": "arid-plain",
+    "successionTime": 10,
+    "disruptions": {
+        "fire": {
+            "name": "fire",
+            "ignition": 1,
+            "spread": 75
+            "biome": "burned-arid-plain"
+        }
+    }
+}
+
+
+

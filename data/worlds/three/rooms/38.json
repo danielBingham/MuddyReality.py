@@ -1,1 +1,0 @@
-{"id": 38, "title": "Meadow", "description": "A lush meadow.", "exits": {"north": {"is_door": false, "is_open": true, "direction": "north", "room_to": 37}, "east": {"is_door": false, "is_open": true, "direction": "east", "room_to": 138}, "south": {"is_door": false, "is_open": true, "direction": "south", "room_to": 39}}, "items": []}
