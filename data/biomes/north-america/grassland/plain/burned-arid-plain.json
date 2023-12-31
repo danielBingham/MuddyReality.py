@@ -16,7 +16,7 @@
     "debrisDensity": 0.25, 
     "water": "no-water",
     "succession": "arid-short-grass-plain",
-    "successionTime": 5,
+    "successionTime": 2,
     "disruptions": {} 
 }
 

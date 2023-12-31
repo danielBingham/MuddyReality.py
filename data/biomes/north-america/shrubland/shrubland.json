@@ -1,0 +1,34 @@
+{
+    "name": "shrubland",
+    "color": [ 70, 140, 50 ],
+    "titles": [ "Thick Shrubs", "Shrubland", "Dense Shrubland" ],
+    "descriptions": {
+        "initial": [ "An area of dense shrubs, saplings, and young trees." ],
+        "flavor": [ 
+            "The soil is dark and loamy.", 
+            "Not many gaps are left between the shrubs and trees.  In the few the remain tall grasses reach for the patches of light.",
+            "Among the shrubs and small trees, small stands of young forest are beginning to form."
+        ]
+    },
+    "trees": [ ],
+    "treeDensity": 0.5,
+    "shrubs": [],
+    "shrubDensity": 0.75,
+    "herbs": [],
+    "herbDensity": 1.0,
+    "debris": [],
+    "debrisDensity": 0.25, 
+    "water": "no-water",
+    "succession": "forest",
+    "successionTime": 10,
+    "disruptions": {
+        "fire": { 
+            "chance": 0.1,
+            "spread": 60,
+            "biome": "burned-shrubland"
+        }
+    }
+}
+
+
+

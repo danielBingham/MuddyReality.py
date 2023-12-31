@@ -1,28 +1,32 @@
 {
     "name": "forest",
-    "color": [ 10, 100, 10 ],
-    "titles": [ "Dense Forest", "Forest" ],
+    "color": [ 60, 150, 60 ],
+    "titles": [ "Forest" ],
     "descriptions": {
-        "initial": [ "A dense forest." ],
-        "flavor": [ "Leaves, sticks, and other debris litters the ground.", "The soil beneath the debris layer is rich and dark, with white fungal strands visible through out.", "The sky is almostly completely obscured by branches and leaves.", "The ground is dappled with moving patches of light." ]
+        "initial": [ "A healthy forest." ],
+        "flavor": [ 
+            "Leaves, sticks, and other debris litters the ground.", 
+            "The soil beneath the debris layer is rich and dark, with white fungal strands visible through out.", 
+            "The sky is almostly completely obscured by branches and leaves.", 
+            "The ground is dappled with moving patches of light." 
+        ]
     },
-    "trees": [ "ancient european oak tree", "european oak sapling", "european oak tree", "mature european oak tree", "young european oak tree" ],
-    "treeDensity": 0.5,
+    "trees": [ "european oak sapling", "european oak tree", "young european oak tree" ],
+    "treeDensity": 1.25,
     "shrubs": [],
-    "shrubDensity": 0.0,
+    "shrubDensity": 0.25,
     "herbs": [],
     "herbDensity": 1.0,
     "debris": [],
-    "debrisDensity": 0.25, 
+    "debrisDensity": 0.5, 
     "water": "no-water",
-    "succession": null,
-    "successionTime": 0,
+    "succession": "mature-forest",
+    "successionTime": 70,
     "disruptions": {
         "fire": { 
-            "name": "fire",
-            "ignition": 1,
-            "spread": 90,
-            "biome": "pioneer-meadow"
+            "chance": 0.01,
+            "spread": 50,
+            "biome": "burned-forest"
         }
     }
 }

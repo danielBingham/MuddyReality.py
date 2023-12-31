@@ -1,0 +1,34 @@
+{
+    "name": "young-shrubland",
+    "color": [ 90, 170, 60 ],
+    "titles": [ "Among the Shrubs", "Shrubs and Saplings", "Old Field of Shrubs" ],
+    "descriptions": {
+        "initial": [ "An area populated by shrubs, small trees, and young saplings." ],
+        "flavor": [ 
+            "Grasses and wildflowers grow in gaps among the shrubs and saplings.", 
+            "The soil is dark and loamy.", 
+            "Here and there, the saplings are beginning to grow into young trees."
+        ]
+    },
+    "trees": [ ],
+    "treeDensity": 0.25,
+    "shrubs": [],
+    "shrubDensity": 0.5,
+    "herbs": [],
+    "herbDensity": 1.0,
+    "debris": [],
+    "debrisDensity": 0.25, 
+    "water": "no-water",
+    "succession": "shrubland",
+    "successionTime": 5,
+    "disruptions": {
+        "fire": { 
+            "chance": 0.1,
+            "spread": 50,
+            "biome": "burned-shrubland"
+        }
+    }
+}
+
+
+

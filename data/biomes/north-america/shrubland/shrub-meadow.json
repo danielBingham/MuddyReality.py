@@ -1,0 +1,44 @@
+{
+    "name": "shrub-meadow",
+    "color": [ 100, 200, 50 ],
+    "titles": [ 
+        "Shrubs in a Meadow", 
+        "Shrubs in a Field",
+        "Shrubs and Grasses"
+    ],
+    "descriptions": {
+        "initial": [ "A grassy meadow punctuated by shrubs and very young saplings." ],
+        "flavor": [ 
+            "Lush, green grasses wave gently in the wind.", 
+            "Small shrubs and baby saplings poke out of the grasses sporadically.",
+            "The grasses range in height from less than a meter to nearly two meters tall in places.", 
+            "Wildflowers grow among the grasses." 
+        ]
+    },
+    "trees": [],
+    "treeDensity": 0.1,
+    "shrubs": [],
+    "shrubDensity": 0.25,
+    "herbs": [],
+    "herbDensity": 1.0,
+    "debris": [],
+    "debrisDensity": 0.25, 
+    "water": "no-water",
+    "succession": "young-shrubland",
+    "successionTime": 5,
+    "disruptions": {
+        "fire": { 
+            "chance": 0.05,
+            "spread": 40,
+            "biome": "burned-shrubland"
+        },
+        "herbivore-herd": {
+            "chance": 1,
+            "spread": 25,
+            "biome": "grazed-meadow"
+        }
+    }
+}
+
+
+

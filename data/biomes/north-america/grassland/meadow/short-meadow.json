@@ -1,0 +1,42 @@
+{
+    "name": "short-meadow",
+    "color": [ 30, 200, 70],
+    "titles": [ 
+        "Lush, Shortgrass Meadow", 
+        "Low Wildflower Meadow" 
+    ],
+    "descriptions": {
+        "initial": [ "A lush short meadow of grasses and wildflowers." ],
+        "flavor": [ 
+            "Lush, green grasses wave gently in the wind.", 
+            "Short, colorful wildflowers of a variety of shapes grow among the grasses.",
+            "The soil is entirely covered by a dense layer of vegetation and old hay."
+        ]
+    },
+    "trees": [],
+    "treeDensity": 0.0,
+    "shrubs": [],
+    "shrubDensity": 0.0,
+    "herbs": [],
+    "herbDensity": 1.0,
+    "debris": [],
+    "debrisDensity": 0.25, 
+    "water": "no-water",
+    "succession": "tall-meadow",
+    "successionTime": 5,
+    "disruptions": {
+        "fire": { 
+            "chance": 0.1,
+            "spread": 30,
+            "biome": "burned-meadow"
+        },
+        "herbivore-herd": {
+            "chance": 1,
+            "spread": 25,
+            "biome": "grazed-meadow"
+        }
+    }
+}
+
+
+

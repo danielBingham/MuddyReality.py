@@ -1,0 +1,32 @@
+{
+    "name": "grazed-meadow",
+    "color": [ 100, 200, 120],
+    "titles": [ 
+        "Grazed Meadow", 
+        "Clipped Meadow" 
+    ],
+    "descriptions": {
+        "initial": [ "A recently grazed meadow of wildflower and grasses." ],
+        "flavor": [ 
+            "The grasses have been clipped short.", 
+            "Short stems from wildflowers bitten off poke through the grasses.",
+            "Hoof prints and trampled vegetation are further evidence of grazing.",
+            "Here and there droppings and manure litter the clipped and trampled vegetation."
+        ]
+    },
+    "trees": [],
+    "treeDensity": 0.0,
+    "shrubs": [],
+    "shrubDensity": 0.0,
+    "herbs": [],
+    "herbDensity": 1.0,
+    "debris": [],
+    "debrisDensity": 0.25, 
+    "water": "no-water",
+    "succession": "short-meadow",
+    "successionTime": 5,
+    "disruptions": { }
+}
+
+
+

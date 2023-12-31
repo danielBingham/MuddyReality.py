@@ -29,9 +29,8 @@
     "successionTime": 10,
     "disruptions": {
         "fire": {
-            "name": "fire",
-            "ignition": 1,
-            "spread": 75
+            "chance": 0.01,
+            "spread": 50,
             "biome": "burned-arid-plain"
         }
     }

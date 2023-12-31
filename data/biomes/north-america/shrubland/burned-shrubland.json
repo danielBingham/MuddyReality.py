@@ -1,0 +1,29 @@
+{
+    "name": "burned-shrubland",
+    "color": [ 45, 50, 45 ],
+    "titles": [ "Burned Shrubland", "Burned Shrubs", "Burned Saplings", "Burned Scrub" ],
+    "descriptions": {
+        "initial": [ "An area of recently burned shrubland." ],
+        "flavor": [ 
+            "Charred stems, bare of leaves, stand as silent sentinels to the shrubs that previously lived here.", 
+            "The ground is charred black and covered with ash.", 
+            "Young grasses are returning in patches.",
+            "Here and there the seedling of a tree or shrub pokes up through the ash and grass."
+        ]
+    },
+    "trees": [ ],
+    "treeDensity": 0,
+    "shrubs": [],
+    "shrubDensity": 0.0,
+    "herbs": [],
+    "herbDensity": 0.25,
+    "debris": [],
+    "debrisDensity": 0.5, 
+    "water": "no-water",
+    "succession": "young-meadow",
+    "successionTime": 2,
+    "disruptions": { }
+}
+
+
+

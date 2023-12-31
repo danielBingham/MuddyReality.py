@@ -1,6 +1,6 @@
 {
     "name": "young-meadow",
-    "color": [ 160, 220, 160 ],
+    "color": [ 100, 200, 120 ],
     "titles": [ 
         "Damp Patchy Meadow", 
         "Moist Patchy Meadow" 
@@ -22,16 +22,15 @@
     "debris": [],
     "debrisDensity": 0.25, 
     "water": "no-water",
-    "succession": "meadow",
-    "successionTime": 20,
-    "disruptions": [
+    "succession": "short-meadow",
+    "successionTime": 5,
+    "disruptions": {
         "fire": { 
-            "name": "fire",
-            "ignition": 0,
+            "chance": 0,
             "spread": 10,
-            "biome": "pioneer-meadow"
+            "biome": "burned-meadow"
         }
-    ]
+    }
 }
 
 

@@ -1,0 +1,31 @@
+{
+    "name": "young-forest",
+    "color": [ 70, 180, 70 ],
+    "titles": [ "Young Forest" ],
+    "descriptions": {
+        "initial": [ "A young forest." ],
+        "flavor": [ 
+            "The trees here are small and the canopy is still open in many places.", 
+            "The soil is dark and rich and the ground is littered with debris.", 
+            "Shade tolerant herbs and wildflowers grow under saplings in the open areas."
+        ]
+    },
+    "trees": [ "european oak sapling", "young european oak tree" ],
+    "treeDensity": 1.0,
+    "shrubs": [],
+    "shrubDensity": 0.5,
+    "herbs": [],
+    "herbDensity": 0.25,
+    "debris": [],
+    "debrisDensity": 0.5, 
+    "water": "no-water",
+    "succession": "forest",
+    "successionTime": 30,
+    "disruptions": { 
+        "fire": {
+            "chance": 0.1,
+            "spread": 50,
+            "biome": "burned-forest"
+        }
+    }
+}

@@ -41,13 +41,15 @@ def loadBiomes():
 
     return biomes
 
-def generate(world, heights_only, water_only, biomes_only, rooms_only, regenerate):
+def generate(world, heights_only=False, water_only=False, biomes_only=False, rooms_only=False, regenerate=False):
     '''
     Generate the world.
     ''' 
     
     biomes = loadBiomes()
 
+    print(world.terrain.size)
+    print(world.terrain)
     if not water_only and not biomes_only and not rooms_only and (world.terrain.size == 0 or regenerate): 
         generateTerrain(world)
         snapshot.terrain(world)
@@ -112,6 +114,7 @@ parser.add_argument('--rooms-only', dest='rooms_only', action='store_true', help
 parser.add_argument('--regenerate', action='store_true', help='Regenerate the world, overriding any previously generated world.') 
 
 arguments = parser.parse_args()
+print(arguments)
 
 world = World(arguments.name,  int(arguments.width), int(arguments.room_width))
 

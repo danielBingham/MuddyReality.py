@@ -1,0 +1,34 @@
+{
+    "name": "mature-forest",
+    "color": [ 40, 100, 40 ],
+    "titles": [ "Mature Forest" ],
+    "descriptions": {
+        "initial": [ "A mature forest of huge trees." ],
+        "flavor": [ 
+            "Leaves, sticks, and other debris litters the ground.", 
+            "The soil beneath the debris layer is deep, rich and dark, with white fungal strands visible through out.", 
+            "The sky is completely obscured by branches and leaves."
+        ]
+    },
+    "trees": [ "mature european oak tree", "european oak tree" ],
+    "treeDensity": 1.5,
+    "shrubs": [],
+    "shrubDensity": 0.2,
+    "herbs": [],
+    "herbDensity": 0.5,
+    "debris": [],
+    "debrisDensity": 0.5, 
+    "water": "no-water",
+    "succession": "ancient-forest",
+    "successionTime": 100,
+    "disruptions": {
+        "fire": { 
+            "chance": 0.01,
+            "spread": 50,
+            "biome": "burned-forest"
+        }
+    }
+}
+
+
+

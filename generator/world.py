@@ -11,9 +11,9 @@ class World:
 
         self.initial_water = 0
 
-        self.terrain = np.empty([1,1]) 
+        self.terrain = np.array([]) 
         self.heights = []
-        self.water = np.empty([1,1]) 
+        self.water = np.array([]) 
         self.biomes = []
         self.rooms = []
 

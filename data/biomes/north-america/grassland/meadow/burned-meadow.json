@@ -1,0 +1,30 @@
+{
+    "name": "burned-meadow",
+    "color": [ 60, 70, 60],
+    "titles": [ 
+        "Burned Meadow"
+    ],
+    "descriptions": {
+        "initial": [ "A recently burned meadow." ],
+        "flavor": [ 
+            "The ground is charred black.", 
+            "A thin layer of ash coats everything.",
+            "Young grasses poke up through the ash."
+        ]
+    },
+    "trees": [],
+    "treeDensity": 0.0,
+    "shrubs": [],
+    "shrubDensity": 0.0,
+    "herbs": [],
+    "herbDensity": 0.25,
+    "debris": [],
+    "debrisDensity": 0.25, 
+    "water": "no-water",
+    "succession": "young-meadow",
+    "successionTime": 2,
+    "disruptions": { }
+}
+
+
+
