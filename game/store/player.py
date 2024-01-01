@@ -33,25 +33,33 @@ class Player:
     def interpret(self):
         input = self.read().strip()
 
-        # If we don't have input at this point, it means the player just sent white space.  So we'll
-        # skip interpreting it and just send a new prompt.
+        if self.character:
+            if self.character.action:
+                self.character.action.cancel(self)
+                self.character.action = None
+                self.character.action_data = {}
+                self.character.action_time = 0
+                self.prompt_off = False
+
+        # If we don't have input at this point, it means the player just sent
+        # white space.  So we'll skip interpreting it and just send a new
+        # prompt.
         if input:
             self.interpreter.interpret(input)
         
-        #if not self.hasPromptInBuffer():
-        #    self.write(self.getPrompt(), wrap=False)
-        #    self.setPromptInBuffer(True)
 
     def hasInput(self):
         return self.socket.hasInput()
 
     def write(self, text, wrap=True):
         if wrap: 
-            # Wrap will blow away any trailing white space. We want each call to `write` to define a
-            # new line, however, so we need to add a newline.
+            # Wrap will blow away any trailing white space. We want each call
+            # to `write` to define a new line, however, so we need to add a
+            # newline.
             text = self.wrapper.fill(str(text)) + "\n"
 
-        # Add the output to the player output batch.  It will be send and cleared in the next cycle.
+        # Add the output to the player output batch.  It will be send and
+        # cleared in the next cycle.
         self.socket.appendToOutputBuffer(text)
         return self
 

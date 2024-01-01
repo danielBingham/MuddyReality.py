@@ -118,29 +118,42 @@ Harvest materials from an object in your environment.  The object can be either 
         item_harvest = item.traits["Harvestable"]
 
         player.character.reserves.calories -= math.floor(item_harvest.calories / item_harvest.time)
-        
+       
+    def cancel(self, player):
+        self.finish(player, True)
 
-    def finish(self, player):
+    def finish(self, player, cancelled=False):
         item = player.character.action_data['harvesting']
         in_inventory = player.character.action_data['in_inventory']
+        harvest = item.traits["Harvestable"]
 
         results = ""
-        for product in item.traits["Harvestable"].products:
+        for product in harvest.products:
+            amount = product.amount
+            if cancelled:
+                amount = math.floor(amount * ((harvest.time - player.character.action_time) / harvest.time))
+            if amount <= 0:
+                continue
+
             if len(results) > 0:
                 results += ", "
-            results += str(product.amount) + " " + product.product
+            results += str(amount) + " " + product.product
            
-            for instance in range(0, product.amount): 
+            for instance in range(0, amount): 
                 productItem = self.store.items.instance(product.product)
                 player.character.inventory.append(productItem)
 
-        if item.traits["Harvestable"].consumed:
+        if len(results) == 0:
+            player.write("\nYou didn't harvest long enough to produce anything.")
+            return
+
+        if harvest.consumed:
             if in_inventory:
                 player.character.inventory.remove(item)
             else:
                 player.character.room.items.remove(item)
-        elif item.traits["Harvestable"].replaced_with:
-            itemId = item.traits["Harvestable"].replaced_with
+        elif harvest.replaced_with:
+            itemId = harvest.replaced_with
             if in_inventory:
                 player.character.inventory.remove(item)
                 player.character.inventory.append(self.store.items.instance(itemId))
@@ -148,10 +161,10 @@ Harvest materials from an object in your environment.  The object can be either 
                 player.character.room.items.remove(item)
                 player.character.room.items.append(self.store.items.instance(itemId))
         else:
-            item.traits["Harvestable"].harvested = True
+            harvest.harvested = True
 
-        player.write("You " + item.traits["Harvestable"].action + " " + results + " from " + item.description + ".")
-        environment.writeToRoom(player.character, player.character.name + " " + item.traits["Harvestable"].action + " from " + item.description + ".")
+        player.write("\nYou " + harvest.action + " " + results + " from " + item.description + ".")
+        environment.writeToRoom(player.character, player.character.name + " " + harvest.action + " from " + item.description + ".")
 
 
     def execute(self, player, arguments):
