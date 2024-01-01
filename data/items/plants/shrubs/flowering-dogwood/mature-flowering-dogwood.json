@@ -7,6 +7,7 @@
     "width": 12,
     "height": 10,
     "weight": 576,
-    "can_pick_up": false,
+    "canPickUp": false,
+    "isGrowing": true,
     "traits": { }
 }

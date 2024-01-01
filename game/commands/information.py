@@ -1,10 +1,11 @@
 from game.interpreters.command import Command
+import game.library.items as ItemLibrary
 
-class Report(Command):
+class Status(Command):
     'Get information about your character.'
 
     def describe(self):
-        return "report - get information about your character"
+        return "Status - get information about your character"
 
     def help(self):
         return """
@@ -16,8 +17,6 @@ Get detailed information about your character.
     def execute(self, player, arguments):
         character = player.character
         player.write("You are %s %s." % (character.name.title(), character.title))
-        player.write("Your stats are:")
-        player.write(character.abilities.toString())
         player.write(character.reserves.toString())
                     
 class Look(Command):
@@ -43,6 +42,10 @@ Look around.  If [direction] is excluded, then you will look at your current roo
         """
 
     def execute(self, player, arguments):
+        if player.character.position == player.character.POSITION_SLEEPING:
+            player.write("You can't see in your sleep.")
+            return
+
         if arguments and arguments in self.DIRECTIONS:
             if arguments in player.character.room.exits:
                 player.write(player.character.room.exits[arguments].room_to.describe(player))
@@ -65,6 +68,10 @@ Get detailed information about a room or object.  If [object] is excluded, the r
         """
 
     def execute(self, player, arguments):
+        if player.character.position == player.character.POSITION_SLEEPING:
+            player.write("You can't examine anything in your sleep.")
+            return
+
         if not arguments:
             proxy = Look(self.library)
             return proxy.execute(player, arguments)
@@ -73,22 +80,20 @@ Get detailed information about a room or object.  If [object] is excluded, the r
             proxy = Look(self.library)
             return proxy.execute(player, arguments)
 
-        for item in player.character.inventory:
-            for key in item.keywords:
-                if key.startswith(arguments):
-                    player.write(item.detail())
-                    return
+        item = ItemLibrary.findItemByKeywords(player.character.inventory, arguments)
+        if item:
+            player.write(item.detail())
+            return
 
         for occupant in player.character.room.occupants:
             if occupant.name.startswith(arguments):
                 player.write(occupant.detail())
                 return
 
-        for item in player.character.room.items:
-            for key in item.keywords:
-                if key.startswith(arguments):
-                    player.write(item.detail())
-                    return
+        item = ItemLibrary.findItemByKeywords(player.character.room.items, arguments)
+        if item:
+            player.write(item.detail())
+            return
 
         player.write("There doesn't seem to be a " + arguments + " to examine.")
 
@@ -106,6 +111,10 @@ List the current contents of your inventory.
         """
 
     def execute(self, player, arguments):
+        if player.character.position == player.character.POSITION_SLEEPING:
+            player.write("You can't check your inventory in your sleep.")
+            return
+
         player.write("You are carrying:\n")
         if player.character.inventory:
             for item in player.character.inventory:
@@ -127,6 +136,10 @@ List the equipment you are currently wearing, carrying, and wielding.
         """
 
     def execute(self, player, arguments):
+        if player.character.position == player.character.POSITION_SLEEPING:
+            player.write("You can't check your equipment in your sleep.")
+            return
+
         equipment = player.character.equipment
         player.write("You are wearing: ")
         if ( equipment ):

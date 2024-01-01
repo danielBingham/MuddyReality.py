@@ -1,0 +1,16 @@
+{
+    "name": "handful of serviceberries",
+    "description": "a handful of small, dark blue berries",
+    "details": "A handful of small, dark blue berries.",
+    "keywords": [ "handful small dark blue berries", "small dark blue berries", "dark blue berries", "blue berries", "berries"],
+    "length": 0.05,
+    "width": 0.05,
+    "height": 0.05,
+    "weight": 0.025, 
+    "can_pick_up": true,
+    "traits": {
+        "Food": {
+            "calories": 21 
+        }
+    }
+}

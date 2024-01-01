@@ -1,6 +1,7 @@
 from game.interpreters.command import Command
 import game.library.equipment as equipment
 import game.library.environment as environment
+import game.library.items as ItemLibrary
 
 class Craft(Command):
     'Create a new item from materials in inventory or room.'
@@ -16,6 +17,10 @@ Attempt to craft a material or tool with materials or tools.  If the [target] ca
         """
 
     def execute(self, player, arguments):
+        if player.character.position == player.character.POSITION_SLEEPING:
+            player.write("You can't craft in your sleep.")
+            return
+
         if not arguments:
             player.write("You can't craft nothing!")
             return
@@ -36,7 +41,7 @@ Attempt to craft a material or tool with materials or tools.  If the [target] ca
 
         materials = []
         for keyword in materialKeywords:
-            material = equipment.findItemInInventory(player.character, keyword)
+            material = ItemLibrary.findItemByKeywords(player.character.inventory, keyword)
             if material:
                 materials.append(material)
             else:
@@ -108,14 +113,18 @@ Harvest materials from an object in your environment.  The object can be either 
         """
 
     def execute(self, player, arguments):
+        if player.character.position == player.character.POSITION_SLEEPING:
+            player.write("You can't harvest in your sleep.")
+            return
+
         if not arguments:
             player.write("Harvest what?")
             return
         
-        item = equipment.findItemInInventory(player.character, arguments)
+        item = ItemLibrary.findItemByKeywords(player.character.inventory, arguments)
         inventory = True
         if not item:
-            item = environment.findItemInRoom(player.character, arguments)
+            item = ItemLibrary.findItemByKeywords(player.character.room.items, arguments)
             inventory = False
 
         if not item:
@@ -141,7 +150,7 @@ Harvest materials from an object in your environment.  The object can be either 
         else:
             player.character.room.items.remove(item)
 
-        player.write("You " + item.traits["Harvestable"].action + results + " from " + item.description + ".")
+        player.write("You " + item.traits["Harvestable"].action + " " + results + " from " + item.description + ".")
         environment.writeToRoom(player.character, player.character.name + " " + item.traits["Harvestable"].action + " from " + item.description + ".")
 
 

@@ -14,6 +14,10 @@ Your character will say `[text]` outloud so that everyone in the vicinity (your 
         """
 
     def execute(self, player, arguments):
+        if player.character.position == player.character.POSITION_SLEEPING:
+            player.write("You can't speak in your sleep.")
+            return
+
         for occupant in player.character.room.occupants: 
             if occupant == player.character:
                 player.write('You say "%s"' % (arguments))

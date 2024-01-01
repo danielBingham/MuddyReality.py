@@ -2,6 +2,7 @@ from game.library.models.character import Character
 from game.interpreters.command import Command
 import game.library.equipment as equipment
 import game.library.environment as environment
+import game.library.items as ItemLibrary
 
 class Eat(Command):
     'Get a food item from the inventory.'
@@ -17,11 +18,15 @@ Attempt to eat an item described by [item] as food.
         """
 
     def execute(self, player, arguments):
+        if player.character.position == player.character.POSITION_SLEEPING:
+            player.write("You can't eat in your sleep.")
+            return
+
         if not arguments:
             player.write("Eat what?")
             return
 
-        item = equipment.findItemInInventory(player.character, arguments)
+        item = ItemLibrary.findItemByKeywords(player.character.inventory, arguments)
         if item and "Food" in item.traits:
             player.character.inventory.remove(item)
             player.character.reserves.calories += item.traits["Food"].calories
@@ -44,8 +49,37 @@ Will put your character to sleep.  You will awaken once refreshed.
         """
 
     def execute(self, player, arguments):
+        if player.character.position == Character.POSITION_SLEEPING:
+            player.write("You are already asleep.")
+            return
+
         if player.character.reserves.sleep <= 4:
             player.character.position = Character.POSITION_SLEEPING
             player.write('You go to sleep.')
         else:
             player.write("You don't feel tired enough to sleep right now.")
+
+class Wake(Command):
+    'Attempt to wake up.'
+
+    def describe(self):
+        return "wake - attempt to wake up"
+
+    def help(self):
+        return """
+wake
+
+You will attempt to wake up before fully refreshed.
+        """
+
+    def execute(self, player, arguments):
+        if player.character.position != Character.POSITION_SLEEPING:
+            player.write("You are already awake.")
+            return
+
+        if player.character.reserves.sleep <= 4:
+            player.write("You are too tired to wake.")
+        else:
+            player.character.position = Character.POSITION_STANDING
+            player.write("You wake up.")
+

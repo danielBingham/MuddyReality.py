@@ -1,0 +1,16 @@
+{
+    "name": "pile of serviceberries",
+    "description": "a pile of small, dark blue berries",
+    "details": "A pile of small, dark blue berries.",
+    "keywords": [ "pile small dark blue berries", "small dark blue berries", "dark blue berries", "blue berries", "berries"],
+    "length": 0.2,
+    "width": 0.2,
+    "height": 0.2,
+    "weight": 1, 
+    "can_pick_up": true,
+    "traits": {
+        "Food": {
+            "calories": 840 
+        }
+    }
+}

@@ -7,6 +7,18 @@
     "width": 6,
     "height": 8,
     "weight": 66,
-    "can_pick_up": false,
-    "traits": { }
+    "canPickUp": false,
+    "isGrowing": true,
+    "traits": { 
+        "Harvestable": {
+            "products": [
+                {
+                    "product": "pile of serviceberries",
+                    "amount": 2 
+                }
+            ],
+            "action": "pick",
+            "required_tools": [ ]
+        }
+    }
 }

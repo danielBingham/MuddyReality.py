@@ -7,7 +7,8 @@
     "width": 0.6,
     "height": 0.75,
     "weight": 0.5, 
-    "can_pick_up": true,
+    "canPickUp": true,
+    "isGrowing": true,
     "traits": {
         "Harvestable": {
             "products": [

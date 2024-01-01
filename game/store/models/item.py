@@ -48,7 +48,6 @@ class Harvestable(JsonSerializable):
         return json
 
     def fromJson(self, data):
-
         self.action = data['action']
         self.required_tools = data['required_tools']
 
@@ -344,6 +343,8 @@ class Item(NamedModel):
 
         # Can you pick up this item and carry it around?
         self.can_pick_up = True
+        self.is_growing = False
+        self.is_embedded = False
 
         # The traits of this item.  Various traits may be composed on to each
         # items to give it a variety of uses and features.
@@ -351,6 +352,16 @@ class Item(NamedModel):
 
     def detail(self):
         return self.details
+
+    def groundAction(self):
+        if self.can_pick_up:
+            return "laying"
+        if self.is_growing:
+            return "growing"
+        if self.is_embedded:
+            return "embedded"
+        return None 
+
 
     def toJson(self):
         json = {}
@@ -365,7 +376,9 @@ class Item(NamedModel):
         json['height'] = self.height
         json['weight'] = self.weight
         
-        json['can_pick_up'] = self.can_pick_up
+        json['canPickUp'] = self.can_pick_up
+        json['isGrowing'] = self.is_growing
+        json['isEmbedded'] = self.is_embedded
 
         json['traits'] = {}
         for trait in self.traits:
@@ -385,8 +398,14 @@ class Item(NamedModel):
         self.height = data['height']
         self.weight = data['weight']
 
-        if "can_pick_up" in data:
-            self.can_pick_up = data['can_pick_up']
+        if "canPickUp" in data:
+            self.can_pick_up = data['canPickUp']
+
+        if "isGrowing" in data:
+            self.is_growing = data['isGrowing']
+
+        if "isEmbedded" in data:
+            self.is_embedded = data['isEmbedded']
         
         for trait in data['traits']:
             classRef = globals()[trait]

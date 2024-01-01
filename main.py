@@ -51,6 +51,11 @@ def heartbeat(library, loop_counter, loops_a_second):
             elif character.position == character.POSITION_SLEEPING:
                 character.reserves.sleep += 2
 
+                if character.reserves.sleep >= 16:
+                    character.position = character.POSITION_STANDING
+                    player.write("You awaken, fully rested.")
+
+
             # If they're tired, they have an increasing chance of falling
             # asleep.
             if character.reserves.sleep < 0:
@@ -58,6 +63,18 @@ def heartbeat(library, loop_counter, loops_a_second):
                 if abs(character.reserves.sleep) < chance:
                     character.position = character.POSITION_SLEEPING
                     character.player.write("You can't stay awake anymore.  You fall asleep.")
+
+    # Update player prompts
+    if loop_counter % loops_a_game_minute == 0:
+        for player in library.players:
+            if player.character:
+                prompt = ""
+                prompt += player.character.reserves.hungerString(True)
+                if len(prompt) > 0:
+                    prompt += ":"
+                prompt += player.character.reserves.sleepString(True)
+                prompt += "> "
+                player.setPrompt(prompt)
  
 
 def gameLoop(serverSocket, library):

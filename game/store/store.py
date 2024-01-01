@@ -16,7 +16,8 @@ import game.commands.reserves as reserves
 import game.commands.system as system
 
 class ModelRepository:
-    """Manages and provides access to a collection of models of type ``type``.
+    """
+    Manages and provides access to a collection of models of type ``type``.
 
     Serves as a combination factory and repository for models of type ``type``,
     managing the dictionary of instances, allowing access to existing instances
@@ -27,8 +28,8 @@ class ModelRepository:
 
     Attributes
     ----------
-    library: Library
-        A reference back to the game library which contains this ModelRepository.
+    store: Store
+        A reference back to the game store which contains this ModelRepository.
     type: Object
         The class that this will be a collection of.  This is the object that
         we'll instantiate when adding new instances.
@@ -43,23 +44,23 @@ class ModelRepository:
         
     """
 
-    def __init__(self, library, type):
+    def __init__(self, store, type):
         """Initialize the ModelRepository.
 
-        Initializes the ModelRepository with its parent library and with the
+        Initializes the ModelRepository with its parent store and with the
         type of the model it will wrap.
 
         Parameters
         ----------
-        library: Library
-            The Library that will contain this ModelRepository.  Responsible
+        store: Store
+            The Store that will contain this ModelRepository.  Responsible
             for loading the repositories saved data files to populate it, and
             for saving the repositories contents back to those data files.
         type: Class 
            The class of Model that this repository will manage. 
         """
 
-        self.library = library
+        self.store = store
         self.type = type
         
         self.repo = {}
@@ -98,7 +99,7 @@ class ModelRepository:
         if not id.isdigit():
             id = str(id).lower()
 
-        model = self.type(self.library)
+        model = self.type(self.store)
         model.setId(id)
         self.add(model)
         return model 
@@ -139,7 +140,8 @@ class ModelRepository:
             return False
 
 class PrototypeRepository(ModelRepository):
-    """Manages and provides access to a repository of model prototypes of type ``type``. 
+    """
+    Manages and provides access to a repository of model prototypes of type ``type``. 
 
     Extends ModelRepository to allow management of a collection of model
     prototypes of type ``type``.  This is a model where there can be 0..N
@@ -171,8 +173,9 @@ class PrototypeRepository(ModelRepository):
         else:
             return None
 
-class Library:
-    """A library object containing and providing access to the game's content.
+class Store:
+    """
+    A Storage object containing and providing access to the game's content.
 
     A database of all of the game's models - accounts, character, objects,
     locations, npcs, etc.  Also handles loading and saving of those models.
@@ -193,9 +196,10 @@ class Library:
     """
 
     def __init__(self, world='base'):
-        """Initialize the Library.
+        """
+        Initialize the Store.
 
-        Initializes the library by creating the repositories for each type of
+        Initializes the store by creating the repositories for each type of
         Model stored.  Also loads the commands.
         """
 
@@ -252,14 +256,14 @@ class Library:
 
         self.commands['quit'] = system.Quit(self)
 
-        self.commands['report'] = information.Report(self)
-
         self.commands['south'] = movement.South(self)
         self.commands['say'] = communication.Say(self)
         self.commands['sleep'] = reserves.Sleep(self)
+        self.commands['status'] = information.Status(self)
 
         self.commands['west'] = movement.West(self)
         self.commands['wield'] = manipulation.Wield(self)
+        self.commands['wake'] = reserves.Wake(self)
 
         self.commands['up'] = movement.Up(self)
 
@@ -278,7 +282,7 @@ class Library:
         return None
 
     def load(self):
-        print("Loading the game library.")
+        print("Loading the game store.")
 
         print("Loading items...")
         item_list = glob.glob('data/items/**/*.json', recursive=True)

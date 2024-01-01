@@ -2,9 +2,12 @@ from game.interpreters.command import Command
 import game.library.movement as movement 
 
 def move(direction, player, arguments):
-
     if not player.character.room:
         raise RuntimeException("Player should have a room if they're trying to move!")
+
+    if player.character.position == player.character.POSITION_SLEEPING:
+        player.write("You can't move in your sleep.")
+        return
 
     room = player.character.room
     if direction in room.exits:

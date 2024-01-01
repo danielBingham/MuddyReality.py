@@ -1,6 +1,7 @@
 from game.interpreters.command import Command
 import game.library.environment as environment
 import game.library.equipment as equipment
+import game.library.items as ItemLibrary
 
 class Open(Command):
     'Open a door or an item'
@@ -16,6 +17,10 @@ Open will open a door or an item described by [direction|door|item].
         """
     
     def execute(self, player, arguments):
+        if player.character.position == player.character.POSITION_SLEEPING:
+            player.write("You can't open anything in your sleep.")
+            return
+
         room = player.character.room
         for direction in room.exits:
             if arguments == direction or arguments == room.exits[direction].name:
@@ -38,6 +43,10 @@ Close will close a door or an item described by [direction|door|item].
         """
     
     def execute(self, player, arguments):
+        if player.character.position == player.character.POSITION_SLEEPING:
+            player.write("You can't close anything in your sleep.")
+            return
+
         room = player.character.room
         for direction in room.exits:
             if arguments == direction or arguments == room.exits[direction].name:
@@ -60,11 +69,15 @@ Get an item described by [item] from the current room and add it to your invento
         """
 
     def execute(self, player, arguments):
+        if player.character.position == player.character.POSITION_SLEEPING:
+            player.write("You can't pick anything up in your sleep.")
+            return
+
         if not arguments:
             player.write("Get what?")
             return
 
-        item = environment.findItemInRoom(player.character, arguments)
+        item = ItemLibrary.findItemByKeywords(player.character.room.items, arguments)
         if item:
             if item.can_pick_up:
                 player.character.room.items.remove(item)
@@ -91,11 +104,15 @@ Drop an item described by [item] from your inventory and leave it in the current
         """
 
     def execute(self, player, arguments):
+        if player.character.position == player.character.POSITION_SLEEPING:
+            player.write("You can't drop anything in your sleep.")
+            return
+
         if not arguments:
             player.write("Drop what?")
             return
 
-        item = environment.findItemInInventory(player.character, arguments)
+        item = ItemLibrary.findItemByKeywords(player.character.inventory, arguments)
         if item: 
             player.character.inventory.remove(item)
             player.character.room.items.append(item)
@@ -118,11 +135,15 @@ Wield an item described by [item] as a weapon.
         """
 
     def execute(self, player, arguments):
+        if player.character.position == player.character.POSITION_SLEEPING:
+            player.write("You can't wield anything in your sleep.")
+            return
+
         if not arguments:
             player.write("Wield what?")
             return
 
-        item = equipment.findItemInInventory(player.character, arguments)
+        item = ItemLibrary.findItemByKeywords(player.character.inventory, arguments)
         if item:
             if "MeleeWeapon" in item.traits:
                 player.character.inventory.remove(item)

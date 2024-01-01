@@ -162,8 +162,13 @@ class Room(Model):
         for occupant in self.occupants:
             if occupant != player.character:
                 output += occupant.name.title() + " is here.\n"
+
         for item in self.items:
-            output += item.description + " is laying here.\n"
+            if item.groundAction():
+                output += "%s is %s here.\n" % ((item.description[0].title() + item.description[1:]), item.groundAction())
+            else:
+                output += "%s is here.\n" % (item.description[0].title() + item.description[1:])
+
         output += "---\n"
         output += "Exits: "
         for direction in Room.DIRECTIONS:
