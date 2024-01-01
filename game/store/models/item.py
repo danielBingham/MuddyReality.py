@@ -1,5 +1,5 @@
-from game.library.models.base import JsonSerializable
-from game.library.models.base import NamedModel
+from game.store.models.base import JsonSerializable
+from game.store.models.base import NamedModel
 
 class HarvestProduct(JsonSerializable):
     'A product from an item that can be harvested.'

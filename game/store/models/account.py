@@ -1,7 +1,7 @@
 import json, os, bcrypt 
 
-from game.library.models.base import NamedModel 
-from game.library.models.character import Character
+from game.store.models.base import NamedModel 
+from game.store.models.character import Character
 
 
 class Account(NamedModel):

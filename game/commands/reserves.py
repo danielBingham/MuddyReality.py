@@ -1,4 +1,4 @@
-from game.library.models.character import Character
+from game.store.models.character import Character
 from game.interpreters.command import Command
 import game.library.equipment as equipment
 import game.library.environment as environment

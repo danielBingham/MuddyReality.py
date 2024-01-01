@@ -2,7 +2,7 @@ from fuzzywuzzy import fuzz
 import copy
 
 from game.interpreters.state import State
-from game.library.models.character import Abilities
+from game.store.models.character import Abilities
 import game.account_menu.menu
 
 class SetCharacterStats(State):

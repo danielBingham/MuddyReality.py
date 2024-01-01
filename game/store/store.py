@@ -2,10 +2,10 @@ import json
 import glob
 import copy
 
-from game.library.models.account import Account
-from game.library.models.character import Character
-from game.library.models.room import Room
-from game.library.models.item import Item 
+from game.store.models.account import Account
+from game.store.models.character import Character
+from game.store.models.room import Room
+from game.store.models.item import Item 
 
 import game.commands.communication as communication 
 import game.commands.information as information 

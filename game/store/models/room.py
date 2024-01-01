@@ -1,7 +1,7 @@
 from textwrap import TextWrapper
 
-from game.library.models.base import JsonSerializable
-from game.library.models.base import Model
+from game.store.models.base import JsonSerializable
+from game.store.models.base import Model
 
 ###
 # Represents an exit from a room leading into another room.

@@ -1,7 +1,7 @@
 import json
 
-from game.library.models.base import NamedModel
-from game.library.models.base import JsonSerializable
+from game.store.models.base import NamedModel
+from game.store.models.base import JsonSerializable
 
 class Abilities(JsonSerializable):
     'Represents a character\'s abilities and attributes.'
