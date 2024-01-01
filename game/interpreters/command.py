@@ -1,8 +1,8 @@
 class Command:
     'A base class for use by all commands. Interpreted by the CommandInterpreter'
 
-    def __init__(self, library):
-        self.library = library 
+    def __init__(self, store):
+        self.store = store 
     
     def describe(self):
         pass
@@ -18,9 +18,9 @@ class Command:
 class CommandInterpreter:
     'A simple command interpreter that parses the players input.'
 
-    def __init__(self, player, library):
+    def __init__(self, player, store):
         self.player = player
-        self.library = library 
+        self.store = store 
 
     def interpret(self, input):
         if not input:
@@ -37,7 +37,7 @@ class CommandInterpreter:
         else:
             arguments = ''
 
-        command_object = self.library.findCommand(command)
+        command_object = self.store.findCommand(command)
         if command_object:
             command_object.execute(self.player, arguments)
         else:

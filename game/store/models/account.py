@@ -44,8 +44,8 @@ class Account(NamedModel):
         
         self.password_hash = data['password_hash'].encode('utf-8')
 
-        # Library will convert the list of names to actual object references in
-        # Library::load
+        # Store will convert the list of names to actual object references in
+        # Store::load
         self.characters = data['characters']
 
         return self

@@ -48,7 +48,7 @@ Attempt to craft a material or tool with materials or tools.  If the [target] ca
                 player.write("Couldn't find " + keyword + " in your inventory.")
 
         # Get the craft target assuming the keyword is the whole name.
-        craftTarget = self.library.items.getById(craftKeywords)
+        craftTarget = self.store.items.getById(craftKeywords)
 
         if not craftTarget:
             player.write(craftKeywords + " is not something you can craft.")
@@ -86,7 +86,7 @@ Attempt to craft a material or tool with materials or tools.  If the [target] ca
 
 
         # Clone the craft target.
-        crafted = self.library.items.instance(craftTarget.getId())
+        crafted = self.store.items.instance(craftTarget.getId())
 
         # Remove the materials from the inventory.
         for matchedMaterial in matchedMaterials:
@@ -142,7 +142,7 @@ Harvest materials from an object in your environment.  The object can be either 
             results += str(product.amount) + " " + product.product
            
             for instance in range(0, product.amount): 
-                productItem = self.library.items.instance(product.product)
+                productItem = self.store.items.instance(product.product)
                 player.character.inventory.append(productItem)
 
         if inventory:

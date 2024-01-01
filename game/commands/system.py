@@ -23,7 +23,7 @@ Your character will leave the game and you will return to the account menu where
         player.character.player = None
         player.character = None
 
-        player.interpreter = StateInterpreter(player, self.library, AccountMenu(player, self.library))
+        player.interpreter = StateInterpreter(player, self.store, AccountMenu(player, self.store))
 
 
 class Help(Command):
@@ -41,15 +41,15 @@ Get help about a topic.  `[topic]` is optional.  If it is left off, help will li
 
     def execute(self, player, arguments):
         if not arguments:
-            for command in self.library.commands:
-                description = self.library.commands[command].describe()
+            for command in self.store.commands:
+                description = self.store.commands[command].describe()
                 if description:
                     player.write(description)
             return
         else:
-            for command in self.library.commands:
+            for command in self.store.commands:
                 if command.startswith(arguments):
-                    help_text = self.library.commands[command].help()
+                    help_text = self.store.commands[command].help()
                     if help_text:
                         player.write(help_text)
                         return

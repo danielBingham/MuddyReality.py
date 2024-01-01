@@ -39,7 +39,7 @@ quit                - Leave the game.
 
 
         if command == "change" and arguments == "password":
-            return account.password.GetNewAccountPassword(self.player, self.library)
+            return account.password.GetNewAccountPassword(self.player, self.store)
 
 
         if command == "list":
@@ -57,11 +57,11 @@ quit                - Leave the game.
             if arguments.lower() in self.player.account.characters:
                 self.player.character = self.player.account.characters[arguments.lower()]
                 self.player.character.player = self.player
-                self.player.interpreter = CommandInterpreter(self.player, self.library)
+                self.player.interpreter = CommandInterpreter(self.player, self.store)
 
                 # If they aren't in the game world yet, send em to room 1.
                 if not self.player.character.room:
-                    movement.enter(self.player.character, self.library.rooms.getById(1))
+                    movement.enter(self.player.character, self.store.rooms.getById(1))
                 else:
                     movement.enter(self.player.character, self.player.character.room)
 
@@ -79,12 +79,12 @@ quit                - Leave the game.
                 self.player.write("You need to enter a name for the character you want to create.  Try `create <name>`.")
                 return self
 
-            if self.library.characters.hasId(name):
+            if self.store.characters.hasId(name):
                 self.player.write("A character with that name already exists.  Please try a different name.")
                 return self
 
-            self.player.character = self.library.characters.create(name)
-            return account.character.creation.SetCharacterStats(self.player, self.library)
+            self.player.character = self.store.characters.create(name)
+            return account.character.creation.SetCharacterStats(self.player, self.store)
         
 
         if command == "quit":

@@ -3,21 +3,21 @@
 import sys, traceback, time, random, argparse
 
 from game.sockets.server import ServerSocket 
-from game.library.library import Library
-from game.library.player import Player
+from game.store.store import Store 
+from game.store.player import Player
 from game.interpreters.state import StateInterpreter
 from game.account_menu.welcome import WelcomeScreen 
 
 # A method called on every loop that can be used for actions that need to take
 # place every so many loops.  Used to control autonomous timing in the game
 # world.
-def heartbeat(library, loop_counter, loops_a_second):
+def heartbeat(store, loop_counter, loops_a_second):
     loops_a_game_minute = loops_a_second
     loops_a_game_hour = loops_a_game_minute * 60
 
     # Do hunger calculations once a game minute.
     if loop_counter % loops_a_game_minute == 0:
-        for player in library.players:
+        for player in store.players:
             if not player.character:
                 continue
             player.character.reserves.calories -= 2
@@ -37,7 +37,7 @@ def heartbeat(library, loop_counter, loops_a_second):
     # rested (16+248 = 264), the record number of hours any human has remained
     # awake.
     if loop_counter % loops_a_game_hour == 0:
-        for player in library.players:
+        for player in store.players:
             if not player.character:
                 continue
 
@@ -66,7 +66,7 @@ def heartbeat(library, loop_counter, loops_a_second):
 
     # Update player prompts
     if loop_counter % loops_a_game_minute == 0:
-        for player in library.players:
+        for player in store.players:
             if player.character:
                 prompt = ""
                 prompt += player.character.reserves.hungerString(True)
@@ -77,7 +77,7 @@ def heartbeat(library, loop_counter, loops_a_second):
                 player.setPrompt(prompt)
  
 
-def gameLoop(serverSocket, library):
+def gameLoop(serverSocket, store):
 
     # Number of loops we've run.  Reset once it hits a certain value.  Used to
     # determine how often to perform certain tasks.
@@ -104,13 +104,13 @@ def gameLoop(serverSocket, library):
         if serverSocket.hasNewConnection():
             newConnection = serverSocket.accept() 
             player = Player(newConnection)
-            player.interpreter = StateInterpreter(player, library, WelcomeScreen(player, library))
-            library.players.append(player)
+            player.interpreter = StateInterpreter(player, store, WelcomeScreen(player, store))
+            store.players.append(player)
 
         serverSocket.resetPollSets()
 
         # Handle New Input
-        for player in library.players:
+        for player in store.players:
             if player.hasInput():
                 player.interpret()
 
@@ -120,7 +120,7 @@ def gameLoop(serverSocket, library):
         if loop_counter == 100000*loops_a_second:
             loop_counter = 0
 
-        heartbeat(library, loop_counter, loops_a_second)
+        heartbeat(store, loop_counter, loops_a_second)
 
         # Once we reach the end of the loop, calculate how long it took and sleep the remainder of
         # the time.  This makes sure we don't loop more than we want to.  If we're going too slow,
@@ -149,12 +149,12 @@ def main():
     port = int(arguments.port)
 
     serverSocket = ServerSocket(host, port)
-    library = Library(arguments.world)
-    library.load()
+    store = Store(arguments.world)
+    store.load()
 
     print('Starting up the server on port ' + repr(port))
     try:
-        gameLoop(serverSocket, library)
+        gameLoop(serverSocket, store)
     except KeyboardInterrupt:
         print("Shutting down.")
         serverSocket.shutdown()

@@ -4,8 +4,8 @@
 class State:
     'A base state class as used by the StateInterpreter.'
 
-    def __init__(self, player, library):
-        self.library = library
+    def __init__(self, player, store):
+        self.store = store
         self.player = player
         self.introduction()
 
@@ -31,8 +31,8 @@ class State:
 class StateInterpreter:
     'An interpreter to handle game modes involving a progression of states, where the available commands are defined by the state the player is in.'
 
-    def __init__(self, player, library, initial_state):
-        self.library = library 
+    def __init__(self, player, store, initial_state):
+        self.store = store 
         self.player = player
         self.state = initial_state 
 

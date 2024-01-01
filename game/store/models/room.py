@@ -221,8 +221,8 @@ class Room(Model):
             self.exits[direction] = Exit(self)
             self.exits[direction].fromJson(data['exits'][direction])
 
-        # Library will convert the list of ids into object references in
-        # Library::load
+        # Store will convert the list of ids into object references in
+        # Store::load
         self.items = data['items']
 
         return self

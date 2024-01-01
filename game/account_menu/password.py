@@ -9,7 +9,7 @@ class GetNewAccountPassword(State):
 
     def execute(self, input):
         if self.player.account:
-            state = ConfirmNewAccountPassword(self.player, self.library, input)
+            state = ConfirmNewAccountPassword(self.player, self.store, input)
             return state
         else:
             raise RuntimeError('Players setting new passwords must have accounts!')
@@ -18,8 +18,8 @@ class GetNewAccountPassword(State):
 
 class ConfirmNewAccountPassword(State):
 
-    def __init__(self, player, library, password):
-        super(ConfirmNewAccountPassword, self).__init__(player, library)
+    def __init__(self, player, store, password):
+        super(ConfirmNewAccountPassword, self).__init__(player, store)
         self.password = password
 
     def introduction(self):
@@ -29,10 +29,10 @@ class ConfirmNewAccountPassword(State):
         if self.player.account and input == self.password:
             self.player.account.setPassword(input)
             self.player.account.save('data/accounts/')
-            return account.menu.AccountMenu(self.player, self.library)
+            return account.menu.AccountMenu(self.player, self.store)
         elif self.player.account:
             self.player.write("Passwords didn't match.  Please try again.")
-            return GetNewAccountPassword(self.player, self.library)
+            return GetNewAccountPassword(self.player, self.store)
         else:
             raise RuntimeError('Players setting new passwords must have accounts!')
 

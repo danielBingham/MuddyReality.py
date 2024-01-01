@@ -73,11 +73,11 @@ Get detailed information about a room or object.  If [object] is excluded, the r
             return
 
         if not arguments:
-            proxy = Look(self.library)
+            proxy = Look(self.store)
             return proxy.execute(player, arguments)
 
         if arguments in Look.DIRECTIONS:
-            proxy = Look(self.library)
+            proxy = Look(self.store)
             return proxy.execute(player, arguments)
 
         item = ItemLibrary.findItemByKeywords(player.character.inventory, arguments)

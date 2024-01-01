@@ -17,12 +17,12 @@ If this is your first time, you'll need to create an account by typing "new".
 
     def execute(self, input):
         if input == "new":
-            return CreateNewAccount(self.player, self.library)
+            return CreateNewAccount(self.player, self.store)
         else:
-            account = self.library.accounts.getById(input.lower())
+            account = self.store.accounts.getById(input.lower())
             if account:
                 self.player.account = account
-                return GetAccountPassword(self.player, self.library)
+                return GetAccountPassword(self.player, self.store)
             else:
                 self.player.write("That account doesn't exist.")
         return self
@@ -37,7 +37,7 @@ class GetAccountPassword(State):
 
     def execute(self, input):
         if self.player.account.isPassword(input):
-            return AccountMenu(self.player, self.library)
+            return AccountMenu(self.player, self.store)
         else:
             self.player.write("Incorrect password.")
         

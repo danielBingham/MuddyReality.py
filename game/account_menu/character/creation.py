@@ -29,12 +29,12 @@ class SetCharacterStats(State):
         'charisma': 'cha'
     }
 
-    def __init__(self, player, library):
+    def __init__(self, player, store):
         self.current_stat = ''
         self.points = 200
         self.base_abilities = copy.copy(player.character.abilities)
 
-        super(SetCharacterStats, self).__init__(player, library)
+        super(SetCharacterStats, self).__init__(player, store)
 
 
 
@@ -107,7 +107,7 @@ class SetCharacterStats(State):
             self.player.character.save('data/characters/')
             self.player.account.addCharacter(self.player.character)
             self.player.character = None
-            return account.menu.AccountMenu(self.player, self.library)
+            return account.menu.AccountMenu(self.player, self.store)
 
         if self.current_stat and stat.isdecimal():
             target = int(stat)
