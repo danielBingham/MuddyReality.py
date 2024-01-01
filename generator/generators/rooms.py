@@ -1,8 +1,8 @@
 import random, copy, glob, math
 
-from game.library.models.room import Room
-from game.library.models.room import Exit
-from game.library.models.item import Item
+from game.store.models.room import Room
+from game.store.models.room import Exit
+from game.store.models.item import Item
 
 
 def loadItems():
