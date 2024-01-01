@@ -14,9 +14,14 @@
             "products": [
                 {
                     "product": "pile of serviceberries",
-                    "amount": 3 
+                    "amount": 3
                 }
             ],
+            "preDescription": "The tree is covered with small, dark blue berries.",
+            "postDescription": "The tree has been picked clean of berries.",
+            "consumed": false,
+            "calories": 155,
+            "time": 30,
             "action": "pick",
             "required_tools": [ ]
         }

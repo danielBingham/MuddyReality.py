@@ -9,20 +9,5 @@
     "weight": 2250,
     "canPickUp": false,
     "isGrowing": true,
-    "traits": {
-        "Harvestable": {
-            "products": [
-                {
-                    "product": "large oak log",
-                    "amount": 2 
-                },
-                {
-                    "product": "oak limb",
-                    "amount": 15
-                }
-            ],
-            "action": "fell",
-            "required_tools": [ "axe" ]
-        }
-    }
+    "traits": { }
 }

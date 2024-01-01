@@ -19,6 +19,9 @@
                     "amount": 2
                 }
             ],
+            "consumed": true,
+            "calories": 420,
+            "time": 60,
             "action": "cut",
             "required_tools": [ "axe" ]
         }

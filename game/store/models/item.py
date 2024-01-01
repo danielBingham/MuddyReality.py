@@ -25,9 +25,22 @@ class Harvestable(JsonSerializable):
     'An item that can be harvested.'
 
     def __init__(self):
+
         self.products = []
+
+        self.pre_description = None 
+        self.post_description = None
+
+        self.consumed = False
+        self.replaced_with = None
+
+        self.calories = 0
+        self.time = 0
+
         self.action = 'harvest'
         self.required_tools = []
+
+        self.harvested = False
 
     def toPrototypeJson(self):
         return self.toJson()
@@ -42,12 +55,38 @@ class Harvestable(JsonSerializable):
         for product in self.products:
             json['products'].append(product.toJson())
 
+        if self.pre_description:
+            json['preDescription'] = self.pre_description
+        if self.post_description:
+            json['postDescription'] = self.post_description
+
+        json['consumed'] = self.consumed
+
+        if self.replaced_with:
+            json['replacedWith'] = self.replaced_with
+        
+        json['calories'] = self.calories
+        json['time'] = self.time
+
         json['action'] = self.action
         json['required_tools'] = self.required_tools
 
         return json
 
     def fromJson(self, data):
+        if 'preDescription'in data:
+            self.pre_description = data['preDescription']
+        if 'postDescription' in data:
+            self.post_description = data['postDescription']
+
+        self.consumed = data['consumed']
+        
+        if 'replaceWith' in data:
+            self.replace_with = data['replaceWith']
+
+        self.calories = data['calories']
+        self.time = data['time']
+        
         self.action = data['action']
         self.required_tools = data['required_tools']
 

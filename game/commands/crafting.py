@@ -1,3 +1,5 @@
+import math
+
 from game.interpreters.command import Command
 import game.library.environment as environment
 import game.library.items as ItemLibrary
@@ -111,28 +113,16 @@ harvest [target]
 Harvest materials from an object in your environment.  The object can be either in your inventory or in the room your character currently occupies.
         """
 
-    def execute(self, player, arguments):
-        if player.character.position == player.character.POSITION_SLEEPING:
-            player.write("You can't harvest in your sleep.")
-            return
+    def step(self, player):
+        item = player.character.action_data['harvesting']
+        item_harvest = item.traits["Harvestable"]
 
-        if not arguments:
-            player.write("Harvest what?")
-            return
+        player.character.reserves.calories -= math.floor(item_harvest.calories / item_harvest.time)
         
-        item = ItemLibrary.findItemByKeywords(player.character.inventory, arguments)
-        inventory = True
-        if not item:
-            item = ItemLibrary.findItemByKeywords(player.character.room.items, arguments)
-            inventory = False
 
-        if not item:
-            player.write("You can't find a " + arguments + " to harvest.")
-            return
-
-        if "Harvestable" not in item.traits:
-            player.write("You can't harvest " + item.description)
-            return
+    def finish(self, player):
+        item = player.character.action_data['harvesting']
+        in_inventory = player.character.action_data['in_inventory']
 
         results = ""
         for product in item.traits["Harvestable"].products:
@@ -144,12 +134,55 @@ Harvest materials from an object in your environment.  The object can be either 
                 productItem = self.store.items.instance(product.product)
                 player.character.inventory.append(productItem)
 
-        if inventory:
-            player.character.inventory.remove(item)
+        if item.traits["Harvestable"].consumed:
+            if in_inventory:
+                player.character.inventory.remove(item)
+            else:
+                player.character.room.items.remove(item)
+        elif item.traits["Harvestable"].replaced_with:
+            itemId = item.traits["Harvestable"].replaced_with
+            if in_inventory:
+                player.character.inventory.remove(item)
+                player.character.inventory.append(self.store.items.instance(itemId))
+            else:
+                player.character.room.items.remove(item)
+                player.character.room.items.append(self.store.items.instance(itemId))
         else:
-            player.character.room.items.remove(item)
+            item.traits["Harvestable"].harvested = True
 
         player.write("You " + item.traits["Harvestable"].action + " " + results + " from " + item.description + ".")
         environment.writeToRoom(player.character, player.character.name + " " + item.traits["Harvestable"].action + " from " + item.description + ".")
+
+
+    def execute(self, player, arguments):
+        if player.character.position == player.character.POSITION_SLEEPING:
+            player.write("You can't harvest in your sleep.")
+            return
+
+        if not arguments:
+            player.write("Harvest what?")
+            return
+        
+        item = ItemLibrary.findItemByKeywords(player.character.inventory, arguments)
+        in_inventory = True
+        if not item:
+            item = ItemLibrary.findItemByKeywords(player.character.room.items, arguments)
+            in_inventory = False
+
+        if not item:
+            player.write("You can't find a " + arguments + " to harvest.")
+            return
+
+        if "Harvestable" not in item.traits:
+            player.write("You can't harvest " + item.description)
+            return
+
+        player.character.action = self
+        player.character.action_time = item.traits["Harvestable"].time
+        player.character.action_data = {
+            "harvesting": item,
+            "in_inventory": in_inventory
+        }
+
 
 

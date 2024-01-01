@@ -112,6 +112,10 @@ class Character(NamedModel):
         self.equipment = {}
         self.inventory = []
 
+        self.action = None
+        self.action_data = {} 
+        self.action_time = 0
+
         self.room = None
 
     def describe(self):

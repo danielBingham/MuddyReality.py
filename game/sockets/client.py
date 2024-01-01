@@ -29,7 +29,7 @@ class ClientSocket:
         self.inputQueue = []
 
         # We'll use this to clear the output buffer.
-        self.outputBufferReset = "\n\n"
+        self.outputBufferReset = ""
 
         # A buffer of output to go out.
         self.outputBuffer = self.outputBufferReset 
@@ -79,7 +79,10 @@ class ClientSocket:
     def read(self):
         data = self.socket.recv(4096)
         if data:
-            self.inputQueue.append(data.decode())
+            decoded = data.decode()
+            self.inputQueue.append(decoded)
+            if self.player:
+                self.player.need_prompt = True
         else:
             # We're in an error state.  Close down the socket.
             self.close()
@@ -90,13 +93,14 @@ class ClientSocket:
     ###
     def write(self):
         if self.hasOutput():
-            if not self.player.hasPromptInBuffer():
-                self.appendToOutputBuffer(self.player.getPrompt())
-
             self.socket.send(self.outputBuffer.encode())
             self.clearOutputBuffer()
 
-            self.player.setPromptInBuffer(False)
+            if self.player and self.player.hasPromptInBuffer():
+                self.player.need_prompt = False 
+                self.player.setPromptInBuffer(False)
+            elif self.player:
+                self.player.need_prompt = True
 
     ###
     # Handle any errors, closing the connection if necessary.

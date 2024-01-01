@@ -17,6 +17,9 @@
                     "amount": 5
                 }
             ],
+            "consumed": true,
+            "calories": 10,
+            "time": 5,
             "action": "pick",
             "required_tools": []
         }

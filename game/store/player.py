@@ -21,6 +21,9 @@ class Player:
         self.character = None
 
         self.promptInBuffer = False
+        self.need_prompt = True 
+        self.prompt_off = False
+
         self.defaultPrompt = "\n\n> "
         self.prompt = self.defaultPrompt
 
@@ -35,9 +38,9 @@ class Player:
         if input:
             self.interpreter.interpret(input)
         
-        if not self.hasPromptInBuffer():
-            self.write(self.getPrompt(), wrap=False)
-            self.setPromptInBuffer(True)
+        #if not self.hasPromptInBuffer():
+        #    self.write(self.getPrompt(), wrap=False)
+        #    self.setPromptInBuffer(True)
 
     def hasInput(self):
         return self.socket.hasInput()

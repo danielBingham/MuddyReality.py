@@ -14,9 +14,14 @@
             "products": [
                 {
                     "product": "handful of serviceberries",
-                    "amount": 10 
+                    "amount": 10
                 }
             ],
+            "preDescription": "The tree is covered with small, dark blue berries.",
+            "postDescription": "The tree has been picked clean of berries.",
+            "consumed": false,
+            "calories": 75,
+            "time": 15,
             "action": "pick",
             "required_tools": [ ]
         }

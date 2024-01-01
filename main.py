@@ -15,6 +15,26 @@ def heartbeat(store, loop_counter, loops_a_second):
     loops_a_game_minute = loops_a_second
     loops_a_game_hour = loops_a_game_minute * 60
 
+    # Advance any actions or action timers.
+    if loop_counter % loops_a_game_minute == 0:
+        for player in store.players:
+            if not player.character:
+                continue
+            if not player.character.action:
+                continue
+
+            player.character.action_time -= 1
+            if player.character.action_time > 0:
+                player.prompt_off = True
+                player.write(".", wrap=False)
+                player.character.action.step(player)
+            else:
+                player.character.action.finish(player)
+                player.character.action = None
+                player.character.action_data = {}
+                player.character.action_time = 0
+                player.prompt_off = False
+
     # Do hunger calculations once a game minute.
     if loop_counter % loops_a_game_minute == 0:
         for player in store.players:
@@ -121,6 +141,13 @@ def gameLoop(serverSocket, store):
             loop_counter = 0
 
         heartbeat(store, loop_counter, loops_a_second)
+
+        # Write prompts at the loop if any reading or writing has been done.
+        for player in store.players:
+            if player.need_prompt and not player.prompt_off:
+                player.write(player.getPrompt(), wrap=False)
+                player.setPromptInBuffer(True)
+                player.need_prompt = False
 
         # Once we reach the end of the loop, calculate how long it took and sleep the remainder of
         # the time.  This makes sure we don't loop more than we want to.  If we're going too slow,
