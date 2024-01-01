@@ -1,0 +1,27 @@
+{
+    "name": "ancient white oak tree",
+    "description": "a huge, ancient tree with light gray, scaly bark and oblong, seven-lobed leaves",
+    "details": "A huge, ancient tree standing tall into the sky with a wide spreading canopy. Its bark is light gray and scaly with shallow fissures.  Its leaves are a bright, yellow green. They are arranged alternately along the twigs, and are oblong seven lobes.",
+    "keywords": [ "huge ancient tree", "ancient tree", "tree", "light gray scaly bark", "gray scaly bark", "scaly bark", "oblong seven lobed leaves", "seven lobed leaves", "lobed leaves", "oak tree" ],
+    "length": 45,
+    "width": 45,
+    "height": 45,
+    "weight": 4050000,
+    "can_pick_up": false,
+    "traits": {
+        "Harvestable": {
+            "products": [
+                {
+                    "product": "large oak log",
+                    "amount": 2 
+                },
+                {
+                    "product": "oak limb",
+                    "amount": 15
+                }
+            ],
+            "action": "fell",
+            "required_tools": [ "axe" ]
+        }
+    }
+}

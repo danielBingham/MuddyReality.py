@@ -1,6 +1,6 @@
 {
     "name": "burned-forest",
-    "color": [ 35, 45, 35 ],
+    "color": [ 100, 150, 100],
     "titles": [ "Burned Forest" ],
     "descriptions": {
         "initial": [ "An area of recently burned forest." ],

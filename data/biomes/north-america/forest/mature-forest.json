@@ -1,6 +1,6 @@
 {
     "name": "mature-forest",
-    "color": [ 40, 100, 40 ],
+    "color": [ 55, 230, 45],
     "titles": [ "Mature Forest" ],
     "descriptions": {
         "initial": [ "A mature forest of huge trees." ],
@@ -10,14 +10,16 @@
             "The sky is completely obscured by branches and leaves."
         ]
     },
-    "trees": [ "mature european oak tree", "european oak tree" ],
+    "trees": [ "mature white oak tree", "white oak tree" ],
     "treeDensity": 1.5,
     "shrubs": [],
     "shrubDensity": 0.2,
     "herbs": [],
     "herbDensity": 0.5,
-    "debris": [],
-    "debrisDensity": 0.5, 
+    "debris": [
+        "small fallen dry oak branch", "fallen dry oak branch", "large fallen dry oak branch"
+    ],
+    "debrisDensity": 0.001, 
     "water": "no-water",
     "succession": "ancient-forest",
     "successionTime": 100,

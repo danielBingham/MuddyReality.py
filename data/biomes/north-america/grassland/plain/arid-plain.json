@@ -1,6 +1,6 @@
 {
     "name": "arid-plain",
-    "color": [ 160,160,100],
+    "color": [ 255, 180, 115 ],
     "titles": [ 
         "Arid Plain", 
         "Dry Plain" 

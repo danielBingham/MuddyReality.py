@@ -1,0 +1,12 @@
+{
+    "name": "mature downy serviceberry tree",
+    "description": "a tree with smooth, furrowed gray bark and ovate leaves with pointed tips",
+    "details": "A tree grows here.  It has smooth, furrowed gray bark.  The leaves are ovate with pointed tips and finely serrated margins.",
+    "keywords": [ "tree", "smooth furrowed gray bark", "furrowed gray bark", "gray bark", "ovate pointed leaves", "pointed leaves", "downy serviceberry tree", "serviceberry tree" ],
+    "length": 8,
+    "width": 8,
+    "height": 12,
+    "weight": 225,
+    "can_pick_up": false,
+    "traits": { }
+}

@@ -1,6 +1,6 @@
 {
     "name": "forest",
-    "color": [ 60, 150, 60 ],
+    "color": [ 85, 230, 75],
     "titles": [ "Forest" ],
     "descriptions": {
         "initial": [ "A healthy forest." ],
@@ -11,14 +11,19 @@
             "The ground is dappled with moving patches of light." 
         ]
     },
-    "trees": [ "european oak sapling", "european oak tree", "young european oak tree" ],
+    "trees": [ "white oak sapling", "young white oak tree", "white oak tree" ],
     "treeDensity": 1.25,
-    "shrubs": [],
+    "shrubs": [
+        "mature downy serviceberry tree",
+        "mature flowering dogwood tree"
+    ],
     "shrubDensity": 0.25,
     "herbs": [],
     "herbDensity": 1.0,
-    "debris": [],
-    "debrisDensity": 0.5, 
+    "debris": [
+        "small fallen dry oak branch", "fallen dry oak branch", "large fallen dry oak branch"
+    ],
+    "debrisDensity": 0.001, 
     "water": "no-water",
     "succession": "mature-forest",
     "successionTime": 70,

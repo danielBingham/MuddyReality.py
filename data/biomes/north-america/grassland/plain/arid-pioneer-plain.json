@@ -1,6 +1,6 @@
 {
     "name": "arid-pioneer-plain",
-    "color": [ 220, 210, 200 ],
+    "color": [ 255, 245, 235],
     "titles": [ "Dry Rocky Plain", "Arid Rocky Plain", "Dry Rough Plain", "Arid Rough Plain" ],
     "descriptions": {
         "initial": [ "A rough, rocky plain with a scattering of hardy plants, lichen, and algae." ],

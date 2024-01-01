@@ -1,6 +1,6 @@
 {
     "name": "young-shrubland",
-    "color": [ 90, 170, 60 ],
+    "color": [ 40, 220, 175],
     "titles": [ "Among the Shrubs", "Shrubs and Saplings", "Old Field of Shrubs" ],
     "descriptions": {
         "initial": [ "An area populated by shrubs, small trees, and young saplings." ],
@@ -10,17 +10,22 @@
             "Here and there, the saplings are beginning to grow into young trees."
         ]
     },
-    "trees": [ ],
-    "treeDensity": 0.25,
-    "shrubs": [],
-    "shrubDensity": 0.5,
+    "trees": [ "white oak sapling" ],
+    "treeDensity": 0.05,
+    "shrubs": [ 
+        "downy serviceberry sapling", "young downy serviceberry tree", "downy serviceberry tree",
+        "flowering dogwood sapling", "young flowering dogwood tree", "flowering dogwood tree" 
+    ],
+    "shrubDensity": 0.1,
     "herbs": [],
     "herbDensity": 1.0,
-    "debris": [],
-    "debrisDensity": 0.25, 
+    "debris": [
+        "small fallen dry oak branch"
+    ],
+    "debrisDensity": 0.0001, 
     "water": "no-water",
     "succession": "shrubland",
-    "successionTime": 5,
+    "successionTime": 10,
     "disruptions": {
         "fire": { 
             "chance": 0.1,

@@ -1,6 +1,6 @@
 {
     "name": "burned-shrubland",
-    "color": [ 45, 50, 45 ],
+    "color": [ 100, 170, 150],
     "titles": [ "Burned Shrubland", "Burned Shrubs", "Burned Saplings", "Burned Scrub" ],
     "descriptions": {
         "initial": [ "An area of recently burned shrubland." ],

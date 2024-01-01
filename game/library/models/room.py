@@ -122,6 +122,7 @@ class Room(Model):
 
         self.title = ''
         self.description = ''
+        self.color = [] 
 
         self.exits = {}
 
@@ -136,11 +137,26 @@ class Room(Model):
         return False
 
 
+    def getColorString(self):
+        return "\033[38;2;" + str(self.color[0]) + ";" + str(self.color[1]) + ";" + str(self.color[2]) + "m"
+
+    def getColorReset(self):
+        return "\033[0m"
+
     ###
     # Describe the room to a player.
     ###
     def describe(self, player):
-        output = self.wrapper.fill(str(self.title)) + "\n"
+        output = ""
+
+        if self.color:
+            output += self.getColorString()
+        output += self.wrapper.fill(str(self.title)) 
+        if self.color:
+            output += self.getColorReset() 
+
+        output += "\n"
+
         output += self.wrapper.fill(str(self.description)) + "\n"
         output += "---\n"
         for occupant in self.occupants:
@@ -154,6 +170,7 @@ class Room(Model):
             if not direction in self.exits:
                 continue
 
+            output += self.exits[direction].room_to.getColorString()
             if self.exits[direction].is_door:
                 if self.exits[direction].is_open:
                     output += "(" + direction + ") "
@@ -161,6 +178,8 @@ class Room(Model):
                     output += "[" + direction + "] "
             else:
                 output += direction + " "
+            output += self.getColorReset()
+
         output += "\n"
         return output
 
@@ -172,6 +191,7 @@ class Room(Model):
         json['id'] = self.getId()
         json['title'] = self.title
         json['description'] = self.description
+        json['color'] = self.color
 
         json['exits'] = {}
         for direction in self.exits:
@@ -190,6 +210,7 @@ class Room(Model):
         self.setId(data['id'])
         self.title = data['title']
         self.description = data['description']
+        self.color = data['color']
 
         for direction in data['exits']:
             self.exits[direction] = Exit(self)

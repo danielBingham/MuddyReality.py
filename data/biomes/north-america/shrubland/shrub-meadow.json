@@ -1,6 +1,6 @@
 {
     "name": "shrub-meadow",
-    "color": [ 100, 200, 50 ],
+    "color": [ 100, 220, 190],
     "titles": [ 
         "Shrubs in a Meadow", 
         "Shrubs in a Field",
@@ -15,17 +15,22 @@
             "Wildflowers grow among the grasses." 
         ]
     },
-    "trees": [],
-    "treeDensity": 0.1,
-    "shrubs": [],
-    "shrubDensity": 0.25,
+    "trees": [ "white oak sapling" ],
+    "treeDensity": 0.01,
+    "shrubs": [
+        "downy serviceberry sapling", "young downy serviceberry tree", 
+        "flowering dogwood sapling", "young flowering dogwood tree" 
+    ],
+    "shrubDensity": 0.1,
     "herbs": [],
     "herbDensity": 1.0,
-    "debris": [],
-    "debrisDensity": 0.25, 
+    "debris": [
+        "small fallen dry oak branch"
+    ],
+    "debrisDensity": 0.0001, 
     "water": "no-water",
     "succession": "young-shrubland",
-    "successionTime": 5,
+    "successionTime": 10,
     "disruptions": {
         "fire": { 
             "chance": 0.05,

@@ -1,6 +1,6 @@
 {
     "name": "burned-arid-plain",
-    "color": [ 100, 100, 90 ],
+    "color": [ 185, 180, 175],
     "titles": [ "Burned Arid Plain", "Burned Dry Plain" ],
     "descriptions": {
         "initial": [ "A burned, dry plain." ],

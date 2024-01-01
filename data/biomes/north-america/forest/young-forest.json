@@ -1,6 +1,6 @@
 {
     "name": "young-forest",
-    "color": [ 70, 180, 70 ],
+    "color": [ 140, 255, 130],
     "titles": [ "Young Forest" ],
     "descriptions": {
         "initial": [ "A young forest." ],
@@ -10,14 +10,19 @@
             "Shade tolerant herbs and wildflowers grow under saplings in the open areas."
         ]
     },
-    "trees": [ "european oak sapling", "young european oak tree" ],
+    "trees": [ "white oak sapling", "young white oak tree" ],
     "treeDensity": 1.0,
-    "shrubs": [],
+    "shrubs": [
+        "downy serviceberry tree", "mature downy serviceberry tree",
+        "flowering dogwood tree", "mature flowering dogwood tree"
+    ],
     "shrubDensity": 0.5,
     "herbs": [],
     "herbDensity": 0.25,
-    "debris": [],
-    "debrisDensity": 0.5, 
+    "debris": [ 
+        "small fallen dry oak branch" 
+    ],
+    "debrisDensity": 0.0001, 
     "water": "no-water",
     "succession": "forest",
     "successionTime": 30,

@@ -1,0 +1,27 @@
+{
+    "name": "young white oak tree",
+    "description": "a young tree with light gray, scaly bark and oblong, seven-lobed leaves",
+    "details": "A young tree stretching into the sky. Its bark is light gray and scaly with shallow fissures.  Its leaves are a bright, yellow green. They are arranged alternately along the twigs, and are oblong seven lobes.",
+    "keywords": [ "young tree", "tree", "light gray scaly bark", "gray scaly bark", "scaly bark", "oblong seven lobed leaves", "seven lobed leaves", "lobed leaves", "oak tree" ],
+    "length": 10,
+    "width": 10,
+    "height": 10,
+    "weight": 2250,
+    "can_pick_up": false,
+    "traits": {
+        "Harvestable": {
+            "products": [
+                {
+                    "product": "large oak log",
+                    "amount": 2 
+                },
+                {
+                    "product": "oak limb",
+                    "amount": 15
+                }
+            ],
+            "action": "fell",
+            "required_tools": [ "axe" ]
+        }
+    }
+}

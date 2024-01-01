@@ -1,12 +1,12 @@
 {
-    "name": "STUB large fallen dry oak branch",
-    "description": "a fallen, dry greyish-brown branch",
-    "details": "A fallen branch with greyish-brown bark, hairless twigs, and pointed, brownish buds.  It lacks leaves, having been dead long enough that they've browned and fallen off.",
+    "name": "large fallen dry oak branch",
+    "description": "a large fallen, dry greyish-brown branch",
+    "details": "A large fallen branch with greyish-brown bark, hairless twigs, and pointed, brownish buds.  It lacks leaves, having been dead long enough that they've browned and fallen off.",
     "keywords": [ "large greyish-brown branch", "greyish-brown", "branch", "wood", "oak" ],
-    "length": 2,
-    "width": 0.1,
-    "height": 0.1,
-    "weight": 18,
+    "length": 3,
+    "width": 0.15,
+    "height": 0.15,
+    "weight": 60,
     "traits": {
         "Material": {
             "types": [ "dry-wood", "wood", "oak" ]

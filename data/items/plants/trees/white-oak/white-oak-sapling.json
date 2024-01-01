@@ -1,0 +1,27 @@
+{
+    "name": "white oak sapling",
+    "description": "a sapling with light gray, smooth bark and oblong, seven-lobed leaves",
+    "details": "A small sapling.  Its bark is light gray and smooth.  Its leaves are a bright, yellow green. They are arranged alternately along the twigs, and are oblong seven lobes.",
+    "keywords": [ "sapling", "tree", "light gray scaly bark", "gray scaly bark", "scaly bark", "oblong seven lobed leaves", "seven lobed leaves", "lobed leaves", "oak tree" ],
+    "length": 2,
+    "width": 2,
+    "height": 2,
+    "weight": 4.5,
+    "can_pick_up": false,
+    "traits": {
+        "Harvestable": {
+            "products": [
+                {
+                    "product": "large oak log",
+                    "amount": 2 
+                },
+                {
+                    "product": "oak limb",
+                    "amount": 15
+                }
+            ],
+            "action": "fell",
+            "required_tools": [ "axe" ]
+        }
+    }
+}

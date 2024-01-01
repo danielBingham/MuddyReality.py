@@ -8,10 +8,6 @@ from game.library.player import Player
 from game.interpreters.state import StateInterpreter
 from game.account_menu.welcome import WelcomeScreen 
 
-HOST = ''
-PORT = 3000 
-
-
 # A method called on every loop that can be used for actions that need to take
 # place every so many loops.  Used to control autonomous timing in the game
 # world.
@@ -123,17 +119,23 @@ def main():
                     prog='main',
                     description='Run the Muddy Reality Server.')
 
+    parser.add_argument('-H', '--host', dest='host', default='', help="What hostname do we want to run the server on?")
+    parser.add_argument('-p', '--port', dest='port', default=3000, help="What port should we run the server on?")
+
     parser.add_argument('--world', default='base', help='The name of the world we want to run the server for.') 
 
     arguments = parser.parse_args()
 
     random.seed()
 
-    serverSocket = ServerSocket(HOST, PORT)
+    host = arguments.host
+    port = int(arguments.port)
+
+    serverSocket = ServerSocket(host, port)
     library = Library(arguments.world)
     library.load()
 
-    print('Starting up the server on port ' + repr(PORT))
+    print('Starting up the server on port ' + repr(port))
     try:
         gameLoop(serverSocket, library)
     except KeyboardInterrupt:

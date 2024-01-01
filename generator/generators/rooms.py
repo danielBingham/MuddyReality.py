@@ -4,6 +4,7 @@ from game.library.models.room import Room
 from game.library.models.room import Exit
 from game.library.models.item import Item
 
+
 def loadItems():
     print("Loading items...")
     items = {}
@@ -26,30 +27,58 @@ def instance(items, itemId):
         print("Error!  Attempt to instance Item(%s) that does not exist." % itemId)
         return None
 
+def populateItems(world, room, biome, items, itemIds, density):
+    room_area = world.room_width ** 2
+
+    coverage = 0
+    while coverage / room_area < density:
+        index = random.randrange(len(itemIds))
+        itemId = itemIds[index]
+        if itemId in items:
+            item = instance(items, itemId)
+            room.items.append(item)
+            coverage += item.width * item.length
+        else:
+            print("Error! Item(%s) not found for Biome(%s)." % (itemId, biome.name))
+            break
+
+def dX(world, x, dx):
+    if x+dx < 0:
+        return world.width + (x+dx)
+    if x+dx >= world.width:
+        return x+dx - world.width 
+    return x+dx
+
+def dY(world, y, dy):
+    if y+dy < 0:
+        return world.width + (y+dy)
+    if y+dy >= world.width:
+        return y+dy - world.width
+    return y+dy
+
 def descriptionFromSlope(slope):
     if slope == 0:
-        return "flat"
+        return "levels"
+
+    direction = "up"
+    if slope < 0:
+        direction = "down"
 
     description = ""
     if abs(slope) > 0 and abs(slope) <= 0.1:
-        description = "gently sloped"
+        description = "slopes %s gently" % direction
     elif abs(slope) > 0.1 and abs(slope) <= 0.25:
-        description = "sloped"
+        description = "slopes %s slightly" % direction
     elif abs(slope) > 0.25 and abs(slope) <= 0.5:
-        description = "moderately sloped"
+        description = "slopes %s" % direction
     elif abs(slope) > 0.5 and abs(slope) <= 0.75:
-        description = "steeply sloped"
+        description = "slopes %s steeply" % direction
     elif abs(slope) > 0.75 and abs(slope) <= 0.90:
-        description = "extremely sloped"
-    
-    if slope < 0:
-        description += " down"
-    else:
-        description += " up"
+        description = "slopes %s precipitously" % direction
 
     return description
 
-def generateSlopeDescription(world, y, x):
+def generateNeighborDescription(world, rooms, y, x):
     height = world.terrain[y][x]
 
     slope_north = 0
@@ -57,18 +86,24 @@ def generateSlopeDescription(world, y, x):
     slope_south = 0
     slope_west = 0
 
-    if y > 0:
-        slope_north = math.atan((height - world.terrain[y-1][x])/world.room_width)
-    if y < world.width-1:
-        slope_south = math.atan((height - world.terrain[y+1][x])/world.room_width)
+    description = ""
 
-    if x > 0:
-        slope_west = math.atan((height - world.terrain[y][x-1])/world.room_width)
-    if x < world.width-1:
-        slope_east = math.atan((height - world.terrain[y][x+1])/world.room_width)
+    dy = dY(world, y, -1)
+    slope_north = math.atan((height - world.terrain[dy][x])/world.room_width)
+    description += "The land to the north %s to %s. " % (descriptionFromSlope(slope_north), rooms[dy][x].title.lower()) 
 
-    description = "The land is %s to the north, %s to the east, %s to the south, %s to the west." % \
-        (descriptionFromSlope(slope_north), descriptionFromSlope(slope_east), descriptionFromSlope(slope_south), descriptionFromSlope(slope_west))
+    dx = dX(world, x, 1)
+    slope_east = math.atan((height - world.terrain[y][dx])/world.room_width)
+    description += "To the east it %s to %s. " % (descriptionFromSlope(slope_east), rooms[y][dx].title.lower())
+
+    dy = dY(world, y, 1)
+    slope_south = math.atan((height - world.terrain[dy][x])/world.room_width)
+    description += "To the south it %s to %s. " % (descriptionFromSlope(slope_south), rooms[dy][x].title.lower())
+
+    dx = dX(world, x, -1)
+    slope_west = math.atan((height - world.terrain[y][dx])/world.room_width)
+    description += "To the west it %s to %s. " % (descriptionFromSlope(slope_west), rooms[y][dx].title.lower())
+
     return description
 
 def generateRooms(biomes, world):
@@ -88,6 +123,7 @@ def generateRooms(biomes, world):
 
             title = random.randrange(0, len(biome.titles))
             room.title = biome.titles[title]
+            room.color = biome.color
 
             initial = random.randrange(0, len(biome.descriptions['initial']))
             room.description = biome.descriptions['initial'][initial]
@@ -95,65 +131,74 @@ def generateRooms(biomes, world):
             number_of_flavor = random.randrange(0, len(biome.descriptions['flavor']))
             for flavor in random.sample(range(len(biome.descriptions['flavor'])), number_of_flavor):
                 room.description += " " + biome.descriptions['flavor'][flavor]
-
-            # Generate height descriptions.
-            room.description += " " + generateSlopeDescription(world, y, x) 
             
             rooms[y][x] = room
             id += 1
+
+    for y in range(world.width):
+        for x in range(world.width):
+            room = rooms[y][x]
+
+            room.description += " " + generateNeighborDescription(world, rooms, y, x)
 
 
     # Connect the rooms together.
     for y in range(len(rooms)):
         for x in range(len(rooms[y])):
             print("Connecting Room(%d)" % rooms[y][x].id)
-            if x > 0:
-                if not 'west' in rooms[y][x].exits:
-                    exit = Exit(rooms[y][x])
-                    exit.direction = 'west'
-                    exit.room_to = rooms[y][x-1]
-                    rooms[y][x].exits['west'] = exit 
-
-                    exit = Exit(rooms[y][x-1])
-                    exit.direction = 'east'
-                    exit.room_to = rooms[y][x]
-                    rooms[y][x-1].exits['east'] = exit
             
-            if x < len(rooms)-1:
-                if not 'east' in rooms[y][x].exits:
-                    exit = Exit(rooms[y][x])
-                    exit.direction = 'east'
-                    exit.room_to = rooms[y][x+1]
-                    rooms[y][x].exits['east'] = exit
+            if not 'north' in rooms[y][x].exits:
+                dy = dY(world, y, -1)
 
-                    exit = Exit(rooms[y][x+1])
-                    exit.direction = 'west'
-                    exit.room_to = rooms[y][x]
-                    rooms[y][x+1].exits['west'] = exit
+                exit = Exit(rooms[y][x])
+                exit.direction = 'north'
+                exit.room_to = rooms[dy][x]
+                rooms[y][x].exits['north'] = exit
 
-            if y > 0:
-                if not 'north' in rooms[y][x].exits:
-                    exit = Exit(rooms[y][x])
-                    exit.direction = 'north'
-                    exit.room_to = rooms[y-1][x]
-                    rooms[y][x].exits['north'] = exit
+                exit = Exit(rooms[dy][x])
+                exit.direction = 'south'
+                exit.room_to = rooms[y][x]
+                rooms[dy][x].exits['south'] = exit
 
-                    exit = Exit(rooms[y-1][x])
-                    exit.direction = 'south'
-                    exit.room_to = rooms[y][x]
-                    rooms[y-1][x].exits['south'] = exit
+            if not 'west' in rooms[y][x].exits:
+                dx = dX(world, x, -1)
 
-            if y < len(rooms[y])-1:
-                if not 'south' in rooms[y][x].exits:
-                    exit = Exit(rooms[y][x])
-                    exit.direction = 'south'
-                    exit.room_to = rooms[y+1][x]
-                    rooms[y][x].exits['south'] = exit
+                exit = Exit(rooms[y][x])
+                exit.direction = 'west'
+                exit.room_to = rooms[y][dx]
+                rooms[y][x].exits['west'] = exit 
 
-                    exit = Exit(rooms[y+1][x])
-                    exit.direction = 'north'
-                    exit.room_to = rooms[y][x]
-                    rooms[y+1][x].exits['north'] = exit
+                exit = Exit(rooms[y][dx])
+                exit.direction = 'east'
+                exit.room_to = rooms[y][x]
+                rooms[y][dx].exits['east'] = exit
+            
+            if not 'east' in rooms[y][x].exits:
+                dx = dX(world, x, 1)
+
+                exit = Exit(rooms[y][x])
+                exit.direction = 'east'
+                exit.room_to = rooms[y][dx]
+                rooms[y][x].exits['east'] = exit
+
+                exit = Exit(rooms[y][dx])
+                exit.direction = 'west'
+                exit.room_to = rooms[y][x]
+                rooms[y][dx].exits['west'] = exit
+
+
+            if not 'south' in rooms[y][x].exits:
+                dy = dY(world, y, 1)
+
+                exit = Exit(rooms[y][x])
+                exit.direction = 'south'
+                exit.room_to = rooms[dy][x]
+                rooms[y][x].exits['south'] = exit
+
+                exit = Exit(rooms[dy][x])
+                exit.direction = 'north'
+                exit.room_to = rooms[y][x]
+                rooms[dy][x].exits['north'] = exit
 
     items = loadItems()
 
@@ -166,19 +211,15 @@ def generateRooms(biomes, world):
 
             # Trees
             if biome.trees and biome.tree_density > 0:
-                tree_coverage = 0
-                while tree_coverage / room_area < biome.tree_density:
-                    treeIndex = random.randrange(len(biome.trees))
-                    treeId = biome.trees[treeIndex]
-                    if treeId in items:
-                        tree = instance(items, treeId)
-                        rooms[y][x].items.append(tree)
-                        tree_coverage += tree.width * tree.length
-                    else:
-                        print("Error! Tree Item(%s) not found for Biome(%s)." % (treeId, biome.name))
-                        break
+                populateItems(world, rooms[y][x], biome, items, biome.trees, biome.tree_density)
 
+            if biome.shrubs and biome.shrub_density > 0:
+                populateItems(world, rooms[y][x], biome, items, biome.shrubs, biome.shrub_density)
+            if biome.herbs and biome.herb_density > 0:
+                populateItems(world, rooms[y][x], biome, items, biome.herbs, biome.herb_density)
 
+            if biome.debris and biome.debris_density > 0:
+                populateItems(world, rooms[y][x], biome, items, biome.debris, biome.debris_density)
 
     for y in range(len(rooms)):
         for x in range(len(rooms[y])):

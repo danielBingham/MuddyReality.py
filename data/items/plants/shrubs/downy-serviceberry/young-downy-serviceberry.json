@@ -1,0 +1,12 @@
+{
+    "name": "young downy serviceberry tree",
+    "description": "a young, small tree with smooth, furrowed gray bark and ovate leaves with pointed tips",
+    "details": "A young, small tree grows here.  It has smooth, furrowed gray bark.  The leaves are ovate with pointed tips and finely serrated margins.",
+    "keywords": [ "young small tree", "small tree", "tree", "smooth furrowed gray bark", "furrowed gray bark", "gray bark", "ovate pointed leaves", "pointed leaves", "downy serviceberry tree", "serviceberry tree" ],
+    "length": 3,
+    "width": 3,
+    "height": 4,
+    "weight": 8,
+    "can_pick_up": false,
+    "traits": { }
+}

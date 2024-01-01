@@ -1,6 +1,6 @@
 {
     "name": "shrubland",
-    "color": [ 70, 140, 50 ],
+    "color": [ 0, 225, 165],
     "titles": [ "Thick Shrubs", "Shrubland", "Dense Shrubland" ],
     "descriptions": {
         "initial": [ "An area of dense shrubs, saplings, and young trees." ],
@@ -10,17 +10,24 @@
             "Among the shrubs and small trees, small stands of young forest are beginning to form."
         ]
     },
-    "trees": [ ],
-    "treeDensity": 0.5,
-    "shrubs": [],
+    "trees": [ "white oak sapling", "young white oak tree" ],
+    "treeDensity": 0.05,
+    "shrubs": [
+        "downy serviceberry sapling", "young downy serviceberry tree", 
+        "downy serviceberry tree", "mature downy serviceberry tree",
+        "flowering dogwood sapling", "young flowering dogwood tree", 
+        "flowering dogwood tree", "mature flowering dogwood tree"
+    ],
     "shrubDensity": 0.75,
     "herbs": [],
     "herbDensity": 1.0,
-    "debris": [],
-    "debrisDensity": 0.25, 
+    "debris": [
+        "small fallen dry oak branch"
+    ],
+    "debrisDensity": 0.0001, 
     "water": "no-water",
     "succession": "forest",
-    "successionTime": 10,
+    "successionTime": 20,
     "disruptions": {
         "fire": { 
             "chance": 0.1,
