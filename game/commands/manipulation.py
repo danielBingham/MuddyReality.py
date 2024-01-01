@@ -1,6 +1,5 @@
 from game.interpreters.command import Command
 import game.library.environment as environment
-import game.library.equipment as equipment
 import game.library.items as ItemLibrary
 
 class Open(Command):
