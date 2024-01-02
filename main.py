@@ -35,12 +35,14 @@ def heartbeat(store, loop_counter, loops_a_second):
                 player.character.action_time = 0
                 player.prompt_off = False
 
-    # Do hunger calculations once a game minute.
+    # Do hunger and thirst calculations once a game minute.
     if loop_counter % loops_a_game_minute == 0:
         for player in store.players:
             if not player.character:
                 continue
             player.character.reserves.calories -= 2
+            player.character.reserves.thirst -= 200
+
 
     # Do tired calculations once a game hour. 
     #
@@ -83,20 +85,7 @@ def heartbeat(store, loop_counter, loops_a_second):
                 if abs(character.reserves.sleep) < chance:
                     character.position = character.POSITION_SLEEPING
                     character.player.write("You can't stay awake anymore.  You fall asleep.")
-
-    # Update player prompts
-    if loop_counter % loops_a_game_minute == 0:
-        for player in store.players:
-            if player.character:
-                prompt = ""
-                prompt += player.character.reserves.hungerString(True)
-                if len(prompt) > 0:
-                    prompt += ":"
-                prompt += player.character.reserves.sleepString(True)
-                prompt += "> "
-                player.setPrompt(prompt)
  
-
 def gameLoop(serverSocket, store):
 
     # Number of loops we've run.  Reset once it hits a certain value.  Used to
@@ -142,9 +131,35 @@ def gameLoop(serverSocket, store):
 
         heartbeat(store, loop_counter, loops_a_second)
 
-        # Write prompts at the loop if any reading or writing has been done.
+        # Write prompts at the end of the loop if any reading or writing has
+        # been done.
         for player in store.players:
+            if player.character and player.character.action:
+                player.prompt_off = True
             if player.need_prompt and not player.prompt_off:
+                if player.character:
+                    prompt = ""
+
+                    hunger = player.character.reserves.hungerString(True)
+                    if hunger:
+                        if len(prompt) > 0:
+                            prompt += ":"
+                        prompt += hunger
+
+                    thirst = player.character.reserves.thirstString(True)
+                    if thirst:
+                        if len(prompt) > 0:
+                            prompt += ":"
+                        prompt += thirst
+
+                    sleep = player.character.reserves.sleepString(True)
+                    if sleep:
+                        if len(prompt) > 0:
+                            prompt += ":"
+                        prompt += sleep
+
+                    prompt += "> "
+                    player.setPrompt(prompt)
                 player.write(player.getPrompt(), wrap=False)
                 player.setPromptInBuffer(True)
                 player.need_prompt = False

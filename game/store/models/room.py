@@ -113,6 +113,10 @@ class Room(Model):
         "down": "up"
     }
 
+    WATER_NONE = 'none'
+    WATER_SALT = 'salt'
+    WATER_FRESH = 'fresh'
+
 
     ###
     # Initialize the room.  
@@ -123,6 +127,10 @@ class Room(Model):
         self.title = ''
         self.description = ''
         self.color = [] 
+
+        self.water_type = self.WATER_NONE
+        self.water = 0
+        self.water_velocity = 0
 
         self.exits = {}
 
@@ -198,6 +206,10 @@ class Room(Model):
         json['description'] = self.description
         json['color'] = self.color
 
+        json['waterType'] = self.water_type
+        json['water'] = self.water
+        json['waterVelocity'] = self.water_velocity
+
         json['exits'] = {}
         for direction in self.exits:
             json['exits'][direction] = self.exits[direction].toJson()
@@ -216,6 +228,10 @@ class Room(Model):
         self.title = data['title']
         self.description = data['description']
         self.color = data['color']
+
+        #self.water_type = data['waterType']
+        #self.water = data['water']
+        #self.water_velocity = data['waterVelocity']
 
         for direction in data['exits']:
             self.exits[direction] = Exit(self)

@@ -390,7 +390,13 @@ class Item(NamedModel):
         self.traits = {} 
 
     def detail(self):
-        return self.details
+        output = self.details
+        if "Harvestable" in self.traits:
+            if self.traits["Harvestable"].harvested:
+                output += " " + self.traits["Harvestable"].post_description
+            else:
+                output += " " + self.traits["Harvestable"].pre_description
+        return output 
 
     def groundAction(self):
         if self.can_pick_up:

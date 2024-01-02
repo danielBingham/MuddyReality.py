@@ -1,1 +1,21 @@
-{"name": "gird", "title": "", "experience": 0, "position": "standing", "abilities": {"dexterity": 15, "strength": 18, "constitution": 18, "intelligence": 8, "wisdom": 11, "perception": 13, "willpower": 15, "charisma": 8}, "reserves": {"calories": 2400, "sleep": 16}}
+{
+    "abilities": {
+        "charisma": 8,
+        "constitution": 18,
+        "dexterity": 15,
+        "intelligence": 8,
+        "perception": 13,
+        "strength": 18,
+        "willpower": 15,
+        "wisdom": 11
+    },
+    "experience": 0,
+    "name": "gird",
+    "position": "standing",
+    "reserves": {
+        "calories": 2400,
+        "sleep": 16,
+        "thirst": 4000
+    },
+    "title": ""
+}

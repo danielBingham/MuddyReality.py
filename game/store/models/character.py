@@ -35,6 +35,7 @@ class Reserves(JsonSerializable):
 
     def __init__(self):
         self.calories = 2400
+        self.thirst = 4000
         self.sleep = 16 
 
     def hungerString(self, prompt=False):
@@ -54,6 +55,24 @@ class Reserves(JsonSerializable):
         elif self.calories <= 0:
             hunger = 'starving'
         return hunger
+    
+    def thirstString(self, prompt=False):
+        thirst = ''
+
+        if prompt and self.thirst > 3:
+            return thirst
+
+        if self.thirst > 3:
+            thirst = 'not thirsty'
+        elif self.thirst > 2:
+            thirst = 'thirsty'
+        elif self.thirst > 1:
+            thirst = 'very thirsty'
+        elif self.thirst > 0:
+            thirst = 'extremely thirsty'
+        else:
+            thirst = 'parched'
+        return thirst
 
     def sleepString(self, prompt=False):
         tired = ''
@@ -71,14 +90,24 @@ class Reserves(JsonSerializable):
         return tired
 
     def toString(self):
-        return ("You are %s and %s." %
-            (self.hungerString(), self.sleepString()))
+        return ("You are %s, %s, and %s." %
+            (self.hungerString(), self.thirstString(), self.sleepString()))
 
     def toJson(self):
-        return self.__dict__
+        json = {}
+
+        json["calories"] = self.calories
+        json["thirst"] = self.thirst
+        json["sleep"] = self.sleep
+
+        return json
 
     def fromJson(self, data):
-        self.__dict__ = data
+
+        self.calories = data["calories"]
+        self.thirst = data["thirst"]
+        self.sleep = data["sleep"]
+
         return self
 
 

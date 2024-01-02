@@ -117,7 +117,8 @@ Harvest materials from an object in your environment.  The object can be either 
         item = player.character.action_data['harvesting']
         item_harvest = item.traits["Harvestable"]
 
-        player.character.reserves.calories -= math.floor(item_harvest.calories / item_harvest.time)
+        calorie_cost_per_step = math.floor(item_harvest.calories / item_harvest.time)
+        player.character.reserves.calories -= calorie_cost_per_step 
        
     def cancel(self, player):
         self.finish(player, True)
@@ -189,6 +190,12 @@ Harvest materials from an object in your environment.  The object can be either 
         if "Harvestable" not in item.traits:
             player.write("You can't harvest " + item.description)
             return
+
+        if item.traits["Harvestable"].harvested:
+            player.write("That has already been harvested.  There's nothing left!")
+            return
+
+        player.write("You begin to harvest %s." % item.description)
 
         player.character.action = self
         player.character.action_time = item.traits["Harvestable"].time
