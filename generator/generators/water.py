@@ -1,3 +1,12 @@
+###############################################################################
+#
+# Water generation algorithm.  Used to place accurate rivers, streams, and
+# lakes in the world.
+#
+# Algorithm from here: https://hal.inria.fr/inria-00402079/document 
+#
+###############################################################################
+
 import math
 import numpy as np
 import scipy as sp
@@ -71,12 +80,7 @@ def generateWater(world):
     # individual point on the map, equivalent to the value used to measure rain
     # accumulation.  Note: This is in meters, not meters^3.  This represents
     # water height, not water volume.
-    # water = np.zeros_like(terrain)
     water = np.ones_like(terrain) * world.initial_water 
-    #water = np.zeros_like(terrain)
-    #mid = math.floor(len(water) / 2)
-    #for x in range(len(water[mid])):
-    #    water[math.floor(len(water)/2)][x] = 4
 
     start_water = np.sum(water)
 
@@ -102,8 +106,7 @@ def generateWater(world):
         print('Water days (iterations): %d / %d' % (iteration + 1, iterations))
 
         if iteration < iterations:
-            # Add precipitation. This is done by via simple uniform random distribution,
-            # although other models use a raindrop model
+            # Add water through precipitation. 
             water += rain_per_iteration
 
         if debug:
@@ -115,10 +118,6 @@ def generateWater(world):
             print(np.sum(water))
 
         terrain_water = terrain + water
-
-        #if debug:
-        #    print("\n\nTerrain+Water: ")
-        #    print(terrain_water)
 
         # Calculate the hydrostatic flux from each cell to each of its neighbors.
         delta_height_north = terrain_water - np.roll(terrain_water, 1, 0)
@@ -142,11 +141,23 @@ def generateWater(world):
         # Normalize the flux to the amount of water in each cell.
         total_flux = flux_north + flux_north_east + flux_east + flux_south_east + flux_south + flux_south_west + flux_west + flux_north_west
         scaling_factor = np.select([total_flux == 0, total_flux != 0], [np.ones_like(total_flux), water * (pipe_length*pipe_length) / (total_flux * iteration_length)])
-        
-        #if debug:
-        #    print("\n\nScaling factor: ")
-        #    print(scaling_factor)
 
+        # Multiply by the scaling factor.
+        #
+        # NOTE: We also add a friction factor here.  The division by 2 is not
+        # present in the original algorithm, but is necessary to prevent the
+        # water from sloshing.  Without it, you can end up with a checkerboard
+        # pattern, where all the water in one cell slams into its neighboring
+        # cells in one iteration.  That will leave the central cell empty and
+        # the neighboring cells with enough water to repeat the pattern with
+        # *their* neighbors, eventually filling the whole grid with an
+        # alternating checkerboard.  Limiting the flux to half the water
+        # available in the cell prevents the checkerboard from happening,
+        # though the water will still slosh randomly in flat areas.
+        #
+        # TODO Add an increasing energy loss term to force water to settle once
+        # it fills a depression.  With the current algorithm, it will slosh
+        # around indefinitely.
         flux_north = scaling_factor * flux_north / 2
         flux_north_east = scaling_factor * flux_north_east / 2
         flux_east = scaling_factor * flux_east / 2
@@ -155,11 +166,6 @@ def generateWater(world):
         flux_south_west = scaling_factor * flux_south_west / 2
         flux_west = scaling_factor * flux_west / 2
         flux_north_west = scaling_factor * flux_north_west / 2
-
-        #flux_north = flux_north / total_flux * (water/2)
-        #flux_south = flux_south / total_flux * (water/2)
-        #flux_east = flux_east / total_flux * (water/2)
-        #flux_west = flux_west / total_flux * (water/2)
 
         deltaWater = - iteration_length  / cell_area * (flux_north + flux_north_east + flux_east + flux_south_east + flux_south + flux_south_west + flux_west + flux_north_west)
         deltaWater += iteration_length  / cell_area * (
