@@ -3,9 +3,9 @@ import json
 
 class Biome:
 
-    WATER_NONE = 'no-water'
-    WATER_FRESH = 'fresh-water'
-    WATER_SALT = 'salt-water'
+    WATER_NONE = 'none'
+    WATER_FRESH = 'fresh'
+    WATER_SALT = 'salt'
 
     def __init__(self):
 

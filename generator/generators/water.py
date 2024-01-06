@@ -20,7 +20,7 @@ def generateWater(world):
 
     # Print debugging output.
     debug = False 
-    take_snapshot = False 
+    take_snapshot = True 
 
     terrain = np.array(world.terrain) * 2000
 
@@ -120,15 +120,70 @@ def generateWater(world):
         terrain_water = terrain + water
 
         # Calculate the hydrostatic flux from each cell to each of its neighbors.
-        delta_height_north = terrain_water - np.roll(terrain_water, 1, 0)
-        delta_height_north_east = terrain_water - np.roll(terrain_water, (1, 1), (0,1))
-        delta_height_east = terrain_water - np.roll(terrain_water, 1, 1)
-        delta_height_south_east = terrain_water - np.roll(terrain_water, (-1, 1), (0, 1))
-        delta_height_south = terrain_water - np.roll(terrain_water, -1, 0)
-        delta_height_south_west = terrain_water - np.roll(terrain_water, (-1, -1), (0, 1))
-        delta_height_west = terrain_water - np.roll(terrain_water, -1, 1)
-        delta_height_north_west = terrain_water - np.roll(terrain_water, (1, -1), (0, 1))
 
+        # First we need to calculate the height difference between this cell
+        # and its neighbors.  The height difference in this case includes both
+        # the height of the terrain and the height of the water.
+        #
+        # To calculate the height difference between a cell and its neighbors,
+        # we need to keep our coordinate system in mind:
+        #
+        #   nw(x-1,y-1)   n(x,y-1)   ne(x+1, y-1)
+        #   w (x-1, y)    C(x.y)     e (x+1, y)
+        #   sw(x-1, y+1)  s(x, y-1)  se(x+1, y+1)
+        #
+        # We're going to calculate the delta arrays by subtracting the
+        # `terrain_water` array rolled in a particular direction from itself.
+        # The rolls are a little counter intuitive. So we'll explain one:
+        #
+        #   delta_east = w(x,y) - w(x+1,y) = w(C) - w(e)
+        #
+        # To achieve that on an array level using rolls, we actually need to
+        # roll the array west using `np.roll(terrain_water, -1, axis=1)`
+        #
+        # Which gives us:
+        #
+        #   nw  n   ne      n   ne  nw
+        #   w   C   e   -   C   e   w 
+        #   sw  s   se      s   se  sw
+        #
+        # `delta_east = terrain_water - np.roll(terrain_water, -1, axis=1)`
+
+        # delta_height_north = w(c) - w(n) = w(x,y) - w(x,y-1) 
+        #
+        # nw    n   ne      sw  s   se
+        # w     C   e   -   nw  n   ne
+        # sw    s   se      w   C   e
+        delta_height_north = terrain_water - np.roll(terrain_water, 1, axis=0)
+        
+        # delta_height_east = w(c) - w(e) = w(x,y) - w(x+1,y) 
+        #
+        # nw    n   ne      n   ne  nw 
+        # w     C   e   -   C   e   w 
+        # sw    s   se      s   se  sw 
+        delta_height_east = terrain_water - np.roll(terrain_water, -1, axis=1)
+
+        # delta_height_south = w(c) - w(s) = w(x,y) - w(x, y+1)
+        #
+        # nw    n   ne      w   C   e 
+        # w     C   e   -   sw  s   se 
+        # sw    s   se      nw  n   ne 
+        delta_height_south = terrain_water - np.roll(terrain_water, -1, axis=0)
+
+        # delta_height_west = w(c) - w(w) = w(x,y) - w(x-1, y)
+        #
+        # nw    n   ne      ne  nw  n 
+        # w     C   e   -   e   w   C 
+        # sw    s   se      se  sw  s 
+        delta_height_west = terrain_water - np.roll(terrain_water, 1, axis=1)
+
+        # To get the the corners, we just combine the rolls for each direction appropriately.
+        delta_height_north_east = terrain_water - np.roll(terrain_water, (1, -1), axis=(0,1))
+        delta_height_south_east = terrain_water - np.roll(terrain_water, (-1, -1), axis=(0, 1))
+        delta_height_south_west = terrain_water - np.roll(terrain_water, (-1, 1), axis=(0, 1))
+        delta_height_north_west = terrain_water - np.roll(terrain_water, (1, 1), axis=(0, 1))
+
+        # The flux out from C in each direction, is then calculated using the delta arrays.
         flux_north = np.maximum(0, flux_north + iteration_length * pipe_area * (gravity_constant * delta_height_north) / pipe_length)
         flux_north_east = np.maximum(0, flux_north_east + iteration_length * pipe_area * (gravity_constant * delta_height_north_east) / pipe_length)
         flux_east = np.maximum(0, flux_east + iteration_length * pipe_area * (gravity_constant * delta_height_east) / pipe_length)
@@ -167,17 +222,57 @@ def generateWater(world):
         flux_west = scaling_factor * flux_west / 2
         flux_north_west = scaling_factor * flux_north_west / 2
 
-        deltaWater = - iteration_length  / cell_area * (flux_north + flux_north_east + flux_east + flux_south_east + flux_south + flux_south_west + flux_west + flux_north_west)
-        deltaWater += iteration_length  / cell_area * (
-            np.roll(flux_north, -1, 0) 
-            + np.roll(flux_north_east, (-1, -1), (0, 1))
-            + np.roll(flux_east, -1, 1) 
-            + np.roll(flux_south_east, (1, -1), (0, 1))
-            + np.roll(flux_south, 1, 0) 
-            + np.roll(flux_south_west, (1, 1), (0, 1))
-            + np.roll(flux_west, 1, 1)
-            + np.roll(flux_north_west, (-1, 1), (0, 1))
+
+        # Create the water delta by subtracting the flux out and then adding the flux in.
+
+        # For the flux out, we just sum the fluxes in all directions.  Each
+        # directional flux array, `f_d(x,y)` represents the flux out for
+        # `(x,y)` in direction`d`.
+        flux_out = (
+            flux_north 
+            + flux_north_east 
+            + flux_east 
+            + flux_south_east 
+            + flux_south 
+            + flux_south_west 
+            + flux_west 
+            + flux_north_west
         )
+        deltaWater = - iteration_length / cell_area * (flux_out)
+
+        # Add the flux in
+        #
+        # To calculate the flux in, we want to add the flux out in the
+        # appropriate direction for each of the neighboring cells. The flux we
+        # want to add will be the one in the opposite direction from the
+        # direction the neighbor lies in.  So for the cell to the east, we'll
+        # add the flux_west.  For the cell to the west, we'll add the
+        # flux_east.
+        #
+        # This means we need to roll them in the opposite directions we did for
+        # calculating the delta_height.  So to calculate the delta_height_east
+        # we rolled the array so that the height in the square immediately east
+        # of C was in C.  But when adding the flux_east to the total flux_in,
+        # we actually want the flux_ east for the square to the west of C.
+        # Because the water flowing out of that square to the east is the water
+        # that will flow into C from the west.
+        #
+        # So we want to roll flux_east such that:
+        #
+        # nw    n   ne      ne  nw  n
+        # w     c   e   ->  e   w   c 
+        # sw    s   se      se  sw  s 
+        flux_in = (
+            np.roll(flux_north, -1, axis=0) 
+            + np.roll(flux_north_east, (-1, 1), axis=(0, 1))
+            + np.roll(flux_east, 1, axis=1) 
+            + np.roll(flux_south_east, (1, 1), axis=(0, 1))
+            + np.roll(flux_south, 1, axis=0) 
+            + np.roll(flux_south_west, (1, -1), axis=(0, 1))
+            + np.roll(flux_west, -1, axis=1)
+            + np.roll(flux_north_west, (-1, -1), axis=(0, 1))
+       )
+        deltaWater += iteration_length / cell_area * (flux_in)
 
         if debug:
             print("\n\nTerrain+Water: ")
@@ -187,6 +282,11 @@ def generateWater(world):
             print(deltaWater)
 
         water += deltaWater
+
+        # Want cannot go negative.  If it does, just zero it out.  We're mostly
+        # removing precision issue with this.  For some reason, the arrays will
+        # often end up with negative values to the power of 10^-16 when they
+        # should be zeroed out.
         water = np.maximum(water, np.zeros_like(water))
        
         if debug:
@@ -198,6 +298,24 @@ def generateWater(world):
 
         if take_snapshot:
             snapshot.snapWater(water, 'snaps/' + str(iteration) + '.png')
+
+        # Compute the final water speeds.  We don't actually need the direction of
+        # the velocity, just the magnitude, since we're just going to use this to
+        # determine whether a room should be a lake or pond room vs a stream or
+        # river room.
+        #
+        # We only want to do this on the final iteration.  In the erosion sim,
+        # the velocity is needed to calculate sediment collection and
+        # deposition values on each iteration.  But we're using it for a
+        # different purpose here.  We only need the last one.
+        #
+        # Becuse we only need the speed, not the direction, we're going to
+        # first collapse the 8 flux directions down to x and y.  Then we'll
+        # take the magnitude to get the speed.
+        #if iteration == iterations-1:
+        #    velocity_x = (np.roll(flux_east, -1, axis=1) - flux_west + flux_east - np.roll(flux_west, 1, axis=1)) / (2 * pipe_length * water) 
+        #        + (np.roll(flux_north_east, (1, 1), (0, 1)) - flux_south_west) - (np.roll(
+        #    velocity_y = (np.roll(flux_north, 1, 0) - flux_south)
 
     if take_snapshot:
         images = []

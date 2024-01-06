@@ -125,6 +125,10 @@ def generateRooms(biomes, world):
             room.title = biome.titles[title]
             room.color = biome.color
 
+            room.water_type = biome.water
+            room.water = world.water[y][x]
+            room.water_velocity = 0
+
             initial = random.randrange(0, len(biome.descriptions['initial']))
             room.description = biome.descriptions['initial'][initial]
 
