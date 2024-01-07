@@ -34,6 +34,27 @@ Attempt to eat an item described by [item] as food.
         else:
             player.write("There doesn't seem to be a " + arguments + " to eat.")
 
+class Drink(Command):
+    ''
+
+    def describe(self):
+        return 'drink - consume water'
+
+    def help(self):
+        return ""
+
+    def execute(self, player, arguments):
+        if player.character.room.water == player.character.room.WATER_FRESH:
+            player.character.thirst += 500
+
+            player.write("You drink from the fresh water.")
+            environment.writeToRoom(player.character, player.character.name + " drinks from the fresh water.")
+            return
+        else:
+            player.write("There's not drinkable water here.")
+            return
+
+
 class Sleep(Command):
     'Go to sleep.'
 

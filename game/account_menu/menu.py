@@ -3,7 +3,6 @@ from game.interpreters.command import CommandInterpreter
 import game.library.movement as movement 
 
 import game.account_menu.password
-import game.account_menu.character.creation
 
 class AccountMenu(State):
 
@@ -84,7 +83,11 @@ quit                - Leave the game.
                 return self
 
             self.player.character = self.store.characters.create(name)
-            return account.character.creation.SetCharacterStats(self.player, self.store)
+            self.player.character.save('data/characters/')
+            self.player.account.addCharacter(self.player.character)
+            self.player.character = None
+
+            return self 
         
 
         if command == "quit":

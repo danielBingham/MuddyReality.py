@@ -31,7 +31,7 @@ class Model(JsonSerializable):
         filename = ''
         if isinstance(self.id, int):
             filename = base_path + str(self.id) + '.json'
-        elif isintance(self.id, str):
+        elif isinstance(self.id, str):
             filename = base_path + self.id + '.json'
         else:
             raise TypeError('Invalid id type.')

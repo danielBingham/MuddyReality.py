@@ -3,88 +3,14 @@
 import sys, traceback, time, random, argparse
 
 from game.sockets.server import ServerSocket 
+
 from game.store.store import Store 
 from game.store.player import Player
+
 from game.interpreters.state import StateInterpreter
 from game.account_menu.welcome import WelcomeScreen 
 
-# A method called on every loop that can be used for actions that need to take
-# place every so many loops.  Used to control autonomous timing in the game
-# world.
-def heartbeat(store, loop_counter, loops_a_second):
-    loops_a_game_minute = loops_a_second
-    loops_a_game_hour = loops_a_game_minute * 60
-
-    # Advance any actions or action timers.
-    if loop_counter % loops_a_game_minute == 0:
-        for player in store.players:
-            if not player.character:
-                continue
-            if not player.character.action:
-                continue
-
-            player.character.action_time -= 1
-            if player.character.action_time > 0:
-                player.prompt_off = True
-                player.write(".", wrap=False)
-                player.character.action.step(player)
-            else:
-                player.character.action.finish(player)
-                player.character.action = None
-                player.character.action_data = {}
-                player.character.action_time = 0
-                player.prompt_off = False
-
-    # Do hunger and thirst calculations once a game minute.
-    if loop_counter % loops_a_game_minute == 0:
-        for player in store.players:
-            if not player.character:
-                continue
-            player.character.reserves.calories -= 2
-            player.character.reserves.thirst -= 200
-
-
-    # Do tired calculations once a game hour. 
-    #
-    # The player's tiredness is stored as a 'sleep reserve' under
-    # `character.reserves.sleep`.  It's stored as an integer representing the
-    # number of hours they can stay awake without suffering any kind of
-    # tiredness penalty.  The reserve is reduced by `1` for each hour the
-    # character stays awake and increases by `2` for each hour spent sleeping,
-    # roughly matching a schedule with 8 hours of sleep and 16 hours awake.
-    #
-    # Once the sleep reserve is drained below zero the player starts to suffer
-    # tiredness penalties.  The primary penalty is a risk of falling asleep
-    # that increases steadily up to 248 hours spent awake past the 16 hours
-    # rested (16+248 = 264), the record number of hours any human has remained
-    # awake.
-    if loop_counter % loops_a_game_hour == 0:
-        for player in store.players:
-            if not player.character:
-                continue
-
-            character = player.character
-
-            # If they're awake, then get more tired.
-            if character.position != character.POSITION_SLEEPING:
-                character.reserves.sleep -= 1
-
-            # If they're asleep they recover.
-            elif character.position == character.POSITION_SLEEPING:
-                character.reserves.sleep += 2
-
-                if character.reserves.sleep >= 16:
-                    character.position = character.POSITION_STANDING
-                    player.write("You awaken, fully rested.")
-
-
-            # If they're tired, they have an increasing chance of falling
-            # asleep.
-            if character.reserves.sleep < 0:
-                chance = random.randint(0,248)
-                if abs(character.reserves.sleep) < chance:
-                    character.position = character.POSITION_SLEEPING
-                    character.player.write("You can't stay awake anymore.  You fall asleep.")
+from game.heartbeat import Heartbeat
  
 def gameLoop(serverSocket, store):
 
@@ -97,6 +23,8 @@ def gameLoop(serverSocket, store):
 
     # The length of a single loop in milliseconds.
     loop_length = 1000/loops_a_second
+
+    heartbeat = Heartbeat(store, loops_a_second)
 
     # The Game Loop
     while serverSocket.isOpen:
@@ -129,7 +57,7 @@ def gameLoop(serverSocket, store):
         if loop_counter == 100000*loops_a_second:
             loop_counter = 0
 
-        heartbeat(store, loop_counter, loops_a_second)
+        heartbeat.heartbeat(loop_counter)
 
         # Write prompts at the end of the loop if any reading or writing has
         # been done.

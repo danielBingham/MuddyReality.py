@@ -17,6 +17,8 @@ Your character will leave the game and you will return to the account menu where
         """
 
     def execute(self, player, arguments):
+        player.character.save('data/characters/')
+
         player.write('You leave the game.')
         environment.writeToRoom(player.character, player.character.name + ' leaves the game.')
 

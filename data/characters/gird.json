@@ -1,21 +1,27 @@
 {
-    "abilities": {
-        "charisma": 8,
-        "constitution": 18,
-        "dexterity": 15,
-        "intelligence": 8,
-        "perception": 13,
-        "strength": 18,
-        "willpower": 15,
-        "wisdom": 11
+    "body": {
+        "worn": {},
+        "wounds": {}
     },
-    "experience": 0,
+    "bodyType": "bipedal",
+    "inventory": [
+        "handful of serviceberries",
+        "handful of serviceberries",
+        "handful of serviceberries",
+        "handful of serviceberries",
+        "handful of serviceberries",
+        "handful of serviceberries",
+        "handful of serviceberries",
+        "handful of serviceberries",
+        "handful of serviceberries"
+    ],
     "name": "gird",
     "position": "standing",
     "reserves": {
-        "calories": 2400,
+        "calories": 2193,
         "sleep": 16,
-        "thirst": 4000
+        "thirst": 3862
     },
-    "title": ""
+    "room": 4,
+    "sex": "male"
 }

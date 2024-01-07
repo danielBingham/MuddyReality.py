@@ -234,6 +234,7 @@ class Store:
         self.commands['craft'] = crafting.Craft(self)
 
         self.commands['down'] = movement.Down(self)
+        self.commands['drink'] = reserves.Drink(self)
         self.commands['drop'] = manipulation.Drop(self)
 
         self.commands['east'] = movement.East(self)
@@ -312,14 +313,14 @@ class Store:
         for id in self.rooms.repo:
             room = self.rooms.getById(id)
             
-            print("Connecting exits for Room(" + str(id) + ") '" + room.title + "'...")
+            print("Connecting exits for Room(%s) '%s'..." % (str(id), room.title))
             for direction in room.exits:
                 exit = room.exits[direction]
                 exit.room_to = self.rooms.getById(exit.room_to)
                 if Room.INVERT_DIRECTION[exit.direction] in exit.room_to.exits:
                     exit.exit_to = exit.room_to.exits[Room.INVERT_DIRECTION[exit.direction]]
 
-            print("Loading items into Room(" + str(id) + ") '" + room.title + "'...")
+            print("Loading items into Room(%s) '%s'..." % (str(id), room.title))
             items = room.items
             room.items = []
             for itemId in items:
@@ -331,12 +332,29 @@ class Store:
         print("Loading characters...")
         character_list = glob.glob('data/characters/*.json')
         for file_path in character_list:
-            print("Loading character " + file_path + "...")
+            print("Loading character %s..." % file_path)
+
             character = Character()
             character.load(file_path)
+
             if character.room:
                   character.room = self.rooms.getById(character.room)
+
+            print("Loading %s's inventory..." % character.name)
+            inventory = character.inventory
+            character.inventory = []
+            for itemId in inventory:
+                if self.items.hasId(itemId):
+                    character.inventory.append(self.items.instance(itemId))
+
+            print("Loading %s's equipment..." % character.name)
+            for body_part in character.body.worn:
+                itemId = character.body.worn[body_part]
+                if self.items.hasId(itemId):
+                    character.body.worn[body_part] = self.items.instance(itemId)
+
             self.characters.add(character)
+
 
         print("Loading accounts...")
         account_list = glob.glob('data/accounts/*.json') 
