@@ -21,7 +21,7 @@
     "herbDensity": 0.0,
     "debris": [],
     "debrisDensity": 0.25, 
-    "water": "fresh-water",
+    "water": "fresh",
     "succession": null,
     "successionTime": 0,
     "disruptions": {} 

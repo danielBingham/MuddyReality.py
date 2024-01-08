@@ -1,5 +1,4 @@
-from game.interpreters.command import Command
-import game.library.items as ItemLibrary
+from game.interpreters.command.command import Command
 
 class Status(Command):
     'Get information about your character.'
@@ -80,7 +79,7 @@ Get detailed information about a room or object.  If [object] is excluded, the r
             proxy = Look(self.store)
             return proxy.execute(player, arguments)
 
-        item = ItemLibrary.findItemByKeywords(player.character.inventory, arguments)
+        item = self.library.items.findItemByKeywords(player.character.inventory, arguments)
         if item:
             player.write(item.detail())
             return
@@ -90,7 +89,7 @@ Get detailed information about a room or object.  If [object] is excluded, the r
                 player.write(occupant.detail())
                 return
 
-        item = ItemLibrary.findItemByKeywords(player.character.room.items, arguments)
+        item = self.library.items.findItemByKeywords(player.character.room.items, arguments)
         if item:
             player.write(item.detail())
             return
@@ -140,7 +139,7 @@ List the equipment you are currently wearing, carrying, and wielding.
             player.write("You can't check your equipment in your sleep.")
             return
 
-        equipment = player.character.equipment
+        equipment = player.character.body.worn
         player.write("You are wearing: ")
         if ( equipment ):
             for location in equipment:

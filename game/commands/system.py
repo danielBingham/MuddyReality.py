@@ -1,7 +1,6 @@
-from game.interpreters.command import Command
-from game.interpreters.state import StateInterpreter
+from game.interpreters.command.command import Command
+from game.interpreters.state.interpreter import StateInterpreter
 from game.account_menu.menu import AccountMenu
-import game.library.environment as environment
 
 class Quit(Command):
     'Leave the game.'
@@ -20,12 +19,13 @@ Your character will leave the game and you will return to the account menu where
         player.character.save('data/characters/')
 
         player.write('You leave the game.')
-        environment.writeToRoom(player.character, player.character.name + ' leaves the game.')
+        self.library.environment.writeToRoom(player.character, player.character.name + ' leaves the game.')
 
         player.character.player = None
         player.character = None
 
-        player.interpreter = StateInterpreter(player, self.store, AccountMenu(player, self.store))
+        player.status = player.STATUS_ACCOUNT
+        player.account_state = AccountMenu(player, self.library, self.store)
 
 
 class Help(Command):
@@ -43,15 +43,15 @@ Get help about a topic.  `[topic]` is optional.  If it is left off, help will li
 
     def execute(self, player, arguments):
         if not arguments:
-            for command in self.store.commands:
-                description = self.store.commands[command].describe()
+            for command in self.interpreter.commands:
+                description = self.interpreter.commands[command].describe()
                 if description:
                     player.write(description)
             return
         else:
-            for command in self.store.commands:
+            for command in self.interpreter.commands:
                 if command.startswith(arguments):
-                    help_text = self.store.commands[command].help()
+                    help_text = self.interpreter.commands[command].help()
                     if help_text:
                         player.write(help_text)
                         return

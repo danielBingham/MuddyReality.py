@@ -5,14 +5,16 @@ import sys, traceback, time, random, argparse
 from game.sockets.server import ServerSocket 
 
 from game.store.store import Store 
-from game.store.player import Player
+from game.library.library import Library
+from game.player import Player
 
-from game.interpreters.state import StateInterpreter
+from game.interpreters.command.interpreter import CommandInterpreter
+from game.interpreters.state.interpreter import StateInterpreter
 from game.account_menu.welcome import WelcomeScreen 
 
 from game.heartbeat import Heartbeat
  
-def gameLoop(serverSocket, store):
+def gameLoop(serverSocket, library, store):
 
     # Number of loops we've run.  Reset once it hits a certain value.  Used to
     # determine how often to perform certain tasks.
@@ -25,6 +27,9 @@ def gameLoop(serverSocket, store):
     loop_length = 1000/loops_a_second
 
     heartbeat = Heartbeat(store, loops_a_second)
+
+    state_interpreter = StateInterpreter()
+    command_interpreter = CommandInterpreter(library, store)
 
     # The Game Loop
     while serverSocket.isOpen:
@@ -41,7 +46,8 @@ def gameLoop(serverSocket, store):
         if serverSocket.hasNewConnection():
             newConnection = serverSocket.accept() 
             player = Player(newConnection)
-            player.interpreter = StateInterpreter(player, store, WelcomeScreen(player, store))
+            player.status = player.STATUS_ACCOUNT
+            player.account_state = WelcomeScreen(player, library, store)
             store.players.append(player)
 
         serverSocket.resetPollSets()
@@ -49,7 +55,25 @@ def gameLoop(serverSocket, store):
         # Handle New Input
         for player in store.players:
             if player.hasInput():
-                player.interpret()
+
+                input = player.read().strip()
+
+                if player.character:
+                    if player.character.action:
+                        player.character.action.cancel(player)
+                        player.character.action = None
+                        player.character.action_data = {}
+                        player.character.action_time = 0
+                        player.prompt_off = False
+
+                # If we don't have input at this point, it means the player just sent
+                # white space.  So we'll skip interpreting it and just send a new
+                # prompt.
+                if input:
+                    if player.status == player.STATUS_ACCOUNT:
+                        state_interpreter.interpret(player, input)
+                    else:
+                        command_interpreter.interpret(player, input)
 
         # Reset the loop counter at a value well below max int.  We only need it to continue to
         # increment, it doesn't matter what the value is.
@@ -119,12 +143,15 @@ def main():
     port = int(arguments.port)
 
     serverSocket = ServerSocket(host, port)
+
     store = Store(arguments.world)
     store.load()
 
+    library = Library(store)
+
     print('Starting up the server on port ' + repr(port))
     try:
-        gameLoop(serverSocket, store)
+        gameLoop(serverSocket, library, store)
     except KeyboardInterrupt:
         print("Shutting down.")
         serverSocket.shutdown()

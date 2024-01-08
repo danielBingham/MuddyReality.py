@@ -12,11 +12,16 @@ class Player:
 
     wrapper = TextWrapper(width=80, replace_whitespace=False, initial_indent='', break_on_hyphens=False)
 
+    STATUS_ACCOUNT = 'account'
+    STATUS_PLAYING = 'playing'
+
     def __init__(self, socket):
         self.socket = socket
         self.socket.player = self
 
-        self.interpreter = None 
+        self.status = self.STATUS_ACCOUNT
+        self.account_state = None
+
         self.account = None
         self.character = None
 
@@ -29,24 +34,6 @@ class Player:
 
     def quit(self):
         self.socket.close()
- 
-    def interpret(self):
-        input = self.read().strip()
-
-        if self.character:
-            if self.character.action:
-                self.character.action.cancel(self)
-                self.character.action = None
-                self.character.action_data = {}
-                self.character.action_time = 0
-                self.prompt_off = False
-
-        # If we don't have input at this point, it means the player just sent
-        # white space.  So we'll skip interpreting it and just send a new
-        # prompt.
-        if input:
-            self.interpreter.interpret(input)
-        
 
     def hasInput(self):
         return self.socket.hasInput()

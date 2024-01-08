@@ -1,7 +1,5 @@
 from game.store.models.character import Character
-from game.interpreters.command import Command
-import game.library.environment as environment
-import game.library.items as ItemLibrary
+from game.interpreters.command.command import Command
 
 class Eat(Command):
     'Get a food item from the inventory.'
@@ -25,12 +23,12 @@ Attempt to eat an item described by [item] as food.
             player.write("Eat what?")
             return
 
-        item = ItemLibrary.findItemByKeywords(player.character.inventory, arguments)
+        item = self.library.items.findItemByKeywords(player.character.inventory, arguments)
         if item and "Food" in item.traits:
             player.character.inventory.remove(item)
             player.character.reserves.calories += item.traits["Food"].calories
             player.write("You eat " + item.description + ".")
-            environment.writeToRoom(player.character, player.character.name + ' eats ' + item.description+ '.')
+            self.library.environment.writeToRoom(player.character, player.character.name + ' eats ' + item.description+ '.')
         else:
             player.write("There doesn't seem to be a " + arguments + " to eat.")
 
@@ -44,14 +42,14 @@ class Drink(Command):
         return ""
 
     def execute(self, player, arguments):
-        if player.character.room.water == player.character.room.WATER_FRESH:
-            player.character.thirst += 500
+        if player.character.room.water_type == player.character.room.WATER_FRESH:
+            player.character.reserves.thirst += 500
 
             player.write("You drink from the fresh water.")
-            environment.writeToRoom(player.character, player.character.name + " drinks from the fresh water.")
+            self.library.environment.writeToRoom(player.character, player.character.name + " drinks from the fresh water.")
             return
         else:
-            player.write("There's not drinkable water here.")
+            player.write("There's no drinkable water here.")
             return
 
 
@@ -73,7 +71,7 @@ Will put your character to sleep.  You will awaken once refreshed.
             player.write("You are already asleep.")
             return
 
-        if player.character.reserves.sleep <= 4:
+        if player.character.reserves.sleep / player.character.reserves.max_sleep <= 0.25:
             player.character.position = Character.POSITION_SLEEPING
             player.write('You go to sleep.')
         else:

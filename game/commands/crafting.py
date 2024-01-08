@@ -1,8 +1,6 @@
 import math
 
-from game.interpreters.command import Command
-import game.library.environment as environment
-import game.library.items as ItemLibrary
+from game.interpreters.command.command import Command
 
 class Craft(Command):
     'Create a new item from materials in inventory or room.'
@@ -42,7 +40,7 @@ Attempt to craft a material or tool with materials or tools.  If the [target] ca
 
         materials = []
         for keyword in materialKeywords:
-            material = ItemLibrary.findItemByKeywords(player.character.inventory, keyword)
+            material = self.library.items.findItemByKeywords(player.character.inventory, keyword)
             if material:
                 materials.append(material)
             else:
@@ -98,7 +96,7 @@ Attempt to craft a material or tool with materials or tools.  If the [target] ca
 
         # Success message.
         player.write("You craft " + crafted.name)
-        environment.writeToRoom(player.character, player.character.title + " crafts " + crafted.name)
+        self.library.environment.writeToRoom(player.character, player.character.title + " crafts " + crafted.name)
 
 class Harvest(Command):
     'Harvest materials.'
@@ -165,7 +163,7 @@ Harvest materials from an object in your environment.  The object can be either 
             harvest.harvested = True
 
         player.write("\nYou " + harvest.action + " " + results + " from " + item.description + ".")
-        environment.writeToRoom(player.character, player.character.name + " " + harvest.action + " from " + item.description + ".")
+        self.library.environment.writeToRoom(player.character, player.character.name + " " + harvest.action + " from " + item.description + ".")
 
 
     def execute(self, player, arguments):
@@ -177,10 +175,10 @@ Harvest materials from an object in your environment.  The object can be either 
             player.write("Harvest what?")
             return
         
-        item = ItemLibrary.findItemByKeywords(player.character.inventory, arguments)
+        item = self.library.items.findItemByKeywords(player.character.inventory, arguments)
         in_inventory = True
         if not item:
-            item = ItemLibrary.findItemByKeywords(player.character.room.items, arguments)
+            item = self.library.items.findItemByKeywords(player.character.room.items, arguments)
             in_inventory = False
 
         if not item:

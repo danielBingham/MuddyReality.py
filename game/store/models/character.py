@@ -3,64 +3,138 @@ import json
 from game.store.models.base import NamedModel
 from game.store.models.base import JsonSerializable
 
+class Attributes(JsonSerializable):
+
+    def __init__(self):
+        # The character's strength. Controls:
+        # - How much damage the character does in combat or harvesting.
+        # - How much the character can lift and carry.
+        self.strength = 10
+        self.max_strength = 10
+
+        # The character's stamina. Controls:
+        # - How much wind and energy the character has.
+        self.stamina = 10
+        self.max_stamina = 10
+
+        # The character's constitution. Controls:
+        # - How well the character resists food poisoning, disease, and cold.
+        self.constitution = 10
+        self.max_constitution = 10
+
+    def toJson(self):
+        json = {}
+
+        json['strength'] = self.strength
+        json['maxStrength'] = self.max_strength
+
+        json['stamina'] = self.stamina
+        json['maxStamina'] = self.max_stamina
+
+        json['constitution'] = self.constitution
+        json['maxConstitution'] = self.max_constitution
+
+        return json
+
+    def fromJson(self, data):
+
+        self.strength = data['strength']
+        self.max_strength = data['maxStrength']
+
+        self.stamina = data['stamina']
+        self.max_stamina = data['maxStamina']
+
+        self.constitution = data['constitution']
+        self.max_constitution = data['maxConstitution']
+
+        return self
+
+
 class Reserves(JsonSerializable):
     'Represents a characters reserves: how well fed and well rested they are.'
 
     def __init__(self):
         self.calories = 2400
+        self.max_calories = 2400
+
         self.thirst = 4000
+        self.max_thirst = 4000
+
         self.sleep = 16 
+        self.max_sleep = 16
+
+        self.wind = 0
+        self.max_wind = 0
+         
+        self.energy = 0
+        self.max_energy = 0
 
     def hungerString(self, prompt=False):
         hunger = ''
 
-        if prompt and self.calories > 1200:
+        if prompt and self.calories / self.max_calories > 0.5:
             return hunger
 
-        if self.calories > 1200:
+        if self.calories / self.max_calories > 0.5:
             hunger = 'not hungry'
-        elif self.calories > 800:
+
+        elif self.calories / self.max_calories <= 0.5 \
+                and self.calories / self.max_calories > 0.25:
             hunger = 'hungry'
-        elif self.calories > 400:
+
+        elif self.calories / self.max_calories <= 0.25 \
+                and self.calories / self.max_calories > 0.1:
             hunger = 'very hungry'
-        elif self.calories > 0:
+
+        elif self.calories / self.max_calories <= 0.1 \
+                and self.calories > 0:
             hunger = 'extremely hungry'
-        elif self.calories <= 0:
+
+        else:
             hunger = 'starving'
+
         return hunger
     
     def thirstString(self, prompt=False):
         thirst = ''
 
-        if prompt and self.thirst > 3000:
+        if prompt and self.thirst / self.max_thirst > 0.5:
             return thirst
 
-        if self.thirst > 3000:
+        if self.thirst / self.max_thirst > 0.5: 
             thirst = 'not thirsty'
-        elif self.thirst > 2000:
+
+        elif self.thirst / self.max_thirst <= 0.5 \
+                and self.thirst / self.max_thirst > 0.25:
             thirst = 'thirsty'
-        elif self.thirst > 1000:
+
+        elif self.thirst / self.max_thirst <= 0.25 \
+                and self.thirst / self.max_thirst > 0.1:
             thirst = 'very thirsty'
-        elif self.thirst > 0:
+
+        elif self.thirst / self.max_thirst <= 0.1 \
+                and self.thirst > 0:
             thirst = 'extremely thirsty'
+
         else:
             thirst = 'parched'
+
         return thirst
 
     def sleepString(self, prompt=False):
-        tired = ''
-        if prompt and self.sleep > 8:
-            return tired
+        sleep = ''
 
-        if self.sleep > 8:
-            tired = 'not sleepy'
-        elif self.sleep > 4:
-            tired = 'a little sleepy'
-        elif self.sleep > 0:
-            tired = 'sleepy'
+        if prompt and self.sleep / self.max_sleep > 0.25:
+            return sleep
+
+        if self.sleep / self.max_sleep > 0.25:
+            sleep = 'not sleepy'
+        elif self.sleep / self.max_sleep <= 0.25 \
+                and self.sleep > 0:
+            sleep = 'sleepy'
         else:
-            tired = 'exhausted'
-        return tired
+            sleep = 'exhausted'
+        return sleep
 
     def toString(self):
         return ("You are %s, %s, and %s." %
@@ -70,8 +144,13 @@ class Reserves(JsonSerializable):
         json = {}
 
         json["calories"] = self.calories
+        json["maxCalories"] = self.max_calories
+
         json["thirst"] = self.thirst
+        json["maxThirst"] = self.max_thirst
+
         json["sleep"] = self.sleep
+        json["maxSleep"] = self.max_sleep
 
         return json
 
@@ -278,9 +357,10 @@ class Character(NamedModel):
     SEX_MALE = 'male'
     SEX_FEMALE = 'female'
 
-    POSITION_SPRINTING = 'sprinting'
-    POSITION_RUNNING = 'running'
-    POSITION_WALKING = 'walking'
+    SPEED_WALKING = 'walking'
+    SPEED_RUNNING = 'running'
+    SPEED_SPRINTING = 'sprinting'
+
     POSITION_STANDING = 'standing'
     POSITION_SITTING = 'sitting'
     POSITION_LAYING_DOWN = 'laying down'
@@ -288,6 +368,8 @@ class Character(NamedModel):
 
     def __init__(self):
         super(Character, self).__init__()
+
+        self.is_player_character = False
        
         # The short description of the character.  Displayed when the character is looked at.
         self.description = ''
@@ -296,9 +378,6 @@ class Character(NamedModel):
         self.details = ''
 
         self.sex = self.SEX_MALE
-
-        self.account = None
-        self.player = None
 
         self.position = self.POSITION_STANDING
 
@@ -372,3 +451,13 @@ class Character(NamedModel):
             self.room = data['room']
 
         return self
+
+class PlayerCharacter(Character):
+
+    def __init__(self):
+        super(PlayerCharacter, self).__init__()
+
+        self.is_player_character = True 
+
+        self.account = None
+        self.player = None

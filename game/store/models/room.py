@@ -218,6 +218,12 @@ class Room(Model):
         for item in self.items:
             json['items'].append(item.getId())
 
+        json['occupants'] = []
+        for occupant in self.occupants:
+            if occupant.is_player_character:
+                continue
+            json['occupants'].append(occupant.getId())
+
         return json
 
     ###
@@ -229,9 +235,9 @@ class Room(Model):
         self.description = data['description']
         self.color = data['color']
 
-        #self.water_type = data['waterType']
-        #self.water = data['water']
-        #self.water_velocity = data['waterVelocity']
+        self.water_type = data['waterType']
+        self.water = data['water']
+        self.water_velocity = data['waterVelocity']
 
         for direction in data['exits']:
             self.exits[direction] = Exit(self)
@@ -240,6 +246,9 @@ class Room(Model):
         # Store will convert the list of ids into object references in
         # Store::load
         self.items = data['items']
+
+        if 'occupants' in data:
+            self.occupants = data['occupants']
 
         return self
 

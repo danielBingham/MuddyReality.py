@@ -4,16 +4,10 @@ import copy
 
 from game.store.models.account import Account
 from game.store.models.character import Character
+from game.store.models.character import PlayerCharacter
 from game.store.models.room import Room
 from game.store.models.item import Item 
 
-import game.commands.communication as communication 
-import game.commands.information as information 
-import game.commands.movement as movement
-import game.commands.manipulation as manipulation
-import game.commands.crafting as crafting
-import game.commands.reserves as reserves
-import game.commands.system as system
 
 class ModelRepository:
     """
@@ -206,81 +200,13 @@ class Store:
         self.world = world
 
         self.players = []
-        self.commands = {}
-
-        self.loadCommands()
 
         self.accounts = ModelRepository(self, Account) 
         self.characters = ModelRepository(self, Character)
         self.rooms = ModelRepository(self, Room) 
-        self.mobs = PrototypeRepository(self, Character) 
+        self.npcs = PrototypeRepository(self, Character) 
         self.items = PrototypeRepository(self, Item) 
 
-
-    def loadCommands(self):
-        """Loads the game's command objects.
-
-        The command objects are loaded into a list keyed by the in-game command
-        used to execute them.
-
-        Order is important here, because it will be the order in which
-        commands are matched.  So if someone just types "n", they'll get
-        "north" before they get any of the other commands starting with "n".
-        You'll want to order these to optimize player shortcut by putting more
-        used commands above less used commands.
-        """
-
-        self.commands['close'] = manipulation.Close(self)
-        self.commands['craft'] = crafting.Craft(self)
-
-        self.commands['down'] = movement.Down(self)
-        self.commands['drink'] = reserves.Drink(self)
-        self.commands['drop'] = manipulation.Drop(self)
-
-        self.commands['east'] = movement.East(self)
-        self.commands['eat'] = reserves.Eat(self)
-        self.commands['equipment'] = information.Equipment(self)
-        self.commands['examine'] = information.Examine(self)
-
-        self.commands['get'] = manipulation.Get(self)
-
-        self.commands['harvest'] = crafting.Harvest(self)
-        self.commands['help'] = system.Help(self)
-
-        self.commands['inventory'] = information.Inventory(self)
-
-        self.commands['look'] = information.Look(self)
-
-        self.commands['north'] = movement.North(self)
-
-        self.commands['open'] = manipulation.Open(self)
-
-        self.commands['quit'] = system.Quit(self)
-
-        self.commands['south'] = movement.South(self)
-        self.commands['say'] = communication.Say(self)
-        self.commands['sleep'] = reserves.Sleep(self)
-        self.commands['status'] = information.Status(self)
-
-        self.commands['west'] = movement.West(self)
-        self.commands['wield'] = manipulation.Wield(self)
-        self.commands['wake'] = reserves.Wake(self)
-
-        self.commands['up'] = movement.Up(self)
-
-    def getCommand(self, command_name):
-        if command_name in self.commands:
-            return self.commands[command_name]
-        else:
-            return None
-
-    def findCommand(self, input):
-        command_list = list(self.commands.keys())
-        for command in command_list:
-            if command.startswith(input):
-                return self.commands[command]
-
-        return None
 
     def load(self):
         print("Loading the game store.")
@@ -293,52 +219,22 @@ class Store:
             item.load(file_path)
             self.items.add(item)
 
-        print("Loading rooms...")
-        room_list = glob.glob('data/worlds/' + self.world + '/rooms/*.json') 
-        for file_path in room_list:
-            print("Loading room " + file_path + "...")
-            room = Room()
-            room.load(file_path)
-            self.rooms.add(room)
+        print("Loading non-player characters...")
+        npc_list = glob.glob('data/npcs/**/*.json', recursive=True)
+        for file_path in npc_list:
+            print("Loading npc %s..." % file_path)
+            npc = Character()
+            npc.load(file_path)
+            self.npcs.add(npc)
 
-        # This runs the `connect()` method on every room we've loaded into the
-        # Rooms repository.  This method creates object links for each of the
-        # exits that go from one room to another, so that we can easily access
-        # to the connected rooms with out having to search for the models.
-        #
-        # We can only run this once we've fully loaded all of the saved rooms
-        # into the repository.  Otherwise, the room referenced by an exit may
-        # not exist yet.
-        print("Connecting rooms and loading items into rooms...")
-        for id in self.rooms.repo:
-            room = self.rooms.getById(id)
-            
-            print("Connecting exits for Room(%s) '%s'..." % (str(id), room.title))
-            for direction in room.exits:
-                exit = room.exits[direction]
-                exit.room_to = self.rooms.getById(exit.room_to)
-                if Room.INVERT_DIRECTION[exit.direction] in exit.room_to.exits:
-                    exit.exit_to = exit.room_to.exits[Room.INVERT_DIRECTION[exit.direction]]
-
-            print("Loading items into Room(%s) '%s'..." % (str(id), room.title))
-            items = room.items
-            room.items = []
-            for itemId in items:
-                if self.items.hasId(itemId):
-                    room.items.append(self.items.instance(itemId))
-                else:
-                    print("Error! No Item(%s) in Room(%s)." % (itemId, str(id))), 
-
-        print("Loading characters...")
+        print("Loading player characters...")
         character_list = glob.glob('data/characters/*.json')
         for file_path in character_list:
             print("Loading character %s..." % file_path)
 
-            character = Character()
+            character = PlayerCharacter()
             character.load(file_path)
 
-            if character.room:
-                  character.room = self.rooms.getById(character.room)
 
             print("Loading %s's inventory..." % character.name)
             inventory = character.inventory
@@ -370,6 +266,52 @@ class Store:
                   account.characters[name].account = account
 
             self.accounts.add(account)
+
+        print("Loading rooms...")
+        room_list = glob.glob('data/worlds/' + self.world + '/rooms/*.json') 
+        for file_path in room_list:
+            print("Loading room " + file_path + "...")
+            room = Room()
+            room.load(file_path)
+            self.rooms.add(room)
+
+        print("Connecting rooms and loading items into rooms...")
+        for id in self.rooms.repo:
+            room = self.rooms.getById(id)
+            
+            print("Connecting exits for Room(%s) '%s'..." % (str(id), room.title))
+            for direction in room.exits:
+                exit = room.exits[direction]
+                exit.room_to = self.rooms.getById(exit.room_to)
+                if Room.INVERT_DIRECTION[exit.direction] in exit.room_to.exits:
+                    exit.exit_to = exit.room_to.exits[Room.INVERT_DIRECTION[exit.direction]]
+
+            print("Loading items into Room(%s) '%s'..." % (str(id), room.title))
+            items = room.items
+            room.items = []
+            for itemId in items:
+                if self.items.hasId(itemId):
+                    room.items.append(self.items.instance(itemId))
+                else:
+                    print("Error! No Item(%s) in Room(%s)." % (itemId, str(id))), 
+
+            print("Loading characters into Room(%s) '%s'..." % (str(id), room.title))
+            occupants = room.occupants
+            room.occupants = []
+            for characterId in occupants:
+                if self.npcs.hasId(characterId):
+                    room.occupants.append(self.npcs.instance(characterId))
+                else:
+                    print("Error! No NPC(%s) in Room(%s)." % (characterId, room.title))
+
+
+        print("Connect player characters to the rooms they were in...")
+        for id in self.characters.repo:
+            character = self.characters.getById(id)
+
+            if character.room:
+                  character.room = self.rooms.getById(character.room)
+
 
 
 

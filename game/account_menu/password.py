@@ -1,4 +1,4 @@
-from game.interpreters.state import State
+from game.interpreters.state.state import State
 
 import game.account_menu.menu 
 
@@ -9,7 +9,7 @@ class GetNewAccountPassword(State):
 
     def execute(self, input):
         if self.player.account:
-            state = ConfirmNewAccountPassword(self.player, self.store, input)
+            state = ConfirmNewAccountPassword(self.player, self.library, self.store, input)
             return state
         else:
             raise RuntimeError('Players setting new passwords must have accounts!')
@@ -29,10 +29,10 @@ class ConfirmNewAccountPassword(State):
         if self.player.account and input == self.password:
             self.player.account.setPassword(input)
             self.player.account.save('data/accounts/')
-            return account.menu.AccountMenu(self.player, self.store)
+            return account.menu.AccountMenu(self.player, self.library, self.store)
         elif self.player.account:
             self.player.write("Passwords didn't match.  Please try again.")
-            return GetNewAccountPassword(self.player, self.store)
+            return GetNewAccountPassword(self.player, self.library, self.store)
         else:
             raise RuntimeError('Players setting new passwords must have accounts!')
 

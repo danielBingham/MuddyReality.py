@@ -1,4 +1,4 @@
-from game.interpreters.state import State
+from game.interpreters.state.state import State
 
 from game.account_menu.creation import CreateNewAccount
 from game.account_menu.menu import AccountMenu
@@ -6,7 +6,7 @@ from game.account_menu.menu import AccountMenu
 class WelcomeScreen(State):
 
     WELCOME_SCREEN = """
-Welcome to Python Mud!
+Welcome to Muddy Reality!
 
 If this is your first time, you'll need to create an account by typing "new".
     """
@@ -17,12 +17,12 @@ If this is your first time, you'll need to create an account by typing "new".
 
     def execute(self, input):
         if input == "new":
-            return CreateNewAccount(self.player, self.store)
+            return CreateNewAccount(self.player, self.library, self.store)
         else:
             account = self.store.accounts.getById(input.lower())
             if account:
                 self.player.account = account
-                return GetAccountPassword(self.player, self.store)
+                return GetAccountPassword(self.player, self.library, self.store)
             else:
                 self.player.write("That account doesn't exist.")
         return self
@@ -37,7 +37,7 @@ class GetAccountPassword(State):
 
     def execute(self, input):
         if self.player.account.isPassword(input):
-            return AccountMenu(self.player, self.store)
+            return AccountMenu(self.player, self.library, self.store)
         else:
             self.player.write("Incorrect password.")
         

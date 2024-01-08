@@ -1,6 +1,4 @@
-from game.interpreters.state import State
-from game.interpreters.command import CommandInterpreter
-import game.library.movement as movement 
+from game.interpreters.state.state import State
 
 import game.account_menu.password
 
@@ -38,7 +36,7 @@ quit                - Leave the game.
 
 
         if command == "change" and arguments == "password":
-            return account.password.GetNewAccountPassword(self.player, self.store)
+            return account.password.GetNewAccountPassword(self.player, self.library, self.store)
 
 
         if command == "list":
@@ -56,13 +54,14 @@ quit                - Leave the game.
             if arguments.lower() in self.player.account.characters:
                 self.player.character = self.player.account.characters[arguments.lower()]
                 self.player.character.player = self.player
-                self.player.interpreter = CommandInterpreter(self.player, self.store)
+                self.player.status = self.player.STATUS_PLAYING
+
 
                 # If they aren't in the game world yet, send em to room 1.
                 if not self.player.character.room:
-                    movement.enter(self.player.character, self.store.rooms.getById(1))
+                    self.library.movement.enter(self.player.character, self.store.rooms.getById(1))
                 else:
-                    movement.enter(self.player.character, self.player.character.room)
+                    self.library.movement.enter(self.player.character, self.player.character.room)
 
                 self.player.write("Welcome back, %s!" % self.player.character.name.title())
                 self.player.write(self.player.character.room.describe(self.player), wrap=False)

@@ -1,4 +1,4 @@
-from game.interpreters.state import State
+from game.interpreters.state.state import State
 
 from game.account_menu.password import GetNewAccountPassword 
 
@@ -13,7 +13,7 @@ class CreateNewAccount(State):
         else:
             self.player.account = self.store.accounts.create(input) 
             self.player.write("Welcome to Python Mud, %s!" % self.player.account.name)
-            return GetNewAccountPassword(self.player, self.store)
+            return GetNewAccountPassword(self.player, self.library, self.store)
 
         return self
 

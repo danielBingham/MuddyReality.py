@@ -1,27 +1,4 @@
-from game.interpreters.command import Command
-import game.library.movement as movement 
-
-def move(direction, player, arguments):
-    if not player.character.room:
-        raise RuntimeException("Player should have a room if they're trying to move!")
-
-    if player.character.position == player.character.POSITION_SLEEPING:
-        player.write("You can't move in your sleep.")
-        return
-
-    room = player.character.room
-    if direction in room.exits:
-        if room.exits[direction].is_door and room.exits[direction].is_open == False:
-            player.write("The " + room.exits[direction].name + " is closed.")
-            return 
-
-        player.write("You go " + direction + ".")
-        movement.leave(player.character, player.character.room, direction=direction)
-        movement.enter(player.character, room.exits[direction].room_to, direction=direction)
-        player.character.reserves.calories -= 4
-        player.write("\n" + player.character.room.describe(player), wrap=False)
-    else:
-        player.write("You can't got that way.")
+from game.interpreters.command.command import Command
 
 class North(Command):
     'Go north'
@@ -37,7 +14,7 @@ Go to the room to the north, if possible.
         """
     
     def execute(self, player, arguments):
-        move('north', player, arguments)
+        self.library.movement.move('north', player, arguments)
             
 class East(Command):
     'Go east'
@@ -53,7 +30,7 @@ Go to the room to the east, if possible.
         """
     
     def execute(self, player, arguments):
-        move('east', player, arguments)
+        self.library.movement.move('east', player, arguments)
 
 class South(Command):
     'Go south'
@@ -69,7 +46,7 @@ Go to the room to the south, if possible.
         """
     
     def execute(self, player, arguments):
-        move('south', player, arguments)
+        self.library.movement.move('south', player, arguments)
 
 class West(Command):
     'Go west'
@@ -85,7 +62,7 @@ Go to the room to the west, if possible.
         """
     
     def execute(self, player, arguments):
-        move('west', player, arguments)
+        self.library.movement.move('west', player, arguments)
 
 class Up(Command):
     'Go up'
@@ -101,7 +78,7 @@ Go to the room above, if possible.
         """
     
     def execute(self, player, arguments):
-        move('up', player, arguments)
+        self.library.movement.move('up', player, arguments)
 
 class Down(Command):
     'Go down'
@@ -117,5 +94,5 @@ Go to the room below, if possible.
         """
     
     def execute(self, player, arguments):
-        move('down', player, arguments)
+        self.library.movement.move('down', player, arguments)
 
