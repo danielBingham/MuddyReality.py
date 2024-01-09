@@ -96,3 +96,57 @@ Go to the room below, if possible.
     def execute(self, player, arguments):
         self.library.movement.move('down', player, arguments)
 
+class Walk(Command):
+    'Start walking'
+
+    def describe(self):
+        return "walk - set movement speed to walking"
+
+    def help(self):
+        return """
+walk
+
+Your character will now walk when moving.
+        """
+
+    def execute(self, player, arguments):
+        player.character.speed = player.character.SPEED_WALKING
+        player.write("You begin to walk.")
+        self.library.environment.writeToRoom(player.character, "%s begins to walk." % player.character.name)
+
+
+class Run(Command):
+    'Start running'
+
+    def describe(self):
+        return "run - set movement speed to run"
+
+    def help(self):
+        return """
+run
+
+Your character will now run when moving.  You will run through 2 rooms in a single move.
+        """
+
+    def execute(self, player, arguments):
+        player.character.speed = player.character.SPEED_RUNNING
+        player.write("You begin to run.")
+        self.library.environment.writeToRoom(player.character, "%s begins to run." % player.character.name)
+
+class Sprint(Command):
+    'Start sprinting'
+
+    def describe(self):
+        return "sprint - set movement speed to sprinting"
+
+    def help(self):
+        return """
+sprint
+
+Your character will now sprint when moving.  You will run through 4 rooms in a single move.
+        """
+
+    def execute(self, player, arguments):
+        player.character.speed = player.character.SPEED_SPRINTING
+        player.write("You begin to sprint.")
+        self.library.environment.writeToRoom(player.character, "%s begins to sprint." % player.character.name)

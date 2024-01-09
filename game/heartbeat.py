@@ -1,3 +1,4 @@
+import random 
 
 class Heartbeat:
 
@@ -43,13 +44,21 @@ class Heartbeat:
                     player.character.action_time = 0
                     player.prompt_off = False
 
-        # Do hunger and thirst calculations once a game minute.
+        # Do reserves calculations 
         if loop_counter % self.game_minute == 0:
             for player in self.store.players:
-                if not player.character:
+                character = player.character
+                if not character:
                     continue
-                player.character.reserves.calories -= 2
-                player.character.reserves.thirst -= 2 
+
+                character.reserves.calories -= 2
+                character.reserves.thirst -= 2 
+
+                if character.position == character.POSITION_STANDING:
+                    character.reserves.wind = min(character.reserves.wind+3, character.reserves.max_wind)
+                elif character.position == character.POSITION_RESTING:
+                    character.reserves.wind = min(character.reserves.wind+5, character.reserves.max_wind)
+                    character.reserves.energy = min(character.reserves.energy+100, character.reserves.max_energy)
 
 
         # Do tired calculations once a game hour. 
@@ -80,6 +89,8 @@ class Heartbeat:
                 # If they're asleep they recover.
                 elif character.position == character.POSITION_SLEEPING:
                     character.reserves.sleep += 2
+
+                    character.reserves.energy = min(character.reserves.energy+625, character.reserves.max_energy)
 
                     if character.reserves.sleep >= 16:
                         character.position = character.POSITION_STANDING

@@ -2,6 +2,7 @@ import json
 import glob
 import copy
 
+from game.store.models.world import World
 from game.store.models.account import Account
 from game.store.models.character import Character
 from game.store.models.character import PlayerCharacter
@@ -211,6 +212,11 @@ class Store:
     def load(self):
         print("Loading the game store.")
 
+        print("Loading the world...")
+        world_name = self.world
+        self.world = World() 
+        self.world.load('data/worlds/' + world_name + '/world.json')
+
         print("Loading items...")
         item_list = glob.glob('data/items/**/*.json', recursive=True)
         for file_path in item_list:
@@ -268,7 +274,7 @@ class Store:
             self.accounts.add(account)
 
         print("Loading rooms...")
-        room_list = glob.glob('data/worlds/' + self.world + '/rooms/*.json') 
+        room_list = glob.glob('data/worlds/' + self.world.name + '/rooms/*.json') 
         for file_path in room_list:
             print("Loading room " + file_path + "...")
             room = Room()

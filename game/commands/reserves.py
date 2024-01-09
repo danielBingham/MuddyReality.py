@@ -42,6 +42,10 @@ class Drink(Command):
         return ""
 
     def execute(self, player, arguments):
+        if player.character.position == Character.POSITION_SLEEPING:
+            player.write("You can't drink while you're asleep.")
+            return
+
         if player.character.room.water_type == player.character.room.WATER_FRESH:
             player.character.reserves.thirst += 500
 
@@ -52,6 +56,31 @@ class Drink(Command):
             player.write("There's no drinkable water here.")
             return
 
+class Rest(Command):
+    'Sit down and rest.'
+
+    def describe(self):
+        return "rest - sit down and rest"
+
+    def help(self):
+        return """
+rest
+
+Your character sits down to rest.
+        """
+    
+    def execute(self, player, arguments):
+        if player.character.position == Character.POSITION_SLEEPING:
+            player.write("You can't rest while you're asleep.")
+            return
+        
+        if player.character.position == Character.POSITION_RESTING:
+            player.write("You are already resting.")
+            return
+
+        player.character.position = Character.POSITION_RESTING
+        player.write('You sit down to rest.')
+        self.library.environment.writeToRoom(player.character, "%s sits down to rest." % player.character.name.title())
 
 class Sleep(Command):
     'Go to sleep.'
@@ -69,6 +98,10 @@ Will put your character to sleep.  You will awaken once refreshed.
     def execute(self, player, arguments):
         if player.character.position == Character.POSITION_SLEEPING:
             player.write("You are already asleep.")
+            return
+
+        if player.character.reserves.wind <= player.character.reserves.max_wind:
+            player.write("You'll need to catch your breath before you can go to sleep.")
             return
 
         if player.character.reserves.sleep / player.character.reserves.max_sleep <= 0.25:

@@ -54,20 +54,34 @@ class Reserves(JsonSerializable):
     'Represents a characters reserves: how well fed and well rested they are.'
 
     def __init__(self):
+        # Calories measure how many calories of food you have stored in your
+        # body. Calories can go negative to indicate that you are starving.
         self.calories = 2400
         self.max_calories = 2400
 
+        # Thirst is a measure of how much water you have stored in your body.
+        # It can't go very far below zero before you suffer serious
+        # consequences.
         self.thirst = 4000
         self.max_thirst = 4000
 
+        # Sleep is a measure of how much sleep you've had.  
         self.sleep = 16 
         self.max_sleep = 16
 
-        self.wind = 0
-        self.max_wind = 0
-         
-        self.energy = 0
-        self.max_energy = 0
+        # Wind measures how long you can push yourself during periods of
+        # extreme effort.  As an example: how long can you sprint or run before
+        # you need to stop and catch your breath?  Wind is determined by stamina.
+        # 1 wind allows you to run for 60 seconds.
+        self.wind = 30 
+        self.max_wind = 30 
+        
+        # Energy is a measure of how much you can accomplish in a single day.
+        # 1 energy is the cost equivalent of walking 1 meter.  Energy is
+        # determined by stamina (stamina * 10), so as stamina increases, so too
+        # will energy.
+        self.energy = 10000 
+        self.max_energy = 10000 
 
     def hungerString(self, prompt=False):
         hunger = ''
@@ -76,7 +90,7 @@ class Reserves(JsonSerializable):
             return hunger
 
         if self.calories / self.max_calories > 0.5:
-            hunger = 'not hungry'
+            hunger = 'sated'
 
         elif self.calories / self.max_calories <= 0.5 \
                 and self.calories / self.max_calories > 0.25:
@@ -84,11 +98,11 @@ class Reserves(JsonSerializable):
 
         elif self.calories / self.max_calories <= 0.25 \
                 and self.calories / self.max_calories > 0.1:
-            hunger = 'very hungry'
+            hunger = 'ravenous'
 
         elif self.calories / self.max_calories <= 0.1 \
                 and self.calories > 0:
-            hunger = 'extremely hungry'
+            hunger = 'famished'
 
         else:
             hunger = 'starving'
@@ -102,19 +116,15 @@ class Reserves(JsonSerializable):
             return thirst
 
         if self.thirst / self.max_thirst > 0.5: 
-            thirst = 'not thirsty'
+            thirst = 'hydrated'
 
         elif self.thirst / self.max_thirst <= 0.5 \
                 and self.thirst / self.max_thirst > 0.25:
             thirst = 'thirsty'
 
         elif self.thirst / self.max_thirst <= 0.25 \
-                and self.thirst / self.max_thirst > 0.1:
-            thirst = 'very thirsty'
-
-        elif self.thirst / self.max_thirst <= 0.1 \
                 and self.thirst > 0:
-            thirst = 'extremely thirsty'
+            thirst = 'dehydrated'
 
         else:
             thirst = 'parched'
@@ -128,17 +138,59 @@ class Reserves(JsonSerializable):
             return sleep
 
         if self.sleep / self.max_sleep > 0.25:
-            sleep = 'not sleepy'
+            sleep = 'awake'
+
         elif self.sleep / self.max_sleep <= 0.25 \
                 and self.sleep > 0:
-            sleep = 'sleepy'
+            sleep = 'yawning'
+
         else:
-            sleep = 'exhausted'
+            sleep = 'drowsy'
+
         return sleep
 
+    def windString(self, prompt=False):
+        wind = ''
+        
+        if prompt and self.wind / self.max_wind > 0.5:
+            return wind
+        
+        if self.wind / self.max_wind > 0.5:
+            wind = 'breathing steadily'
+        elif self.wind / self.max_wind <= 0.5 \
+                and self.wind / self.max_wind > 0.25:
+            wind = 'huffing'
+        elif self.wind / self.max_wind <= 0.25 \
+                and self.wind / self.max_wind > 0.1:
+            wind = 'winded'
+        else:
+            wind = 'gasping'
+        
+        return wind
+
+    def energyString(self, prompt=False):
+        energy = ''
+        
+        if prompt and self.energy / self.max_energy > 0.5:
+            return energy
+        
+        if self.energy / self.max_energy > 0.5:
+            energy = 'rested'
+        elif self.energy / self.max_energy <= 0.5 \
+                    and self.energy / self.max_energy > 0.25:
+            energy = 'tired'
+        elif self.energy / self.max_energy <= 0.25 \
+                and self.energy / self.max_energy > 0.1:
+            energy = 'fatigued'
+        else:
+            energy = 'exhausted'
+        
+        return energy
+
     def toString(self):
-        return ("You are %s, %s, and %s." %
-            (self.hungerString(), self.thirstString(), self.sleepString()))
+        reservesString = ("You are %s, %s, and %s.\nYou are %s and %s." %
+            (self.hungerString(), self.thirstString(), self.sleepString(), self.windString(), self.energyString()))
+        return reservesString 
 
     def toJson(self):
         json = {}
@@ -362,8 +414,7 @@ class Character(NamedModel):
     SPEED_SPRINTING = 'sprinting'
 
     POSITION_STANDING = 'standing'
-    POSITION_SITTING = 'sitting'
-    POSITION_LAYING_DOWN = 'laying down'
+    POSITION_RESTING = 'resting'
     POSITION_SLEEPING = 'sleeping'
 
     def __init__(self):
@@ -380,7 +431,9 @@ class Character(NamedModel):
         self.sex = self.SEX_MALE
 
         self.position = self.POSITION_STANDING
+        self.speed = self.SPEED_WALKING
 
+        self.attributes = Attributes()
         self.reserves = Reserves()
 
         self.body_type = 'bipedal'
@@ -394,6 +447,15 @@ class Character(NamedModel):
 
         self.room = None
 
+    def calculate(self):
+        """
+        Calculate the correct values for the user's max reserves based upon their attributes.
+        """
+
+        self.reserves.max_energy = self.attributes.stamina * 1000
+
+        self.reserves.max_wind = self.attributes.stamina * 3
+
     def toJson(self):
         json = {}
 
@@ -402,7 +464,9 @@ class Character(NamedModel):
         json['details'] = self.details
         json['sex'] = self.sex
         json['position'] = self.position
-        
+        json['speed'] = self.speed
+       
+        json['attributes'] = self.attributes.toJson()
         json['reserves'] = self.reserves.toJson()
 
         json['bodyType'] = self.body_type 
@@ -429,6 +493,11 @@ class Character(NamedModel):
         else:
             self.position = self.POSITION_STANDING
 
+        if 'speed' in data:
+            self.speed = data['speed']
+        else:
+            self.speed = self.SPEED_WALKING
+
         self.body_type = data['bodyType']
         if self.body_type == 'bipedal':
             self.body = BipedalBody()
@@ -437,6 +506,10 @@ class Character(NamedModel):
 
         if 'body' in data:
             self.body.fromJson(data['body'])
+
+        self.attributes = Attributes()
+        if 'attributes' in data:
+            self.attributes.fromJson(data['attributes'])
 
         self.reserves = Reserves()
         if 'reserves' in data:

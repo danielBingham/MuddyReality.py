@@ -110,6 +110,18 @@ def gameLoop(serverSocket, library, store):
                             prompt += ":"
                         prompt += sleep
 
+                    wind = player.character.reserves.windString(True)
+                    if wind:
+                        if len(prompt) > 0:
+                            prompt += ":"
+                        prompt += wind
+
+                    energy = player.character.reserves.energyString(True)
+                    if energy:
+                        if len(prompt) > 0:
+                            prompt += ":"
+                        prompt += energy
+
                     prompt += "> "
                     player.setPrompt(prompt)
                 player.write(player.getPrompt(), wrap=False)
@@ -149,7 +161,7 @@ def main():
 
     library = Library(store)
 
-    print('Starting up the server on port ' + repr(port))
+    print('Starting up the server on world "' + store.world.name + '" on port ' + repr(port))
     try:
         gameLoop(serverSocket, library, store)
     except KeyboardInterrupt:

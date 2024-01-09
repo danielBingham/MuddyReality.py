@@ -16,6 +16,7 @@ Get detailed information about your character.
     def execute(self, player, arguments):
         character = player.character
         player.write("You are %s." % (character.name.title()))
+        player.write("You are %s and %s." % (character.position, character.speed))
         player.write(character.reserves.toString())
                     
 class Look(Command):

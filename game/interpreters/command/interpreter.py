@@ -40,14 +40,18 @@ class CommandInterpreter:
 
         self.commands['open'] = manipulation.Open(self, self.library, self.store)
 
+        self.commands['run'] = movement.Run(self, self.library, self.store)
+
         self.commands['quit'] = system.Quit(self, self.library, self.store)
 
         self.commands['south'] = movement.South(self, self.library, self.store)
         self.commands['say'] = communication.Say(self, self.library, self.store)
         self.commands['sleep'] = reserves.Sleep(self, self.library, self.store)
+        self.commands['sprint'] = movement.Sprint(self, self.library, self.store)
         self.commands['status'] = information.Status(self, self.library, self.store)
 
         self.commands['west'] = movement.West(self, self.library, self.store)
+        self.commands['walk'] = movement.Walk(self, self.library, self.store)
         self.commands['wield'] = manipulation.Wield(self, self.library, self.store)
         self.commands['wake'] = reserves.Wake(self, self.library, self.store)
 
