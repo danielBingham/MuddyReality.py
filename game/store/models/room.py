@@ -3,12 +3,8 @@ from textwrap import TextWrapper
 from game.store.models.base import JsonSerializable
 from game.store.models.base import Model
 
-###
-# Represents an exit from a room leading into another room.
-#
-# Exits may be doors that require opening.  Some doors are secret doors.
-###
 class Exit(JsonSerializable):
+    "An exit from one room to another."
 
     def __init__(self, room):
         self.room_from = room
@@ -19,49 +15,6 @@ class Exit(JsonSerializable):
         self.direction = ''
         self.room_to = None
         self.exit_to = None
-
-    def open(self, player):
-        if not self.is_door and player:
-            player.write("There's no door to open that way.")
-            return
-
-        if self.is_open and player:
-            player.write("It's already open.")
-            return
-
-        self.is_open = True
-        if player:
-            player.write("You open " + self.name + ".")
-        for occupant in self.room_from.occupants:
-            if player and occupant.player != player:
-                occupant.player.write(player.character.name.title() + " opens the " + self.name + ".")
-            elif not player:
-                occupant.player.write("The " + self.name + " is opened from the other side.")
-
-        if self.exit_to and self.exit_to.is_open == False:
-            self.exit_to.open(None)
-
-
-    def close(self, player):
-        if not self.is_door and player:
-            player.write("There's no door to close that way.")
-            return
-
-        if not self.is_open and player:
-            player.write("It's already closed.")
-            return
-
-        self.is_open = False 
-        if player:
-            player.write("You close " + self.name + ".")
-        for occupant in self.room_from.occupants:
-            if player and occupant.player != player:
-                occupant.player.write(player.character.name.title() + " closes the " + self.name + ".")
-            elif not player:
-                occupant.player.write("The " + self.name + " is closed from the other side.")
-
-        if self.exit_to and self.exit_to.is_open == True:
-            self.exit_to.close(None)
 
     def toJson(self):
         json = {}
@@ -79,19 +32,13 @@ class Exit(JsonSerializable):
         self.is_open = data['is_open']
         return self
 
-### End Exit
-
-###
-# Represents a location in the game world. 
-###
 class Room(Model):
+    "A location in the game world."
 
     # A static text wrapper we use to wrap descriptive text.
     wrapper = TextWrapper(width=80, replace_whitespace=False, initial_indent='', break_on_hyphens=False)
 
-    ###
     # A list of possible directions leading out of this room.
-    ###
     DIRECTIONS = [
         'north',
         'east',
@@ -101,9 +48,7 @@ class Room(Model):
         'down'
     ]
 
-    ###
-    # A handy helper map for inverting directions.
-    ###
+    # A helper to invert a direction.
     INVERT_DIRECTION = {
         "north": "south",
         "east": "west",
@@ -117,10 +62,6 @@ class Room(Model):
     WATER_SALT = 'salt'
     WATER_FRESH = 'fresh'
 
-
-    ###
-    # Initialize the room.  
-    ###
     def __init__(self ):
         super(Room, self).__init__()
 
@@ -137,23 +78,12 @@ class Room(Model):
         self.occupants = []
         self.items = []
 
-
-    def isOccupant(self, argument):
-        for occupant in self.occupants:
-            if occupant.name.startswith(argument):  
-                return True
-        return False
-
-
     def getColorString(self):
         return "\033[38;2;" + str(self.color[0]) + ";" + str(self.color[1]) + ";" + str(self.color[2]) + "m"
 
     def getColorReset(self):
         return "\033[0m"
 
-    ###
-    # Describe the room to a player.
-    ###
     def describe(self, player):
         output = ""
 
@@ -196,9 +126,6 @@ class Room(Model):
         output += "\n"
         return output
 
-    ###
-    # Convert the room to simple json for serialization and saving.
-    ###
     def toJson(self):
         json = {}
         json['id'] = self.getId()
@@ -226,9 +153,6 @@ class Room(Model):
 
         return json
 
-    ###
-    # Convert a json serialization back to a room object.
-    ###
     def fromJson(self, data):
         self.setId(data['id'])
         self.title = data['title']
@@ -251,5 +175,3 @@ class Room(Model):
             self.occupants = data['occupants']
 
         return self
-
-### End room

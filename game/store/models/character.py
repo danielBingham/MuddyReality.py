@@ -418,6 +418,8 @@ class Character(NamedModel):
     POSITION_RESTING = 'resting'
     POSITION_SLEEPING = 'sleeping'
 
+    POSITION_DEAD = 'dead'
+
     def __init__(self):
         super(Character, self).__init__()
 
@@ -447,50 +449,6 @@ class Character(NamedModel):
         self.action_time = 0
 
         self.room = None
-
-    def die(self):
-        if self.player:
-            self.player.status = self.player.STATUS_ACCOUNT
-            self.player.account_state = "menu"
-
-    def calculate(self):
-        """
-        Calculate the correct values for the user's max reserves based upon their attributes.
-        """
-
-        self.reserves.max_energy = self.attributes.stamina * 1000
-
-        self.reserves.max_wind = self.attributes.stamina * 3
-
-    def adjustReserve(reserve, amount):
-        if reserve == 'sleep':
-            self.reserves.sleep += amount
-            return True
-        elif reserve == 'calories':
-            self.reserves.calories += amount
-            if self.reserves.calories < 0:
-                self.stamina = self.max_stamina + (self.reserves.calories / self.reserves.max_calories)
-                if self.stamina <= 0:
-                    self.die()
-            return True
-        elif reserve == 'thirst':
-            if self.reserves.thirst > self.reserves.max_thirst:
-                return False
-            self.reserves.thirst += amount
-            return True
-        elif reserve == 'wind':
-            # Wind can't go negative.
-            if self.reserves.wind + amount < 0:
-                return False
-            self.reserves.wind = min(self.reserves.wind + amount, self.reserves.max_wind)
-            return True
-        elif reserve == 'energy':
-            # Energy can't go negative.
-            if self.reserves.energy + amount < 0:
-                return False
-            self.reserves.energy = min(self.reserves.energy + amount, self.reserves.max_energy)
-            return True
-        raise ValueError("Invalid reserve: %s" % reserve) 
 
     def toJson(self):
         json = {}

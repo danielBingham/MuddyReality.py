@@ -1,6 +1,7 @@
-
-
 class ItemLibrary:
+    """
+    Library containing behavior for acting on and interacting with Items.
+    """
 
     def __init__(self, library, store):
         self.library = library
@@ -10,8 +11,16 @@ class ItemLibrary:
         """
         Find an item from a list of items by searching its keywords
 
-        :param items:
-        :param keywords:
+        Parameters
+        ----------
+        items:  Item[]
+            The list of items we want to search using `keywords`.
+        keywords:   string
+            The keywords we want to search "item" for.
+
+        Returns
+        -------
+        Item:   The item that matches `keywords` or `None`.
         """
 
         which = 1
