@@ -82,7 +82,7 @@ class ClientSocket:
             decoded = data.decode()
             self.inputQueue.append(decoded)
             if self.player:
-                self.player.need_prompt = True
+                self.player.prompt.is_needed = True
         else:
             # We're in an error state.  Close down the socket.
             self.close()
@@ -96,11 +96,11 @@ class ClientSocket:
             self.socket.send(self.outputBuffer.encode())
             self.clearOutputBuffer()
 
-            if self.player and self.player.hasPromptInBuffer():
-                self.player.need_prompt = False 
-                self.player.setPromptInBuffer(False)
+            if self.player and self.player.prompt.is_in_buffer:
+                self.player.prompt.is_needed = False 
+                self.player.prompt.is_in_buffer = False
             elif self.player:
-                self.player.need_prompt = True
+                self.player.is_needed = True
 
     ###
     # Handle any errors, closing the connection if necessary.

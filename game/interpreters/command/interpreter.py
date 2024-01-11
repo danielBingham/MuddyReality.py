@@ -1,69 +1,67 @@
-import game.commands.communication as communication 
-import game.commands.information as information 
-import game.commands.movement as movement
-import game.commands.manipulation as manipulation
-import game.commands.crafting as crafting
-import game.commands.reserves as reserves
-import game.commands.system as system
-
 class CommandInterpreter:
-    'A simple command interpreter that parses the players input.'
+    """
+    A command interpreter that parses player input using a `command arguments`
+    format, where each `command` has a one to one relationship with a `Command`
+    object that handles parsing the `arguments` and performing any resulting
+    actions.  The interpreter takes a dictionary of `Command` objects keyed by
+    their associated `command` strings and uses that to interpret player input.
+    """
 
-    def __init__(self, library, store):
+    def __init__(self, commands, library, store):
+        """
+        Initialize the interpreter.
+
+        Parameters
+        ----------
+        commands:   dict[command] => Command
+            A dictionary of Command object keyed by their `command` string.
+        library:    Library
+            The game library.
+        store:  Store
+            The game store.
+        """
+
         self.store = store 
         self.library = library
-
-        self.commands = {}
-
-        self.commands['close'] = manipulation.Close(self, self.library, self.store)
-        self.commands['craft'] = crafting.Craft(self, self.library, self.store)
-
-        self.commands['down'] = movement.Down(self, self.library, self.store)
-        self.commands['drink'] = reserves.Drink(self, self.library, self.store)
-        self.commands['drop'] = manipulation.Drop(self, self.library, self.store)
-
-        self.commands['east'] = movement.East(self, self.library, self.store)
-        self.commands['eat'] = reserves.Eat(self, self.library, self.store)
-        self.commands['equipment'] = information.Equipment(self, self.library, self.store)
-        self.commands['examine'] = information.Examine(self, self.library, self.store)
-
-        self.commands['get'] = manipulation.Get(self, self.library, self.store)
-
-        self.commands['harvest'] = crafting.Harvest(self, self.library, self.store)
-        self.commands['help'] = system.Help(self, self.library, self.store)
-
-        self.commands['inventory'] = information.Inventory(self, self.library, self.store)
-
-        self.commands['look'] = information.Look(self, self.library, self.store)
-
-        self.commands['north'] = movement.North(self, self.library, self.store)
-
-        self.commands['open'] = manipulation.Open(self, self.library, self.store)
-
-        self.commands['run'] = movement.Run(self, self.library, self.store)
-
-        self.commands['quit'] = system.Quit(self, self.library, self.store)
-
-        self.commands['south'] = movement.South(self, self.library, self.store)
-        self.commands['say'] = communication.Say(self, self.library, self.store)
-        self.commands['sleep'] = reserves.Sleep(self, self.library, self.store)
-        self.commands['sprint'] = movement.Sprint(self, self.library, self.store)
-        self.commands['status'] = information.Status(self, self.library, self.store)
-
-        self.commands['west'] = movement.West(self, self.library, self.store)
-        self.commands['walk'] = movement.Walk(self, self.library, self.store)
-        self.commands['wield'] = manipulation.Wield(self, self.library, self.store)
-        self.commands['wake'] = reserves.Wake(self, self.library, self.store)
-
-        self.commands['up'] = movement.Up(self, self.library, self.store)
+        self.commands = commands
 
     def findCommand(self, input):
+        """
+        Find the command matching `input`.
+
+        Parameters
+        ----------
+        input:  string
+            The input string we're going to match.
+
+        Returns
+        -------
+        Command
+            The matched `Command` object.  Or `None` if no object matched.
+        """
+            
         for command in self.commands:
             if command.startswith(input):
                 return self.commands[command]
         return None
 
     def interpret(self, player, input):
+        """
+        Interpret a player's input, finding the matching command argument and
+        then executing it with any remaining arguments.
+
+        Parameters
+        ----------
+        player: Player
+            The player who's input we're interpreting.
+        input:  string
+            The input we're interpreting.
+
+        Returns
+        -------
+        void
+        """
+
         if not input:
             return
 

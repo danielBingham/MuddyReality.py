@@ -1,18 +1,53 @@
 class State:
-    'A base state class as used by the StateInterpreter.'
+    "A base class for States used with the StateInterpreter."
 
-    def __init__(self, player, library, store):
+    def __init__(self, library, store):
+        """
+        Initialize the state.
+
+        Parameters
+        ----------
+        library:    Library
+            The game library.
+        store:  Store
+            The game store.
+        """
+
         self.library = library
         self.store = store
-        self.player = player
-        self.introduction()
 
-    ## 
-    # Introduce this state to the player.  This can include laying out the state's options,
-    # or presenting a menu, or doing any preparation for the state.
-    ##
-    def introduction(self):
+    def introduce(self, player):
+        """
+        Introduce this state to the player, giving them any introductory text
+        to explain the state and setting the player's prompt.
+
+        Parameters 
+        ----------
+        player: Player
+            The player to whom we want to introduce this state.
+
+        Returns
+        -------
+        void
+        """
+
         pass
 
-    def execute(self, input):
+    def execute(self, player, input):
+        """
+        Execute the behavior defined for the current state with the given `input`.
+
+        Parameters
+        ----------
+        player: Player
+            The player who is in this state and who has provided `input`.
+        input: string
+            The input string provided by `player`.
+
+        Returns
+        -------
+        next_state: string
+            The next state for `player`.  Could just be the current state.
+        """
+
         pass

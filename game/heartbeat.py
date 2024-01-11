@@ -34,7 +34,7 @@ class Heartbeat:
 
                 player.character.action_time -= 1
                 if player.character.action_time > 0:
-                    player.prompt_off = True
+                    player.prompt.is_off = True
                     player.write(".", wrap=False)
                     player.character.action.step(player)
                 else:
@@ -42,7 +42,7 @@ class Heartbeat:
                     player.character.action = None
                     player.character.action_data = {}
                     player.character.action_time = 0
-                    player.prompt_off = False
+                    player.prompt.is_off = False
 
         # Do reserves calculations 
         if loop_counter % self.game_minute == 0:

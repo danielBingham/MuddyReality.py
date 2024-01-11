@@ -3,37 +3,45 @@ from game.interpreters.state.state import State
 import game.account_menu.menu 
 
 class GetNewAccountPassword(State):
+    "Get a new password for an account."
 
-    def introduction(self):
-        self.player.setPrompt("Enter New Password: ")
+    NAME="get-new-account-password"
+
+    def introduce(self, player):
+        "See State::introduce()"
+
+        player.setPrompt("Enter New Password: ")
 
     def execute(self, input):
-        if self.player.account:
-            state = ConfirmNewAccountPassword(self.player, self.library, self.store, input)
-            return state
+        "See State::execute()"
+
+        if player.account:
+            player.account_state_data['password'] = input
+            return "confirm-new-account-password" 
         else:
             raise RuntimeError('Players setting new passwords must have accounts!')
-
-# End GetNewAccountPassword
 
 class ConfirmNewAccountPassword(State):
+    "Confirm the player's newly set account password."
 
-    def __init__(self, player, store, password):
-        super(ConfirmNewAccountPassword, self).__init__(player, store)
-        self.password = password
+    NAME="confirm-new-account-password"
 
-    def introduction(self):
-        self.player.setPrompt("Confirm Password: ")
+    def introduce(self):
+        "See State::introduce()"
+
+        player.setPrompt("Confirm Password: ")
 
     def execute(self, input):
-        if self.player.account and input == self.password:
-            self.player.account.setPassword(input)
-            self.player.account.save('data/accounts/')
-            return account.menu.AccountMenu(self.player, self.library, self.store)
-        elif self.player.account:
-            self.player.write("Passwords didn't match.  Please try again.")
-            return GetNewAccountPassword(self.player, self.library, self.store)
+        "See State::execute()"
+
+        if player.account and input == player.account_state_data['password']:
+            player.account.setPassword(input)
+            player.account.save('data/accounts/')
+            del player.account_state_data['password']
+            return "account-menu" 
+        elif player.account:
+            player.write("Passwords didn't match.  Please try again.")
+            return "get-new-account-password" 
         else:
             raise RuntimeError('Players setting new passwords must have accounts!')
 
-# End GetNewAccountPassword

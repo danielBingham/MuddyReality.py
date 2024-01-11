@@ -3,19 +3,23 @@ from game.interpreters.state.state import State
 from game.account_menu.password import GetNewAccountPassword 
 
 class CreateNewAccount(State):
+    "Create a new account for `player`."
 
-    def introduction(self):
-        self.player.setPrompt("Enter New Account Name: ")
+    NAME = "create-new-account"
 
-    def execute(self, input):
+    def introduce(self, player):
+        "See State::introduce()"
+
+        player.setPrompt("Enter New Account Name: ")
+
+    def execute(self, player, input):
+        "See State::execute()"
+
         if self.store.accounts.hasId(input):
-            self.player.write("An account by that name already exists.  Please choose a different name.")
+            player.write("An account by that name already exists.  Please choose a different name.")
         else:
-            self.player.account = self.store.accounts.create(input) 
-            self.player.write("Welcome to Python Mud, %s!" % self.player.account.name)
-            return GetNewAccountPassword(self.player, self.library, self.store)
+            player.account = self.store.accounts.create(input) 
+            player.write("Welcome to Python Mud, %s!" % player.account.name)
+            return "get-new-account-password" 
 
-        return self
-
-# End CreateNewAccount
-
+        return self.NAME 

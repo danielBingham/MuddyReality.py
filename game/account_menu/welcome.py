@@ -4,43 +4,54 @@ from game.account_menu.creation import CreateNewAccount
 from game.account_menu.menu import AccountMenu
 
 class WelcomeScreen(State):
+    """
+    Introduce the game to the new player and start them on the account flow.
+    From here they can create a new account or login to an existing one.
+    """
 
+    NAME="welcome-screen"
     WELCOME_SCREEN = """
 Welcome to Muddy Reality!
 
 If this is your first time, you'll need to create an account by typing "new".
     """
 
-    def introduction(self):
-        self.player.write(self.WELCOME_SCREEN)
-        self.player.setPrompt("Account Name: ")
+    def introduce(self, player):
+        "See State::introduce()"
 
-    def execute(self, input):
+        player.write(self.WELCOME_SCREEN)
+        player.setPrompt("Account Name: ")
+
+    def execute(self, player, input):
+        "See State::execute()"
+
         if input == "new":
-            return CreateNewAccount(self.player, self.library, self.store)
+            return "create-new-account" 
         else:
             account = self.store.accounts.getById(input.lower())
             if account:
-                self.player.account = account
-                return GetAccountPassword(self.player, self.library, self.store)
+                player.account = account
+                return "get-account-password" 
             else:
-                self.player.write("That account doesn't exist.")
-        return self
+                player.write("That account doesn't exist.")
+        return self.NAME 
 
-# EndGetAccountName
 
 class GetAccountPassword(State):
+    "Get the player's account password and validate it."
+
+    NAME="get-account-password"
 
     def introduction(self):
-        self.player.write("Please enter the password for the account '" + self.player.account.name + "'.")
-        self.player.setPrompt("Password: ")
+        player.write("Please enter the password for the account '" + player.account.name + "'.")
+        player.setPrompt("Password: ")
 
     def execute(self, input):
-        if self.player.account.isPassword(input):
-            return AccountMenu(self.player, self.library, self.store)
+        if player.account.isPassword(input):
+            return "account-menu" 
         else:
-            self.player.write("Incorrect password.")
+            player.write("Incorrect password.")
         
-        return self
+        return self.NAME 
 
 # End GetAccountPassword

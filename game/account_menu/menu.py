@@ -1,9 +1,11 @@
 from game.interpreters.state.state import State
 
-import game.account_menu.password
-
 class AccountMenu(State):
-
+    """
+    Present the player with the account menu and then execute their account commands.
+    """
+    
+    NAME = "account-menu"
     ACCOUNT_MENU = """
 ==================== Account Menu ====================
 
@@ -19,11 +21,15 @@ quit                - Leave the game.
 ======================================================
     """
 
-    def introduction(self):
-        self.player.setPrompt("> ")
-        self.player.write(self.ACCOUNT_MENU, wrap=False)
+    def introduce(self, player):
+        "See State::introduce()"
 
-    def execute(self, input):
+        player.setPrompt("> ")
+        player.write(self.ACCOUNT_MENU, wrap=False)
+
+    def execute(self, player, input):
+        "See State::execute()"
+
         try:
             command, arguments = input.split(' ', 1)
         except ValueError:
@@ -31,70 +37,69 @@ quit                - Leave the game.
             arguments = ''
 
         if command == "menu":
-            self.player.write(self.ACCOUNT_MENU, wrap=False)
-            return self
+            player.write(self.ACCOUNT_MENU, wrap=False)
+            return self.NAME
 
 
         if command == "change" and arguments == "password":
-            return account.password.GetNewAccountPassword(self.player, self.library, self.store)
+            return "get-new-account-password" 
 
 
         if command == "list":
-            if not self.player.account.characters:
-                self.player.write("There are no characters in your account yet!  Create one by typing `create <name>`.")
-                return self
+            if not player.account.characters:
+                player.write("There are no characters in your account yet!  Create one by typing `create <name>`.")
+                return self.NAME
 
-            self.player.write("You have the following characters in your account:\n")
-            for name in self.player.account.characters:
-                self.player.write("%s\n" % name.title())
-            return self
+            player.write("You have the following characters in your account:\n")
+            for name in player.account.characters:
+                player.write("%s\n" % name.title())
+            return self.NAME
 
 
         if command == "play":
-            if arguments.lower() in self.player.account.characters:
-                self.player.character = self.player.account.characters[arguments.lower()]
-                self.player.character.player = self.player
-                self.player.status = self.player.STATUS_PLAYING
+            if arguments.lower() in player.account.characters:
+                player.character = player.account.characters[arguments.lower()]
+                player.character.player = player
+                player.status = player.STATUS_PLAYING
 
 
                 # If they aren't in the game world yet, send em to room 1.
-                if not self.player.character.room:
-                    self.library.movement.enter(self.player.character, self.store.rooms.getById(1))
+                if not player.character.room:
+                    self.library.movement.enter(player.character, self.store.rooms.getById(1))
                 else:
-                    self.library.movement.enter(self.player.character, self.player.character.room)
+                    self.library.movement.enter(player.character, player.character.room)
 
-                self.player.write("Welcome back, %s!" % self.player.character.name.title())
-                self.player.write(self.player.character.room.describe(self.player), wrap=False)
+                player.write("Welcome back, %s!" % player.character.name.title())
+                player.write(player.character.room.describe(player), wrap=False)
                 return None
 
-            self.player.write("You don't seem to have a character by that name.")
-            return self 
+            player.write("You don't seem to have a character by that name.")
+            return self.NAME 
 
 
         if command == "create":
             name = arguments
             if not name:
-                self.player.write("You need to enter a name for the character you want to create.  Try `create <name>`.")
-                return self
+                player.write("You need to enter a name for the character you want to create.  Try `create <name>`.")
+                return self.NAME
 
             if self.store.characters.hasId(name):
-                self.player.write("A character with that name already exists.  Please try a different name.")
-                return self
+                player.write("A character with that name already exists.  Please try a different name.")
+                return self.NAME
 
-            self.player.character = self.store.characters.create(name)
-            self.player.character.save('data/characters/')
-            self.player.account.addCharacter(self.player.character)
-            self.player.character = None
+            player.character = self.store.characters.create(name)
+            player.character.save('data/characters/')
+            player.account.addCharacter(player.character)
+            player.character = None
 
-            return self 
+            return self.NAME 
         
 
         if command == "quit":
-            self.player.quit()
+            player.quit()
             return None
             
-        self.player.write("That's not a menu option.")
-        return self
+        player.write("That's not a menu option.")
+        return self.NAME
 
-# End AccountMenu
 

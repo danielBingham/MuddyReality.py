@@ -31,6 +31,10 @@ Your character will leave the game and you will return to the account menu where
 class Help(Command):
     'List help contents.'
 
+    def __init__(self, commands, library, store):
+        super(Help, self).__init__(library, store)
+        self.commands = commands
+
     def describe(self):
         return "help - get help about how to play the game"
 
@@ -43,15 +47,15 @@ Get help about a topic.  `[topic]` is optional.  If it is left off, help will li
 
     def execute(self, player, arguments):
         if not arguments:
-            for command in self.interpreter.commands:
-                description = self.interpreter.commands[command].describe()
+            for command in self.commands:
+                description = self.commands[command].describe()
                 if description:
                     player.write(description)
             return
         else:
-            for command in self.interpreter.commands:
+            for command in self.commands:
                 if command.startswith(arguments):
-                    help_text = self.interpreter.commands[command].help()
+                    help_text = self.commands[command].help()
                     if help_text:
                         player.write(help_text)
                         return

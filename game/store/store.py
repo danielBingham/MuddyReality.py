@@ -196,6 +196,11 @@ class Store:
 
         Initializes the store by creating the repositories for each type of
         Model stored.  Also loads the commands.
+
+        Parameters
+        ----------
+        world:  string
+            The name of the game world we want to load.
         """
 
         self.world = world
@@ -210,6 +215,10 @@ class Store:
 
 
     def load(self):
+        """
+        Populate the game store, loading the game world and all game data.
+        """
+
         print("Loading the game store.")
 
         print("Loading the world...")
