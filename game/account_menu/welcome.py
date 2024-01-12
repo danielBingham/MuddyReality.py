@@ -42,11 +42,11 @@ class GetAccountPassword(State):
 
     NAME="get-account-password"
 
-    def introduction(self):
+    def introduce(self, player):
         player.write("Please enter the password for the account '" + player.account.name + "'.")
         player.setPrompt("Password: ")
 
-    def execute(self, input):
+    def execute(self, player, input):
         if player.account.isPassword(input):
             return "account-menu" 
         else:

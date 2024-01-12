@@ -16,16 +16,16 @@ Your character will leave the game and you will return to the account menu where
         """
 
     def execute(self, player, arguments):
-        player.character.save('data/characters/')
+        self.store.saveCharacter(player.character)
 
         player.write('You leave the game.')
-        self.library.environment.writeToRoom(player.character, player.character.name + ' leaves the game.')
+        self.library.room.writeToRoom(player.character, player.character.name + ' leaves the game.')
 
         player.character.player = None
         player.character = None
 
         player.status = player.STATUS_ACCOUNT
-        player.account_state = AccountMenu(player, self.library, self.store)
+        player.setAccountState("account-menu")
 
 
 class Help(Command):

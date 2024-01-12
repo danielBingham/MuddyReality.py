@@ -1,6 +1,4 @@
-import json
-import glob
-import copy
+import json, glob, copy, os
 
 from game.store.models.world import World
 from game.store.models.account import Account
@@ -190,7 +188,7 @@ class Store:
         A ModelPrototypeRepository of all the Items that can exist in the game.
     """
 
-    def __init__(self, world='base'):
+    def __init__(self, world='base', data_directory='data/'):
         """
         Initialize the Store.
 
@@ -203,6 +201,7 @@ class Store:
             The name of the game world we want to load.
         """
 
+        self.data_directory = 'data/'
         self.world = world
 
         self.players = []
@@ -213,6 +212,33 @@ class Store:
         self.npcs = PrototypeRepository(self, Character) 
         self.items = PrototypeRepository(self, Item) 
 
+    def saveCharacter(self, character):
+        """
+        Save a character. Allows us to avoid hard coding the path to the
+        character data anywhere we need to save the character.
+
+        Parameters
+        ----------
+        character:  Character
+            The character we'd like to save.
+        """
+
+        character_path = os.path.join(self.data_directory, 'characters/')
+        character.save(character_path)
+
+    def saveAccount(self, account):
+        """
+        Save an account.  Allows us to avoid hard coding the path to the
+        account data anywhere we need to save an account.
+
+        Parameters
+        ----------
+        account:    Account
+            The account we'd like to save.
+        """
+
+        account_path = os.path.join(self.data_directory, 'accounts/')
+        account.save(account_path)
 
     def load(self):
         """
@@ -221,29 +247,33 @@ class Store:
 
         print("Loading the game store.")
 
-        print("Loading the world...")
         world_name = self.world
+        world_path = os.path.join(self.data_directory, 'worlds', world_name, 'world.json')
+        print("Loading the world from %s..." % world_path)
         self.world = World() 
-        self.world.load('data/worlds/' + world_name + '/world.json')
+        self.world.load(world_path)
 
-        print("Loading items...")
-        item_list = glob.glob('data/items/**/*.json', recursive=True)
+        item_path = os.path.join(self.data_directory, 'items/')
+        print("Loading items from %s..." % item_path)
+        item_list = glob.glob(item_path + '**/*.json', recursive=True)
         for file_path in item_list:
             print("Loading item " + file_path + "...")
             item = Item()
             item.load(file_path)
             self.items.add(item)
 
-        print("Loading non-player characters...")
-        npc_list = glob.glob('data/npcs/**/*.json', recursive=True)
+        npc_path = os.path.join(self.data_directory, 'npcs/')
+        print("Loading non-player characters from %s..." % npc_path)
+        npc_list = glob.glob(npc_path + '**/*.json', recursive=True)
         for file_path in npc_list:
             print("Loading npc %s..." % file_path)
             npc = Character()
             npc.load(file_path)
             self.npcs.add(npc)
 
-        print("Loading player characters...")
-        character_list = glob.glob('data/characters/*.json')
+        character_path = os.path.join(self.data_directory, 'characters/')
+        print("Loading player characters from %s..." % character_path)
+        character_list = glob.glob(character_path + '*.json')
         for file_path in character_list:
             print("Loading character %s..." % file_path)
 
@@ -267,8 +297,9 @@ class Store:
             self.characters.add(character)
 
 
-        print("Loading accounts...")
-        account_list = glob.glob('data/accounts/*.json') 
+        account_path = os.path.join(self.data_directory, 'accounts/')
+        print("Loading accounts from %s..." % account_path)
+        account_list = glob.glob(account_path + '*.json') 
         for file_path in account_list:
             print("Loading account " + file_path + "...")
             account = Account()
@@ -282,8 +313,9 @@ class Store:
 
             self.accounts.add(account)
 
-        print("Loading rooms...")
-        room_list = glob.glob('data/worlds/' + self.world.name + '/rooms/*.json') 
+        room_path = os.path.join(self.data_directory, 'worlds', self.world.name, 'rooms/')
+        print("Loading rooms from %s..." % room_path)
+        room_list = glob.glob(room_path + '*.json') 
         for file_path in room_list:
             print("Loading room " + file_path + "...")
             room = Room()

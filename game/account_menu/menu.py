@@ -60,7 +60,7 @@ quit                - Leave the game.
             if arguments.lower() in player.account.characters:
                 player.character = player.account.characters[arguments.lower()]
                 player.character.player = player
-                player.status = player.STATUS_PLAYING
+                player.status = player.STATUS_GAME
 
 
                 # If they aren't in the game world yet, send em to room 1.
@@ -88,7 +88,7 @@ quit                - Leave the game.
                 return self.NAME
 
             player.character = self.store.characters.create(name)
-            player.character.save('data/characters/')
+            self.store.saveCharacter(player.character)
             player.account.addCharacter(player.character)
             player.character = None
 

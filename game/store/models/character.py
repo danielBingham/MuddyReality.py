@@ -153,11 +153,14 @@ class Reserves(JsonSerializable):
     def windString(self, prompt=False):
         wind = ''
         
-        if prompt and self.wind / self.max_wind > 0.5:
+        if prompt and self.wind / self.max_wind >= 1.0:
             return wind
         
-        if self.wind / self.max_wind > 0.5:
-            wind = 'breathing steadily'
+        if self.wind / self.max_wind >= 1.0:
+            wind = 'breathing calmly'
+        elif self.wind / self.max_wind < 1.0 \
+                and self.wind / self.max_wind > 0.5:
+            wind = 'breathing heavily'
         elif self.wind / self.max_wind <= 0.5 \
                 and self.wind / self.max_wind > 0.25:
             wind = 'huffing'

@@ -91,50 +91,53 @@ def generate(world, heights_only=False, water_only=False, biomes_only=False, roo
     world.save() 
 
 
-random.seed()
+def main():
+    random.seed()
 
-parser = argparse.ArgumentParser(
-                    prog='generate',
-                    description='Generate a world for Muddy Reality.')
+    parser = argparse.ArgumentParser(
+                        prog='generate',
+                        description='Generate a world for Muddy Reality.')
 
-parser.add_argument('name', help='A name for the world that heights are being generated for.  This will be used as the output directory under `data/worlds/`.')
+    parser.add_argument('name', help='A name for the world that heights are being generated for.  This will be used as the output directory under `data/worlds/`.')
 
-# World shape parameters.
-parser.add_argument('--width', default=100, help='Width of the world in rooms.  World will be square with width^2 total rooms..')
-parser.add_argument('--room-width', dest='room_width', default=100, help='Width of an individual room in meters.  World will be (room-width*width)^2 total area.')
+    # World shape parameters.
+    parser.add_argument('--width', default=100, help='Width of the world in rooms.  World will be square with width^2 total rooms..')
+    parser.add_argument('--room-width', dest='room_width', default=100, help='Width of an individual room in meters.  World will be (room-width*width)^2 total area.')
 
-parser.add_argument('--initial-water', default=30, dest='initial_water', help='The initial water that will be dumped on the world and allowed to flow to the low areas in depth (meters) per world point.')
+    parser.add_argument('--initial-water', default=30, dest='initial_water', help='The initial water that will be dumped on the world and allowed to flow to the low areas in depth (meters) per world point.')
 
-# Parameters for controlling which parts of the generating we're doing.
-parser.add_argument('--heights-only', dest='heights_only', action='store_true', help='Only generate the height map.  Will generate the worlds.json file if it does not exist.')
-parser.add_argument('--water-only', dest='water_only', action='store_true', help='Only generate the worlds water.')
-parser.add_argument('--biomes-only', dest='biomes_only', action='store_true', help='Only generate the biomes. world.json matching `name` must have heights already generated.')
-parser.add_argument('--rooms-only', dest='rooms_only', action='store_true', help='Only generate the rooms. world.json matching `name` must have heights and biomes already generated.')
+    # Parameters for controlling which parts of the generating we're doing.
+    parser.add_argument('--heights-only', dest='heights_only', action='store_true', help='Only generate the height map.  Will generate the worlds.json file if it does not exist.')
+    parser.add_argument('--water-only', dest='water_only', action='store_true', help='Only generate the worlds water.')
+    parser.add_argument('--biomes-only', dest='biomes_only', action='store_true', help='Only generate the biomes. world.json matching `name` must have heights already generated.')
+    parser.add_argument('--rooms-only', dest='rooms_only', action='store_true', help='Only generate the rooms. world.json matching `name` must have heights and biomes already generated.')
 
-parser.add_argument('--regenerate', action='store_true', help='Regenerate the world, overriding any previously generated world.') 
+    parser.add_argument('--regenerate', action='store_true', help='Regenerate the world, overriding any previously generated world.') 
 
-arguments = parser.parse_args()
-print(arguments)
+    arguments = parser.parse_args()
+    print(arguments)
 
-world = World(arguments.name,  int(arguments.width), int(arguments.room_width))
+    world = World(arguments.name,  int(arguments.width), int(arguments.room_width))
 
-world.initial_water = int(arguments.initial_water)
+    world.initial_water = int(arguments.initial_water)
 
-if not world.load():
-    world.save()
-
-if int(arguments.width) != world.width or int(arguments.room_width) != world.room_width:
-    if not arguments.regenerate or arguments.heights_only \
-            or arguments.water_only or arguments.biomes_only or arguments.rooms_only:
-        print("Error! You can't regenerate a single stage with different world parameters.  If you want to change the world width or room_width, please regenerate the whole world.")
-        sys.exit() 
-    elif arguments.regenerate:
-        print("Regenerating world with new world parameters...")
-        world.width = int(arguments.width)
-        world.room_width = int(arguments.room_width)
+    if not world.load():
         world.save()
 
+    if int(arguments.width) != world.width or int(arguments.room_width) != world.room_width:
+        if not arguments.regenerate or arguments.heights_only \
+                or arguments.water_only or arguments.biomes_only or arguments.rooms_only:
+            print("Error! You can't regenerate a single stage with different world parameters.  If you want to change the world width or room_width, please regenerate the whole world.")
+            sys.exit() 
+        elif arguments.regenerate:
+            print("Regenerating world with new world parameters...")
+            world.width = int(arguments.width)
+            world.room_width = int(arguments.room_width)
+            world.save()
 
-print("Generating world %s, width [%d, %d] totaling %d rooms of size %d meters by %d meters" % (world.name, world.width, world.width, world.width * world.width, world.room_width, world.room_width))
-generate(world, arguments.heights_only, arguments.water_only, arguments.biomes_only, arguments.rooms_only, arguments.regenerate)
-        
+
+    print("Generating world %s, width [%d, %d] totaling %d rooms of size %d meters by %d meters" % (world.name, world.width, world.width, world.width * world.width, world.room_width, world.room_width))
+    generate(world, arguments.heights_only, arguments.water_only, arguments.biomes_only, arguments.rooms_only, arguments.regenerate)
+       
+if __name__ == '__main__':
+    main()

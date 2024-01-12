@@ -78,13 +78,13 @@ Get an item described by [item] from the current room and add it to your invento
             player.write("Get what?")
             return
 
-        item = self.library.items.findItemByKeywords(player.character.room.items, arguments)
+        item = self.library.item.findItemByKeywords(player.character.room.items, arguments)
         if item:
             if item.can_pick_up:
                 player.character.room.items.remove(item)
                 player.character.inventory.append(item)
                 player.write("You pick up " + item.description + ".")
-                self.library.environment.writeToRoom(player.character, player.character.name + ' picks up ' + item.description+ '.')
+                self.library.room.writeToRoom(player.character, player.character.name + ' picks up ' + item.description+ '.')
             else:
                 player.write("You can't pick up " + item.description)
         else:
@@ -113,12 +113,12 @@ Drop an item described by [item] from your inventory and leave it in the current
             player.write("Drop what?")
             return
 
-        item = self.library.items.findItemByKeywords(player.character.inventory, arguments)
+        item = self.library.item.findItemByKeywords(player.character.inventory, arguments)
         if item: 
             player.character.inventory.remove(item)
             player.character.room.items.append(item)
             player.write("You drop " + item.description + ".")
-            self.library.environment.writeToRoom(player.character, player.character.name + ' drops ' + item.description+ '.')
+            self.library.room.writeToRoom(player.character, player.character.name + ' drops ' + item.description+ '.')
         else:
             player.write("You don't seem to be carrying a " + arguments + ".")
 
@@ -144,13 +144,13 @@ Wield an item described by [item] as a weapon.
             player.write("Wield what?")
             return
 
-        item = self.library.items.findItemByKeywords(player.character.inventory, arguments)
+        item = self.library.item.findItemByKeywords(player.character.inventory, arguments)
         if item:
             if "MeleeWeapon" in item.traits:
                 player.character.inventory.remove(item)
                 player.character.equipment['wield'] = item
                 player.write("You wield " + item.name + ".")
-                self.library.environment.writeToRoom(player.character, player.character.name + ' wields ' + item.description+ '.')
+                self.library.room.writeToRoom(player.character, player.character.name + ' wields ' + item.description+ '.')
             else:
                 player.write("You can't wield " + item.description + ".")
         else:

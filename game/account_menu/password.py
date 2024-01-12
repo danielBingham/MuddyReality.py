@@ -12,7 +12,7 @@ class GetNewAccountPassword(State):
 
         player.setPrompt("Enter New Password: ")
 
-    def execute(self, input):
+    def execute(self, player, input):
         "See State::execute()"
 
         if player.account:
@@ -26,17 +26,17 @@ class ConfirmNewAccountPassword(State):
 
     NAME="confirm-new-account-password"
 
-    def introduce(self):
+    def introduce(self, player):
         "See State::introduce()"
 
         player.setPrompt("Confirm Password: ")
 
-    def execute(self, input):
+    def execute(self, player, input):
         "See State::execute()"
 
         if player.account and input == player.account_state_data['password']:
             player.account.setPassword(input)
-            player.account.save('data/accounts/')
+            self.store.saveAccount(player.account)
             del player.account_state_data['password']
             return "account-menu" 
         elif player.account:

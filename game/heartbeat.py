@@ -21,8 +21,7 @@ class Heartbeat:
             for player in self.store.players:
                 if not player.character:
                     continue
-                player.write('\nSaving %s...' % player.character.name)
-                player.character.save('data/characters/')
+                self.store.saveCharacter(player.character)
 
         # Advance any actions or action timers.
         if loop_counter % self.game_minute == 0:

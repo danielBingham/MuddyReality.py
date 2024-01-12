@@ -1,5 +1,3 @@
-import game.library.environment as environment
-
 class MovementLibrary:
     
     def __init__(self, library, store):
@@ -8,7 +6,7 @@ class MovementLibrary:
 
     def move(self, direction, player, arguments):
         if not player.character.room:
-            raise RuntimeException("Player should have a room if they're trying to move!")
+            raise RuntimeError("Player should have a room if they're trying to move!")
 
         if player.character.position == player.character.POSITION_SLEEPING:
             player.write("You can't move in your sleep.")
@@ -75,15 +73,15 @@ class MovementLibrary:
         character.room = room
 
         if direction:
-            self.library.environment.writeToRoom(character, character.name.title() + " enters from the " + room.INVERT_DIRECTION[direction] + ".")
+            self.library.room.writeToRoom(character, character.name.title() + " enters from the " + room.INVERT_DIRECTION[direction] + ".")
         else:
-            self.library.environment.writeToRoom(character, character.name.title() + " enters.")
+            self.library.room.writeToRoom(character, character.name.title() + " enters.")
 
     def leave(self, character, room, speed='', direction=''):
         if direction:
-            self.library.environment.writeToRoom(character, character.name.title() + " leaves to the " + direction + ".")
+            self.library.room.writeToRoom(character, character.name.title() + " leaves to the " + direction + ".")
         else:
-            self.library.environment.writeToRoom(character, character.name.title() + " leaves.")
+            self.library.room.writeToRoom(character, character.name.title() + " leaves.")
 
         room.occupants.remove(character)
         character.room = None

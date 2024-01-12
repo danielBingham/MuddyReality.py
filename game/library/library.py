@@ -1,4 +1,4 @@
-from game.library.items import ItemLibrary
+from game.library.item import ItemLibrary
 from game.library.character import CharacterLibrary
 from game.library.room import RoomLibrary
 

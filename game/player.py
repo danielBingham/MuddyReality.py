@@ -51,7 +51,8 @@ class Player:
         self.game_interpreter = game_interpreter
 
         self.status = self.STATUS_ACCOUNT
-        self.account_state = None
+        self.last_account_state = None
+        self.current_account_state = None
         # Data that might need to be passed between states in the account flow.
         self.account_state_data = {}
 
@@ -65,6 +66,7 @@ class Player:
         Update the player's current prompt based on their character's state (if
         any) and then write it.
         """
+        
         if self.character and self.character.action:
             self.prompt.is_off = True
         if self.prompt.is_needed and not self.prompt.is_off:
@@ -108,7 +110,7 @@ class Player:
             self.prompt.is_needed = False
 
 
-    def setAccountState(state_string):
+    def setAccountState(self, state_string):
         """
         Set the current account state for players who are at the Account Menu.
 
@@ -118,11 +120,16 @@ class Player:
             The name of the state we want to set for the character.
         """
 
-        if self.status !== self.STATUS_ACCOUNT:
-            raise ValueException("Can't set player account state when the player is in the game.")
+        if self.status != self.STATUS_ACCOUNT and state_string != None:
+            raise ValueError("Can't set player account state when the player is in the game.")
+        elif state_string != None:
+            self.last_account_state = self.current_account_state
+            self.current_account_state = state_string
+            if self.last_account_state != self.current_account_state:
+                self.account_interpreter.introduce(self)
         else:
-            self.account_state = state_string
-            self.account_interpreter.introduce(self)
+            self.last_account_state = self.current_account_state
+            self.current_account_state = None
 
     def interpret(self):
         """
@@ -225,7 +232,7 @@ class Player:
         string: The player's current prompt.
         """
 
-        return self.prompt.prompt
+        return self.prompt.current
 
     def setPrompt(self, prompt):
         """
@@ -241,8 +248,8 @@ class Player:
         Player: Returns `self` to allow chaining.
         """
 
-        self.prompt.prompt = "\n\n" + prompt
-        self.prompt.setPromptInBuffer(False)
+        self.prompt.current = "\n\n" + prompt
+        self.prompt.is_in_buffer = False
         return self
 
     # Currently unimplemented.  They had buggy behavior that I haven't gotten

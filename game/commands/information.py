@@ -80,7 +80,7 @@ Get detailed information about a room or object.  If [object] is excluded, the r
             proxy = Look(self.store)
             return proxy.execute(player, arguments)
 
-        item = self.library.items.findItemByKeywords(player.character.inventory, arguments)
+        item = self.library.item.findItemByKeywords(player.character.inventory, arguments)
         if item:
             player.write(item.detail())
             return
@@ -90,7 +90,7 @@ Get detailed information about a room or object.  If [object] is excluded, the r
                 player.write(occupant.detail())
                 return
 
-        item = self.library.items.findItemByKeywords(player.character.room.items, arguments)
+        item = self.library.item.findItemByKeywords(player.character.room.items, arguments)
         if item:
             player.write(item.detail())
             return

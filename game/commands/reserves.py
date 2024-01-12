@@ -23,12 +23,12 @@ Attempt to eat an item described by [item] as food.
             player.write("Eat what?")
             return
 
-        item = self.library.items.findItemByKeywords(player.character.inventory, arguments)
+        item = self.library.item.findItemByKeywords(player.character.inventory, arguments)
         if item and "Food" in item.traits:
             player.character.inventory.remove(item)
             player.character.reserves.calories += item.traits["Food"].calories
             player.write("You eat " + item.description + ".")
-            self.library.environment.writeToRoom(player.character, player.character.name + ' eats ' + item.description+ '.')
+            self.library.room.writeToRoom(player.character, player.character.name + ' eats ' + item.description+ '.')
         else:
             player.write("There doesn't seem to be a " + arguments + " to eat.")
 
@@ -50,7 +50,7 @@ class Drink(Command):
             player.character.reserves.thirst += 500
 
             player.write("You drink from the fresh water.")
-            self.library.environment.writeToRoom(player.character, player.character.name + " drinks from the fresh water.")
+            self.library.room.writeToRoom(player.character, player.character.name + " drinks from the fresh water.")
             return
         else:
             player.write("There's no drinkable water here.")
@@ -80,7 +80,7 @@ Your character sits down to rest.
 
         player.character.position = Character.POSITION_RESTING
         player.write('You sit down to rest.')
-        self.library.environment.writeToRoom(player.character, "%s sits down to rest." % player.character.name.title())
+        self.library.room.writeToRoom(player.character, "%s sits down to rest." % player.character.name.title())
 
 class Sleep(Command):
     'Go to sleep.'
@@ -100,7 +100,7 @@ Will put your character to sleep.  You will awaken once refreshed.
             player.write("You are already asleep.")
             return
 
-        if player.character.reserves.wind <= player.character.reserves.max_wind:
+        if player.character.reserves.wind < player.character.reserves.max_wind:
             player.write("You'll need to catch your breath before you can go to sleep.")
             return
 

@@ -120,6 +120,7 @@ def main():
     parser.add_argument('-H', '--host', dest='host', default='', help="What hostname do we want to run the server on?")
     parser.add_argument('-p', '--port', dest='port', default=3000, help="What port should we run the server on?")
 
+    parser.add_argument('--data', default='data/', help='The location of the data directory, relative to this file.')
     parser.add_argument('--world', default='base', help='The name of the world we want to run the server for.') 
 
     arguments = parser.parse_args()
@@ -129,9 +130,11 @@ def main():
     host = arguments.host
     port = int(arguments.port)
 
+    data_directory = arguments.data
+
     serverSocket = ServerSocket(host, port)
 
-    store = Store(arguments.world)
+    store = Store(arguments.world, data_directory)
     store.load()
 
     library = Library(store)
@@ -141,7 +144,7 @@ def main():
     states['welcome-screen'] = welcome.WelcomeScreen(library, store)
     states['get-account-password'] = welcome.GetAccountPassword(library, store)
     states['create-new-account'] = creation.CreateNewAccount(library, store)
-    states['account-menu'] = menu.AcountMenu(library, store)
+    states['account-menu'] = menu.AccountMenu(library, store)
     states['get-new-account-password'] = password.GetNewAccountPassword(library, store)
     states['confirm-new-account-password'] = password.ConfirmNewAccountPassword(library, store)
     account_interpreter = StateInterpreter(states, library, store)
@@ -185,6 +188,7 @@ def main():
 
     commands['open'] = manipulation.Open( library, store)
 
+    commands['rest'] = reserves.Rest(library, store)
     commands['run'] = movement.Run( library, store)
 
     commands['quit'] = system.Quit( library, store)

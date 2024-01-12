@@ -24,9 +24,5 @@ Your character will say `[text]` outloud so that everyone in the vicinity (your 
             player.write("You can't speak in your sleep.")
             return
 
-        for occupant in player.character.room.occupants: 
-            if occupant == player.character:
-                player.write('You say "%s"' % (arguments))
-            else:
-                occupant.player.write('%s says "%s"' % (player.character.name.title(), arguments))
-
+        player.write('You say "%s"' % (arguments))
+        self.library.room.writeToRoom(player.character, '%s says "%s"' % (player.character.name.title(), arguments))
