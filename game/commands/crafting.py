@@ -21,10 +21,11 @@ Attempt to craft a material or tool with materials or tools.  If the [target] ca
             return
 
         if not arguments:
-            player.write("You can't craft nothing!")
+            player.write("Craft what with what?")
             return
 
-        # Split the arguments on white space.
+        # Split the arguments on "with" to differentiate the craft target from
+        # the materials.
         splitArguments = arguments.split('with')
 
         if len(splitArguments) != 2:
@@ -34,9 +35,23 @@ Attempt to craft a material or tool with materials or tools.  If the [target] ca
         # Keywords describing the item to be crafted
         craftKeywords = splitArguments[0].strip()
 
+        # Get the craft target assuming the keyword is the whole name.
+        craftTarget = self.store.items.getById(craftKeywords)
+
+        if not craftTarget:
+            player.write("%s is not something you can craft." % craftKeywords.title())
+            return
+
+        if "Craftable" not in craftTarget.traits:
+            player.write("%s is not something you can craft." % craftKeywords.title())
+            return
+
         # Keywords describing the materials to craft the item.
-        materialKeywords = splitArguments[1].split(',')
-        materialKeywords[:] = [keyword.strip() for keyword in materialKeywords]
+        if ',' in splitArguments[1]:
+            materialKeywords = splitArguments[1].split(',')
+            materialKeywords[:] = [keyword.strip() for keyword in materialKeywords]
+        else:
+            materialKeywords = [ splitArguments[1].strip() ]
 
         materials = []
         for keyword in materialKeywords:
@@ -44,14 +59,7 @@ Attempt to craft a material or tool with materials or tools.  If the [target] ca
             if material:
                 materials.append(material)
             else:
-                player.write("Couldn't find " + keyword + " in your inventory.")
-
-        # Get the craft target assuming the keyword is the whole name.
-        craftTarget = self.store.items.getById(craftKeywords)
-
-        if not craftTarget:
-            player.write(craftKeywords + " is not something you can craft.")
-            return
+                player.write("Couldn't find '%s' in your inventory." % keyword)
       
         # Determine whether we have the materials necessary to craft the target.
         matchedMaterials = [] 
@@ -63,7 +71,7 @@ Attempt to craft a material or tool with materials or tools.  If the [target] ca
                     break
 
         if len(matchedMaterials) != len(craftTarget.traits["Craftable"].requiredMaterials):
-            player.write("You don't have all the materials needed to craft " + craftTarget.name)
+            player.write("You don't have all the materials needed to craft %s." % craftTarget.name)
             return
 
         # Remove the materials we're planning to use from the list.
@@ -73,6 +81,8 @@ Attempt to craft a material or tool with materials or tools.  If the [target] ca
         # Confirm we have all the tools we need to craft it.
         matchedTools = []
         for requiredTool in craftTarget.traits["Craftable"].requiredTools:
+            # We're using 'material' here because the materials list will
+            # contain both the materials needed and the tools needed.
             for material in materials:
                 if "Tool" in material.traits \
                         and requiredTool == material.traits["Tool"].type:
@@ -80,7 +90,7 @@ Attempt to craft a material or tool with materials or tools.  If the [target] ca
                     break
 
         if len(matchedTools) != len(craftTarget.traits["Craftable"].requiredTools):
-            player.write("You don't have all the tools needed to craft " + craftTarget.name)
+            player.write("You don't have all the tools needed to craft %s." % craftTarget.name)
             return
 
 
@@ -95,8 +105,8 @@ Attempt to craft a material or tool with materials or tools.  If the [target] ca
         player.character.inventory.append(crafted)
 
         # Success message.
-        player.write("You craft " + crafted.name)
-        self.library.room.writeToRoom(player.character, player.character.title + " crafts " + crafted.name)
+        player.write("You craft %s." % crafted.name)
+        self.library.room.writeToRoom(player.character, "%s crafts %s." % (player.character.name.title(), crafted.name))
 
 class Harvest(Command):
     'Harvest materials.'

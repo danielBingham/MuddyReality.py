@@ -1,3 +1,5 @@
+from game.store.models.character import PlayerCharacter
+
 class RoomLibrary:
     "Behavior for acting on and interacting with Rooms."
 
@@ -34,7 +36,8 @@ class RoomLibrary:
         """
 
         for occupant in character.room.occupants:
-            if occupant != character and occupant.player and occupant.position != occupant.POSITION_SLEEPING: 
+            if occupant != character and isinstance(occupant, PlayerCharacter) \
+                    and occupant.player and occupant.position != occupant.POSITION_SLEEPING: 
                 occupant.player.write(text)
 
     def findOccupantByKeywords(self, room, keywords):
