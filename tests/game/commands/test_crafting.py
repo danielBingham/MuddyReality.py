@@ -3,7 +3,7 @@ from unittest.mock import Mock, call
 from game.library.library import Library
 from game.store.store import Store
 from game.player import Player
-from game.store.models.character import PlayerCharacter, Character
+from game.store.models.character import PlayerCharacter 
 from game.store.models.room import Room
 from game.store.models.item import Item
 

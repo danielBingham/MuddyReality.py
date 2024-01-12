@@ -1,6 +1,6 @@
 #!/usr/bin/python3
 
-import sys, traceback, time, random, argparse
+import time, random, argparse
 
 from game.sockets.server import ServerSocket 
 

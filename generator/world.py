@@ -71,7 +71,7 @@ class World:
         file = open(path + 'world.json', 'r')
         try: 
             self.fromJson(json.load(file))
-        except:
+        except Exception:
             return False
         finally:
             file.close()
