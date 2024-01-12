@@ -86,7 +86,7 @@ class CharacterLibrary:
                 self.kill(character)
         return True
 
-    def adjustThirst(character, amount):
+    def adjustThirst(self, character, amount):
         """
         Adjust a character's thirst reserve and execute any follow on effects.
         

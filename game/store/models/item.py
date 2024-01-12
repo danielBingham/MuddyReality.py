@@ -341,8 +341,8 @@ class Container(JsonSerializable):
         return json
 
     def fromPrototypeJson(self, data):
-        self.volume = json['volume']
-        self.weightLimit = json['weightLimit']
+        self.volume = data['volume']
+        self.weightLimit = data['weightLimit']
         return self
 
     def toJson(self):

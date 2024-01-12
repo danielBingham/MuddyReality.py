@@ -237,7 +237,7 @@ class Wound(JsonSerializable):
     WOUND_THIRD_DEGREE_BURN = 'third-degree-burn'
 
     def __init__(self):
-        self.type = WOUND_SCRAPED
+        self.type = self.WOUND_SCRAPED
 
         # The amount of blood lost per game minute due to the wound.
         self.bleed = 0
