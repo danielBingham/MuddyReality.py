@@ -271,7 +271,7 @@ def generateWater(world):
             + np.roll(flux_south_west, (1, -1), axis=(0, 1))
             + np.roll(flux_west, -1, axis=1)
             + np.roll(flux_north_west, (-1, -1), axis=(0, 1))
-       )
+        )
         deltaWater += iteration_length / cell_area * (flux_in)
 
         if debug:

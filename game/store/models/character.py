@@ -182,7 +182,7 @@ class Reserves(JsonSerializable):
         if self.energy / self.max_energy > 0.5:
             energy = 'rested'
         elif self.energy / self.max_energy <= 0.5 \
-                    and self.energy / self.max_energy > 0.25:
+                and self.energy / self.max_energy > 0.25:
             energy = 'tired'
         elif self.energy / self.max_energy <= 0.25 \
                 and self.energy / self.max_energy > 0.1:

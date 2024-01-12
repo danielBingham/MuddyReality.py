@@ -28,7 +28,7 @@ def fbm(shape, p, lower=-np.inf, upper=np.inf):
     freqs = tuple(np.fft.fftfreq(n, d=1.0 / n) for n in shape)
     freq_radial = np.hypot(*np.meshgrid(*freqs))
     envelope = (np.power(freq_radial, p, where=freq_radial != 0) *
-                            (freq_radial > lower) * (freq_radial < upper))
+                (freq_radial > lower) * (freq_radial < upper))
     envelope[0][0] = 0.0
     phase_noise = np.exp(2j * np.pi * np.random.rand(*shape))
     return normalize(np.real(np.fft.ifft2(np.fft.fft2(phase_noise) * envelope)))
@@ -49,12 +49,12 @@ def sample(a, offset):
     upper_coords %= shape[:, np.newaxis, np.newaxis]
 
     result = lerp(lerp(a[lower_coords[1], lower_coords[0]],
-                                          a[lower_coords[1], upper_coords[0]],
-                                          coord_offsets[0]),
-                                lerp(a[upper_coords[1], lower_coords[0]],
-                                          a[upper_coords[1], upper_coords[0]],
-                                          coord_offsets[0]),
-                                coord_offsets[1])
+                       a[lower_coords[1], upper_coords[0]],
+                       coord_offsets[0]),
+                  lerp(a[upper_coords[1], lower_coords[0]],
+                       a[upper_coords[1], upper_coords[0]],
+                       coord_offsets[0]),
+                  coord_offsets[1])
     return result
 
 
@@ -133,7 +133,7 @@ def poisson_disc_sampling(shape, radius, retries=16):
     cell_size = radius / np.sqrt(2)
     cells = np.ceil(np.divide(shape, cell_size)).astype(int)
     offsets = [(0, 0), (0, -1), (0, 1), (-1, 0), (1, 0), (-1, -1), (-1, 1),
-                          (1, -1), (1, 1), (-2, 0), (2, 0), (0, -2), (0, 2)]
+               (1, -1), (1, 1), (-2, 0), (2, 0), (0, -2), (0, 2)]
     to_cell = lambda p: (p / cell_size).astype('int')
 
     # Returns true if there is a point within `radius` of `p`.
