@@ -1,0 +1,5 @@
+[flake8]
+#count = true 
+select=E9,E111,E117,E112,F63,F7,F82 
+#show-source = true 
+#statistics = true

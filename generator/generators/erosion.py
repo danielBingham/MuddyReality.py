@@ -14,11 +14,11 @@ import generator.utils.util as util
 # Smooths out slopes of `terrain` that are too steep. Rough approximation of the
 # phenomenon described here: https://en.wikipedia.org/wiki/Angle_of_repose
 def apply_slippage(terrain, repose_slope, cell_width):
-  delta = util.simple_gradient(terrain) / cell_width
-  smoothed = util.gaussian_blur(terrain, sigma=1.5)
-  should_smooth = np.abs(delta) > repose_slope
-  result = np.select([np.abs(delta) > repose_slope], [smoothed], terrain)
-  return result
+    delta = util.simple_gradient(terrain) / cell_width
+    smoothed = util.gaussian_blur(terrain, sigma=1.5)
+    should_smooth = np.abs(delta) > repose_slope
+    result = np.select([np.abs(delta) > repose_slope], [smoothed], terrain)
+    return result
 
 
 def erode(world):

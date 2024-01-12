@@ -267,8 +267,8 @@ class MeleeWeapon(JsonSerializable):
         return self.__dict__
 
     def fromJson(self, data):
-       self.__dict__ = data
-       return self
+        self.__dict__ = data
+        return self
 
 class Wearable(JsonSerializable):
     'Contains the properties of a wearable item.  Composable into an Item to make it Wearable.'
@@ -317,8 +317,8 @@ class Wearable(JsonSerializable):
         return self.__dict__
 
     def fromJson(self, data):
-       self.__dict__ = data
-       return self
+        self.__dict__ = data
+        return self
 
 class Container(JsonSerializable):
     'Provides the properties of items that are containers.  Composable into an Item to make it a Container.'
@@ -354,8 +354,8 @@ class Container(JsonSerializable):
             json['contents'].append(item.toJson())
 
     def fromJson(self, data):
-       self.__dict__ = data
-       return self
+        self.__dict__ = data
+        return self
 
 
 class Item(NamedModel):

@@ -308,8 +308,8 @@ class Store:
             characters = account.characters
             account.characters = {} 
             for name in characters:
-                  account.characters[name] = self.characters.getById(name)
-                  account.characters[name].account = account
+                account.characters[name] = self.characters.getById(name)
+                account.characters[name].account = account
 
             self.accounts.add(account)
 
@@ -357,7 +357,7 @@ class Store:
             character = self.characters.getById(id)
 
             if character.room:
-                  character.room = self.rooms.getById(character.room)
+                character.room = self.rooms.getById(character.room)
 
 
 
