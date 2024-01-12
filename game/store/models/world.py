@@ -1,5 +1,6 @@
 from game.store.models.base import NamedModel
 
+
 class World(NamedModel):
 
     def __init__(self):

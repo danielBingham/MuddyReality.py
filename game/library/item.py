@@ -31,7 +31,7 @@ class ItemLibrary:
             which = int(tokens[0])
 
             keywords = tokens[1]
-                             
+
         count = 0
         for item in items:
             if item.name.startswith(keywords):

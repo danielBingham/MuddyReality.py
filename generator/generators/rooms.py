@@ -20,12 +20,14 @@ def loadItems():
 
     return items
 
+
 def instance(items, itemId):
     if itemId in items:
         return copy.deepcopy(items[itemId])
     else:
         print("Error!  Attempt to instance Item(%s) that does not exist." % itemId)
         return None
+
 
 def populateItems(world, room, biome, items, itemIds, density):
     room_area = world.room_width ** 2
@@ -42,6 +44,7 @@ def populateItems(world, room, biome, items, itemIds, density):
             print("Error! Item(%s) not found for Biome(%s)." % (itemId, biome.name))
             break
 
+
 def dX(world, x, dx):
     if x+dx < 0:
         return world.width + (x+dx)
@@ -49,12 +52,14 @@ def dX(world, x, dx):
         return x+dx - world.width 
     return x+dx
 
+
 def dY(world, y, dy):
     if y+dy < 0:
         return world.width + (y+dy)
     if y+dy >= world.width:
         return y+dy - world.width
     return y+dy
+
 
 def descriptionFromSlope(slope):
     if slope == 0:
@@ -77,6 +82,7 @@ def descriptionFromSlope(slope):
         description = "slopes %s precipitously" % direction
 
     return description
+
 
 def generateNeighborDescription(world, rooms, y, x):
     height = world.terrain[y][x]
@@ -106,8 +112,9 @@ def generateNeighborDescription(world, rooms, y, x):
 
     return description
 
+
 def generateRooms(biomes, world):
-  
+
     rooms = [[ None for x in range(world.width) ] for y in range(world.width) ]
 
     # Generate and populate the rooms.
@@ -135,7 +142,7 @@ def generateRooms(biomes, world):
             number_of_flavor = random.randrange(0, len(biome.descriptions['flavor']))
             for flavor in random.sample(range(len(biome.descriptions['flavor'])), number_of_flavor):
                 room.description += " " + biome.descriptions['flavor'][flavor]
-            
+
             rooms[y][x] = room
             id += 1
 
@@ -150,7 +157,7 @@ def generateRooms(biomes, world):
     for y in range(len(rooms)):
         for x in range(len(rooms[y])):
             print("Connecting Room(%d)" % rooms[y][x].id)
-            
+
             if not 'north' in rooms[y][x].exits:
                 dy = dY(world, y, -1)
 
@@ -176,7 +183,7 @@ def generateRooms(biomes, world):
                 exit.direction = 'east'
                 exit.room_to = rooms[y][x]
                 rooms[y][dx].exits['east'] = exit
-            
+
             if not 'east' in rooms[y][x].exits:
                 dx = dX(world, x, 1)
 
@@ -236,5 +243,5 @@ def generateRooms(biomes, world):
 
 
 
-            
+
 

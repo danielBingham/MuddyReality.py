@@ -1,5 +1,6 @@
 from game.store.models.character import PlayerCharacter
 
+
 class RoomLibrary:
     "Behavior for acting on and interacting with Rooms."
 

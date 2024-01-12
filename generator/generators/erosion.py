@@ -27,9 +27,9 @@ def erode(world):
     """
 
     print("Eroding heightmap for world %s..." % world.name)
-    
+
     terrain = world.terrain
-    
+
     # Grid dimension constants
     dim = world.width 
     shape = [ world.width ] * 2
@@ -76,7 +76,7 @@ def erode(world):
         # water and sediment will be moving.
         gradient = np.zeros_like(terrain, dtype='complex')
         gradient = util.simple_gradient(terrain)
-        #gradient = np.select([np.abs(gradient) < 1e-10],
+        # gradient = np.select([np.abs(gradient) < 1e-10],
         #                     [np.exp(2j * np.pi * np.random.rand(*shape))],
         #                     gradient)
         gradient /= np.abs(gradient)

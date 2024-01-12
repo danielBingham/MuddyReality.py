@@ -2,9 +2,10 @@ from game.interpreters.command.command import Command
 from game.interpreters.state.interpreter import StateInterpreter
 from game.account_menu.menu import AccountMenu
 
+
 class Quit(Command):
     'Leave the game.'
-    
+
     def describe(self):
         return "quit - leave the game and return to the account menu"
 

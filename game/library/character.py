@@ -21,17 +21,17 @@ class CharacterLibrary:
     def kill(self, character):
         """
         Kill a character and send their player back to the account menu.
-        
+
         Parameters
         ----------
         character:  Character
             The character to kill.
-        
+
         Returns
         -------
         CharacterLibrary:   Returns `self` to allow chaining.
         """
-        
+
         if character.player:
             character.player.status = character.player.STATUS_ACCOUNT
             character.player.account_state = "menu"
@@ -40,19 +40,19 @@ class CharacterLibrary:
     def adjustSleep(self, character, amount):
         """
         Adjust a character's sleep reserve and execute any follow on effects.
-        
+
         Parameters
         ----------
         character:  Character
             The character who's sleep we wish to adjust.
         amount: int
             The amount we want to adjust the character's sleep by.  Can be positive or negative.
-        
+
         Returns
         -------
         boolean:    True if the adjustment succeeded, False otherwise. 
         """
-        
+
         character.reserves.sleep += amount
         return True
 
@@ -89,14 +89,14 @@ class CharacterLibrary:
     def adjustThirst(self, character, amount):
         """
         Adjust a character's thirst reserve and execute any follow on effects.
-        
+
         Parameters
         ----------
         character:  Character
             The character who's thirst we wish to adjust.
         amount: int
             The amount we want to adjust the character's thirst by.  Can be positive or negative.
-        
+
         Returns
         -------
         boolean:    True if the adjustment succeeded, False otherwise. 
@@ -126,7 +126,7 @@ class CharacterLibrary:
         -------
         boolean:    True if the adjustment succeeded, False otherwise. 
         """
-        
+
         # Wind can't go negative.
         if self.reserves.wind + amount < 0:
             return False
@@ -136,19 +136,19 @@ class CharacterLibrary:
     def adjustEnergy(self, character, amount):
         """
         Adjust a character's energy reserve and execute any follow on effects.
-        
+
         Parameters
         ----------
         character:  Character
             The character who's energy we wish to adjust.
         amount: int
             The amount we want to adjust the character's energy by.  Can be positive or negative.
-        
+
         Returns
         -------
         boolean:    True if the adjustment succeeded, False otherwise. 
         """
-        
+
         # Energy can't go negative.
         if self.reserves.energy + amount < 0:
             return False

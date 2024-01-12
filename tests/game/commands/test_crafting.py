@@ -116,6 +116,7 @@ material_json = {
     }
 }
 
+
 def test_Craft_when_character_is_sleeping():
     """
     Test a player attempting to craft something when their character is asleep.
@@ -139,6 +140,7 @@ def test_Craft_when_character_is_sleeping():
 
     player.write.assert_called_once_with("You can't craft in your sleep.")
 
+
 def test_Craft_when_called_with_no_arguments():
     """
     Test a player attempting to craft but forgetting the arguments.
@@ -159,6 +161,7 @@ def test_Craft_when_called_with_no_arguments():
     craft_command.execute(player, '')
 
     player.write.assert_called_once_with("Craft what with what?")
+
 
 def test_Craft_when_called_without_with():
     """
@@ -182,6 +185,7 @@ def test_Craft_when_called_without_with():
 
     player.write.assert_called_once_with("What do you want to craft with?")
 
+
 def test_Craft_when_called_with_invalid_craft_target():
     """
     Test a player attempting to craft something that doesn't exist.
@@ -203,13 +207,14 @@ def test_Craft_when_called_with_invalid_craft_target():
 
     player.write.assert_called_once_with("Tool is not something you can craft.")
 
+
 def test_Craft_when_craft_target_isnt_craftable():
     """
     Test a player attempting to craft something that exists, but isn't craftable. 
     """
 
     store = Store('test', '')
-    
+
     item = Item()
     item.setId('tool')
     store.items.add(item)
@@ -229,13 +234,14 @@ def test_Craft_when_craft_target_isnt_craftable():
 
     player.write.assert_called_once_with("Tool is not something you can craft.")
 
+
 def test_Craft_when_called_with_missing_materials():
     """
     Test a player attempting to craft something without the materials.
     """
 
     store = Store('test', '')
-    
+
     tool = Item()
     tool.fromJson(tool_json)
     store.items.add(tool)
@@ -258,13 +264,14 @@ def test_Craft_when_called_with_missing_materials():
         call("You don't have all the materials needed to craft tool.")
     ])
 
+
 def test_Craft_missing_one_material():
     """
     Test a player attempting to craft something without one of the materials.
     """
 
     store = Store('test', '')
-    
+
     tool = Item()
     tool.fromJson(tool_requiring_two_materials_json)
     store.items.add(tool)
@@ -331,11 +338,12 @@ def test_Craft_missing_tool():
         call("You don't have all the tools needed to craft craftable material.")
     ])
 
+
 def test_Craft_success_tool_requires_one_material():
     """
     Test a player successfully crafting a tool that requires one material.
     """
-    
+
     store = Store('test', '')
 
     tool = Item()
@@ -366,6 +374,7 @@ def test_Craft_success_tool_requires_one_material():
     player.write.assert_called_once_with("You craft tool.")
     assert len([ item for item in player.character.inventory if item.getId() == tool.getId() ]) == 1
     assert len([ item for item in player.character.inventory if item.getId() == material.getId() ]) == 0
+
 
 def test_Craft_success_craftable_material_requries_material_and_tool():
     """

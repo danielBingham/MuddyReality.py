@@ -1,6 +1,7 @@
 import os
 import json
 
+
 class JsonSerializable:
     def __init__(self):
         pass
@@ -11,8 +12,9 @@ class JsonSerializable:
     def fromJson(self, data):
         return self 
 
+
 class Model(JsonSerializable):
-    
+
     def __init__(self):
         self.id = ''  
 
@@ -52,6 +54,7 @@ class Model(JsonSerializable):
             file.close()
 
         return self
+
 
 class NamedModel(Model):
 

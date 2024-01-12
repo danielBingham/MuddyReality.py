@@ -8,6 +8,7 @@ from game.store.models.room import Room
 
 from game.commands.communication import Say
 
+
 def test_Say_to_empty_room():
     """
     Test the Say command when the player says something to an empty room.
@@ -74,6 +75,7 @@ def test_Say_to_player_populated_room():
     # Check the results
     speakingPlayer.write.assert_called_once_with('You say "Hello"')
     listeningPlayer.write.assert_called_once_with('Speaker says "Hello"')
+
 
 def test_Say_to_npc_populated_room():
     """

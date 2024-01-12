@@ -1,6 +1,7 @@
 from game.store.models.base import JsonSerializable
 from game.store.models.base import NamedModel
 
+
 class HarvestProduct(JsonSerializable):
     'A product from an item that can be harvested.'
 
@@ -10,7 +11,7 @@ class HarvestProduct(JsonSerializable):
 
     def toPrototypeJson(self):
         return self.toJson()
-    
+
     def fromPrototypeJson(self, data):
         return self.fromJson(data)
 
@@ -20,6 +21,7 @@ class HarvestProduct(JsonSerializable):
     def fromJson(self, data):
         self.__dict__ = data
         return self
+
 
 class Harvestable(JsonSerializable):
     'An item that can be harvested.'
@@ -44,7 +46,7 @@ class Harvestable(JsonSerializable):
 
     def toPrototypeJson(self):
         return self.toJson()
-    
+
     def fromPrototypeJson(self, data):
         return self.fromJson(data)
 
@@ -64,7 +66,7 @@ class Harvestable(JsonSerializable):
 
         if self.replaced_with:
             json['replacedWith'] = self.replaced_with
-        
+
         json['calories'] = self.calories
         json['time'] = self.time
 
@@ -80,13 +82,13 @@ class Harvestable(JsonSerializable):
             self.post_description = data['postDescription']
 
         self.consumed = data['consumed']
-        
+
         if 'replaceWith' in data:
             self.replace_with = data['replaceWith']
 
         self.calories = data['calories']
         self.time = data['time']
-        
+
         self.action = data['action']
         self.required_tools = data['required_tools']
 
@@ -97,6 +99,7 @@ class Harvestable(JsonSerializable):
 
         return self
 
+
 class Food(JsonSerializable):
     'A food that can be eaten for calories.'
 
@@ -105,7 +108,7 @@ class Food(JsonSerializable):
 
     def toPrototypeJson(self):
         return self.toJson()
-    
+
     def fromPrototypeJson(self, data):
         return self.fromJson(data)
 
@@ -115,6 +118,7 @@ class Food(JsonSerializable):
     def fromJson(self, data):
         self.__dict__ = data
         return self
+
 
 class Material(JsonSerializable):
     'A material that can be used for crafting.'
@@ -136,6 +140,7 @@ class Material(JsonSerializable):
         self.__dict__ = data
         return self
 
+
 class Tool(JsonSerializable):
     'A tool that can be used for crafting.'
 
@@ -155,6 +160,7 @@ class Tool(JsonSerializable):
     def fromJson(self, data):
         self.__dict__ = data
         return self
+
 
 class RequiredMaterial(JsonSerializable):
     'A material requirement for crafting'
@@ -270,9 +276,10 @@ class MeleeWeapon(JsonSerializable):
         self.__dict__ = data
         return self
 
+
 class Wearable(JsonSerializable):
     'Contains the properties of a wearable item.  Composable into an Item to make it Wearable.'
-    
+
     HANDS = 'hands'
     FOREARMS = 'forearms'
     TORSO = 'torso'
@@ -300,7 +307,7 @@ class Wearable(JsonSerializable):
 
         # The location this item may be worn on.
         self.location = Wearable.NONE
-       
+
         # The warmth wearing this item grants.
         self.warmth = 0
 
@@ -319,6 +326,7 @@ class Wearable(JsonSerializable):
     def fromJson(self, data):
         self.__dict__ = data
         return self
+
 
 class Container(JsonSerializable):
     'Provides the properties of items that are containers.  Composable into an Item to make it a Container.'
@@ -410,17 +418,17 @@ class Item(NamedModel):
 
     def toJson(self):
         json = {}
-        
+
         json['name'] = self.name
         json['description'] = self.description
         json['details'] = self.details
         json['keywords'] = self.keywords
-        
+
         json['length'] = self.length
         json['width'] = self.width
         json['height'] = self.height
         json['weight'] = self.weight
-        
+
         json['canPickUp'] = self.can_pick_up
         json['isGrowing'] = self.is_growing
         json['isEmbedded'] = self.is_embedded
@@ -433,7 +441,7 @@ class Item(NamedModel):
 
     def fromJson(self, data):
         self.setId(data['name'])
-        
+
         self.description = data['description']
         self.details = data['details']
         self.keywords = data['keywords']
@@ -451,7 +459,7 @@ class Item(NamedModel):
 
         if "isEmbedded" in data:
             self.is_embedded = data['isEmbedded']
-        
+
         for trait in data['traits']:
             classRef = globals()[trait]
             instance = classRef()

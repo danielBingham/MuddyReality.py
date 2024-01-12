@@ -1,5 +1,6 @@
 from game.interpreters.command.command import Command
 
+
 class Open(Command):
     'Open a door or an item'
 
@@ -12,7 +13,7 @@ open [direction|door|item]
 
 Open will open a door or an item described by [direction|door|item].
         """
-    
+
     def execute(self, player, arguments):
         if player.character.position == player.character.POSITION_SLEEPING:
             player.write("You can't open anything in your sleep.")
@@ -26,6 +27,7 @@ Open will open a door or an item described by [direction|door|item].
 
         player.write("That doesn't appear to be something you can open.")
 
+
 class Close(Command):
     'Close a door or an item'
 
@@ -38,7 +40,7 @@ close [direction|door|item]
 
 Close will close a door or an item described by [direction|door|item].
         """
-    
+
     def execute(self, player, arguments):
         if player.character.position == player.character.POSITION_SLEEPING:
             player.write("You can't close anything in your sleep.")
@@ -55,6 +57,7 @@ Close will close a door or an item described by [direction|door|item].
                 return
 
         player.write("That doesn't appear to be something you can close.")
+
 
 class Get(Command):
     'Get an item from the environment.'
@@ -121,6 +124,7 @@ Drop an item described by [item] from your inventory and leave it in the current
             self.library.room.writeToRoom(player.character, player.character.name + ' drops ' + item.description+ '.')
         else:
             player.write("You don't seem to be carrying a " + arguments + ".")
+
 
 class Wield(Command):
     'Wield a weapon.'

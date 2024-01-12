@@ -1,6 +1,7 @@
 from game.store.models.character import Character
 from game.interpreters.command.command import Command
 
+
 class Eat(Command):
     'Get a food item from the inventory.'
 
@@ -32,6 +33,7 @@ Attempt to eat an item described by [item] as food.
         else:
             player.write("There doesn't seem to be a " + arguments + " to eat.")
 
+
 class Drink(Command):
     ''
 
@@ -56,6 +58,7 @@ class Drink(Command):
             player.write("There's no drinkable water here.")
             return
 
+
 class Rest(Command):
     'Sit down and rest.'
 
@@ -68,12 +71,12 @@ rest
 
 Your character sits down to rest.
         """
-    
+
     def execute(self, player, arguments):
         if player.character.position == Character.POSITION_SLEEPING:
             player.write("You can't rest while you're asleep.")
             return
-        
+
         if player.character.position == Character.POSITION_RESTING:
             player.write("You are already resting.")
             return
@@ -81,6 +84,7 @@ Your character sits down to rest.
         player.character.position = Character.POSITION_RESTING
         player.write('You sit down to rest.')
         self.library.room.writeToRoom(player.character, "%s sits down to rest." % player.character.name.title())
+
 
 class Sleep(Command):
     'Go to sleep.'
@@ -109,6 +113,7 @@ Will put your character to sleep.  You will awaken once refreshed.
             player.write('You go to sleep.')
         else:
             player.write("You don't feel tired enough to sleep right now.")
+
 
 class Wake(Command):
     'Attempt to wake up.'

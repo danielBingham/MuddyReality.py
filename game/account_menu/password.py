@@ -2,6 +2,7 @@ from game.interpreters.state.state import State
 
 import game.account_menu.menu 
 
+
 class GetNewAccountPassword(State):
     "Get a new password for an account."
 
@@ -20,6 +21,7 @@ class GetNewAccountPassword(State):
             return "confirm-new-account-password" 
         else:
             raise RuntimeError('Players setting new passwords must have accounts!')
+
 
 class ConfirmNewAccountPassword(State):
     "Confirm the player's newly set account password."

@@ -2,6 +2,7 @@ import math
 
 from game.interpreters.command.command import Command
 
+
 class Craft(Command):
     'Create a new item from materials in inventory or room.'
 
@@ -60,7 +61,7 @@ Attempt to craft a material or tool with materials or tools.  If the [target] ca
                 materials.append(material)
             else:
                 player.write("Couldn't find '%s' in your inventory." % keyword)
-      
+
         # Determine whether we have the materials necessary to craft the target.
         matchedMaterials = [] 
         for requiredMaterial in craftTarget.traits["Craftable"].requiredMaterials:
@@ -108,6 +109,7 @@ Attempt to craft a material or tool with materials or tools.  If the [target] ca
         player.write("You craft %s." % crafted.name)
         self.library.room.writeToRoom(player.character, "%s crafts %s." % (player.character.name.title(), crafted.name))
 
+
 class Harvest(Command):
     'Harvest materials.'
 
@@ -127,7 +129,7 @@ Harvest materials from an object in your environment.  The object can be either 
 
         calorie_cost_per_step = math.floor(item_harvest.calories / item_harvest.time)
         player.character.reserves.calories -= calorie_cost_per_step 
-       
+
     def cancel(self, player):
         self.finish(player, True)
 
@@ -147,7 +149,7 @@ Harvest materials from an object in your environment.  The object can be either 
             if len(results) > 0:
                 results += ", "
             results += str(amount) + " " + product.product
-           
+
             for instance in range(0, amount): 
                 productItem = self.store.items.instance(product.product)
                 player.character.inventory.append(productItem)
@@ -184,7 +186,7 @@ Harvest materials from an object in your environment.  The object can be either 
         if not arguments:
             player.write("Harvest what?")
             return
-        
+
         item = self.library.item.findItemByKeywords(player.character.inventory, arguments)
         in_inventory = True
         if not item:

@@ -17,7 +17,7 @@ class Command:
 
         self.library = library
         self.store = store 
-    
+
     def describe(self):
         """
         Provide a one line description of this command.

@@ -1,5 +1,6 @@
 from textwrap import TextWrapper
 
+
 class Prompt:
     "A player's current prompt and methods necessary to set it."
 
@@ -66,7 +67,7 @@ class Player:
         Update the player's current prompt based on their character's state (if
         any) and then write it.
         """
-        
+
         if self.character and self.character.action:
             self.prompt.is_off = True
         if self.prompt.is_needed and not self.prompt.is_off:
@@ -214,7 +215,7 @@ class Player:
     def read(self):
         """
         Read input from the player's client socket and return it.
-        
+
         Returns
         -------
         string: The read input.
@@ -257,9 +258,9 @@ class Player:
     #
     # TODO Debug these so that we can turn off echo while taking passwords.
     def disableEcho(self):
-        #self.socket.disableEcho()
+        # self.socket.disableEcho()
         pass
 
     def enableEcho(self):
-        #self.socket.enableEcho()
+        # self.socket.enableEcho()
         pass

@@ -1,5 +1,5 @@
 class MovementLibrary:
-    
+
     def __init__(self, library, store):
         self.library = library
         self.store = store

@@ -1,5 +1,6 @@
 from game.interpreters.command.command import Command
 
+
 class Status(Command):
     'Get information about your character.'
 
@@ -12,13 +13,14 @@ report
 
 Get detailed information about your character.
         """
-    
+
     def execute(self, player, arguments):
         character = player.character
         player.write("You are %s." % (character.name.title()))
         player.write("You are %s and %s." % (character.position, character.speed))
         player.write(character.reserves.toString())
-                    
+
+
 class Look(Command):
     'Get information about the current room.'
 
@@ -53,6 +55,7 @@ Look around.  If [direction] is excluded, then you will look at your current roo
                 player.write("Nothing there.")
         else:
             player.write(player.character.room.describe(player), wrap=False)
+
 
 class Examine(Command):
     'Get detailed information about a room, or object.'
@@ -97,6 +100,7 @@ Get detailed information about a room or object.  If [object] is excluded, the r
 
         player.write("There doesn't seem to be a " + arguments + " to examine.")
 
+
 class Inventory(Command):
     "List the items in a character's inventory."
 
@@ -121,6 +125,7 @@ List the current contents of your inventory.
                 player.write(item.description)
         else:
             player.write("Nothing.")
+
 
 class Equipment(Command):
     'List the items the character currently has equipped.'

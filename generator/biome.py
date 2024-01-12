@@ -1,6 +1,7 @@
 import os
 import json
 
+
 class Biome:
 
     WATER_NONE = 'none'
@@ -68,7 +69,7 @@ class Biome:
         # { name: 'forest fire', chance: 10, biome: 'meadow' }
         self.disruptions = []
 
-    
+
     def toJson(self):
         json = {}
 
@@ -108,7 +109,7 @@ class Biome:
 
         self.trees = data['trees']
         self.tree_density = data['treeDensity']
-        
+
         self.shrubs = data['shrubs']
         self.shrub_density = data['shrubDensity']
 
@@ -126,7 +127,7 @@ class Biome:
         self.disruptions = data['disruptions']
 
         return self 
-    
+
     def save(self, base_path='data/biomes/'):
         if not os.path.exists(base_path):
             os.mkdir(base_path)

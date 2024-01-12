@@ -15,6 +15,7 @@ import imageio
 import generator.utils.util as util
 import generator.utils.snapshot as snapshot
 
+
 def generateWater(world):
     print("Generating water for world %s..." % world.name)
 
@@ -97,7 +98,7 @@ def generateWater(world):
 
     # The water velocity.
     velocity = np.zeros_like(terrain)
-   
+
     if debug:
         print("\n\n Terrain: ")
         print(terrain)
@@ -155,7 +156,7 @@ def generateWater(world):
         # w     C   e   -   nw  n   ne
         # sw    s   se      w   C   e
         delta_height_north = terrain_water - np.roll(terrain_water, 1, axis=0)
-        
+
         # delta_height_east = w(c) - w(e) = w(x,y) - w(x+1,y) 
         #
         # nw    n   ne      n   ne  nw 
@@ -288,7 +289,7 @@ def generateWater(world):
         # often end up with negative values to the power of 10^-16 when they
         # should be zeroed out.
         water = np.maximum(water, np.zeros_like(water))
-       
+
         if debug:
             print("\n\nNew Water: ")
             print(water)
@@ -312,7 +313,7 @@ def generateWater(world):
         # Becuse we only need the speed, not the direction, we're going to
         # first collapse the 8 flux directions down to x and y.  Then we'll
         # take the magnitude to get the speed.
-        #if iteration == iterations-1:
+        # if iteration == iterations-1:
         #    velocity_x = (np.roll(flux_east, -1, axis=1) - flux_west + flux_east - np.roll(flux_west, 1, axis=1)) / (2 * pipe_length * water) 
         #        + (np.roll(flux_north_east, (1, 1), (0, 1)) - flux_south_west) - (np.roll(
         #    velocity_y = (np.roll(flux_north, 1, 0) - flux_south)

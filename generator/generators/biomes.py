@@ -6,11 +6,13 @@ initial_biomes_by_height = [
     { 'height': 2000, 'biome': 'pioneer-meadow' }
 ]
 
+
 def getInitialBiomeFromHeight(height):
     for item in initial_biomes_by_height:
         if height <= item['height']:
             return item['biome']
     return 'pioneer-meadow'
+
 
 def spreadFire(depth, biomes, worldBiomes, iteration, x, y):
     if y < 0 or y >= len(worldBiomes):
@@ -18,7 +20,7 @@ def spreadFire(depth, biomes, worldBiomes, iteration, x, y):
 
     if x < 0 or x >= len(worldBiomes[y]):
         return
-    
+
     # Fire spread is limited by recursion, we're going to limit it to half the
     # recursion limit (500). 
     if depth >= 500:
@@ -26,7 +28,7 @@ def spreadFire(depth, biomes, worldBiomes, iteration, x, y):
 
     current = worldBiomes[y][x]
     biome = biomes[current['name']]
-    
+
     if "fire" in biome.disruptions:
         roll = random.randint(1, 100000) / 1000
         disruption = biome.disruptions['fire']
@@ -45,21 +47,22 @@ def spreadFire(depth, biomes, worldBiomes, iteration, x, y):
                 print("Recursion failed at depth %d" % depth)
                 raise
 
+
 def herdWander(depth, biomes, worldBiomes, iteration, x, y):
     if y < 0 or y >= len(worldBiomes):
         return False
 
     if x < 0 or x >= len(worldBiomes[y]):
         return False
-    
+
     # Fire spread is limited by recursion, we're going to limit it to half the
     # recursion limit (500). 
     if depth >= 500:
         return False
-                
+
     current = worldBiomes[y][x]
     biome = biomes[current['name']]
-    
+
     if "herbivore-herd" in biome.disruptions:
         roll = random.randint(1, 100000) / 1000
         disruption = biome.disruptions['herbivore-herd']
@@ -127,7 +130,7 @@ def generateBiomes(biomes, world):
     # Place rivers.
     for y in range(len(worldBiomes)):
         for x in range(len(worldBiomes[y])):
-            if  world.water[y][x] >= 0.3 and world.water[y][x] < 1:
+            if world.water[y][x] >= 0.3 and world.water[y][x] < 1:
                 worldBiomes[y][x] = { 'name': 'stream', 'last_succession': 0 }
             elif world.water[y][x] >= 1 and world.water[y][x] < 2:
                 worldBiomes[y][x] = { 'name': 'river', 'last_succession': 0 }

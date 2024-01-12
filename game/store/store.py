@@ -34,7 +34,7 @@ class ModelRepository:
     TODO This should be renamed.  This is really a KeyedCollection.  Or a
     ManagedDictionary.  Or a DatabaseTable.  In any case, "ModelRepository" is a bad
     name and we should find a better one.
-        
+
     """
 
     def __init__(self, store, type):
@@ -55,7 +55,7 @@ class ModelRepository:
 
         self.store = store
         self.type = type
-        
+
         self.repo = {}
 
     def add(self, model):
@@ -132,6 +132,7 @@ class ModelRepository:
         else:
             return False
 
+
 class PrototypeRepository(ModelRepository):
     """
     Manages and provides access to a repository of model prototypes of type ``type``. 
@@ -153,7 +154,7 @@ class PrototypeRepository(ModelRepository):
         If no such prototype is found in the repository, then returns None.
         Creates a deep copy of the prototype, so that it can act as a
         completely idependent instance of the model.
-        
+
         Parameters
         ----------
         id: integer or string
@@ -165,6 +166,7 @@ class PrototypeRepository(ModelRepository):
             return copy.deepcopy(self.getById(id))
         else:
             return None
+
 
 class Store:
     """
@@ -304,7 +306,7 @@ class Store:
             print("Loading account " + file_path + "...")
             account = Account()
             account.load(file_path)
-            
+
             characters = account.characters
             account.characters = {} 
             for name in characters:
@@ -325,7 +327,7 @@ class Store:
         print("Connecting rooms and loading items into rooms...")
         for id in self.rooms.repo:
             room = self.rooms.getById(id)
-            
+
             print("Connecting exits for Room(%s) '%s'..." % (str(id), room.title))
             for direction in room.exits:
                 exit = room.exits[direction]

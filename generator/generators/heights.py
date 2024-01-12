@@ -4,6 +4,7 @@ import numpy as np
 from generator.generators.erosion import erode
 import generator.utils.util as util
 
+
 def generateTerrain(world):
     """
     Generate terrain for `world`.  Terrain will be generated and stored in

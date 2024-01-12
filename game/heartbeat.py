@@ -1,5 +1,6 @@
 import random 
 
+
 class Heartbeat:
 
     def __init__(self, store, loops_a_second):
@@ -14,6 +15,8 @@ class Heartbeat:
     # A method called on every loop that can be used for actions that need to take
     # place every so many loops.  Used to control autonomous timing in the game
     # world.
+
+
     def heartbeat(self, loop_counter):
 
         # Save characters once per game hour, real life minute.

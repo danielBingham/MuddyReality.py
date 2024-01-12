@@ -3,6 +3,7 @@ from game.interpreters.state.state import State
 from game.account_menu.creation import CreateNewAccount
 from game.account_menu.menu import AccountMenu
 
+
 class WelcomeScreen(State):
     """
     Introduce the game to the new player and start them on the account flow.
@@ -34,6 +35,7 @@ If this is your first time, you'll need to create an account by typing "new".
                 return "get-account-password" 
             else:
                 player.write("That account doesn't exist.")
+
         return self.NAME 
 
 
@@ -51,7 +53,7 @@ class GetAccountPassword(State):
             return "account-menu" 
         else:
             player.write("Incorrect password.")
-        
+
         return self.NAME 
 
 # End GetAccountPassword

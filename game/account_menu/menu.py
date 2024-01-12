@@ -1,10 +1,11 @@
 from game.interpreters.state.state import State
 
+
 class AccountMenu(State):
     """
     Present the player with the account menu and then execute their account commands.
     """
-    
+
     NAME = "account-menu"
     ACCOUNT_MENU = """
 ==================== Account Menu ====================
@@ -93,12 +94,12 @@ quit                - Leave the game.
             player.character = None
 
             return self.NAME 
-        
+
 
         if command == "quit":
             player.quit()
             return None
-            
+
         player.write("That's not a menu option.")
         return self.NAME
 

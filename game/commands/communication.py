@@ -1,8 +1,9 @@
 from game.interpreters.command.command import Command
 
+
 class Say(Command):
     'Say something to the room.'
-    
+
     def describe(self):
         "See Command.describe()"
 

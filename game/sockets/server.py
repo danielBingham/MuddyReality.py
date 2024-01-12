@@ -1,6 +1,7 @@
 import socket, select
 from game.sockets.client import ClientSocket
 
+
 class ServerSocket:
     'A socket server class, wrapping our select and polling logic.'
 
@@ -15,7 +16,7 @@ class ServerSocket:
 
         # Initialize the list of connected sockets, which is used for select polling.
         self.clients = []
-        
+
         # Reset the lists we use for polling our clients and determining which clients are in
         # various ready states. 
         self.resetPollSets()
@@ -58,13 +59,13 @@ class ServerSocket:
 
     def hasNewConnection(self):
         return self.newConnections
-    
+
     def accept(self):
         try:
             client = ClientSocket(self.server.accept(), self)
         except socket.error as error: 
             return None
-        
+
         self.clients.append(client)
         return client
 

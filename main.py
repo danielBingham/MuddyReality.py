@@ -25,7 +25,8 @@ import game.commands.reserves as reserves
 import game.commands.system as system
 
 from game.heartbeat import Heartbeat
- 
+
+
 def gameLoop(serverSocket, library, store, account_interpreter, game_interpreter):
     """
     The primary game loop.  This method loops indefinitely (until killed using
@@ -49,7 +50,7 @@ def gameLoop(serverSocket, library, store, account_interpreter, game_interpreter
     -------
     void
     """
-    
+
     # Number of loops we've run.  Reset once it hits a certain value.  Used to
     # determine how often to perform certain tasks.
     loop_counter = 0

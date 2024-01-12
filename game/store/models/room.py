@@ -3,6 +3,7 @@ from textwrap import TextWrapper
 from game.store.models.base import JsonSerializable
 from game.store.models.base import Model
 
+
 class Exit(JsonSerializable):
     "An exit from one room to another."
 
@@ -31,6 +32,7 @@ class Exit(JsonSerializable):
         self.is_door = data['is_door']
         self.is_open = data['is_open']
         return self
+
 
 class Room(Model):
     "A location in the game world."

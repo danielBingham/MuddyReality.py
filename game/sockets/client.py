@@ -7,6 +7,8 @@ import socket, telnetlib
 # server and to track inputs and outputs.  Manages a queue of input and a queue of output for the
 # wrapped socket.
 ###
+
+
 class ClientSocket:
     'A wrapper around the client socket.'
 
@@ -76,6 +78,8 @@ class ClientSocket:
     # Read whatever text currently exists on this socket, and place it in the Player's input queue,
     # where it can be processed by any command interpreters.
     ###
+
+
     def read(self):
         data = self.socket.recv(4096)
         if data:
@@ -91,6 +95,8 @@ class ClientSocket:
     ###
     # Take the next batch of text from the player's output queue and write it out to the socket.
     ###
+
+
     def write(self):
         if self.hasOutput():
             self.socket.send(self.outputBuffer.encode())

@@ -7,7 +7,7 @@ class StateInterpreter:
     Executes the player's current state and then updates the state to the new
     one returned after the execution.
     """
-    
+
     def __init__(self, states, library, store):
         """
         Initialize the StateInterpreter. 

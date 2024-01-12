@@ -14,11 +14,12 @@ from matplotlib.colors import LightSource, LinearSegmentedColormap
 
 import generator.utils.util as util
 
+
 def save_as_png(a, path):
     """ 
     Save a numpy array as a PNG image using RGB mode.
 
-    
+
     :param a:   `array_like`    NumPy array populated with pixel RGB values.
     :param path:    `str`       The output path, relative to the root domain.
 
@@ -27,6 +28,7 @@ def save_as_png(a, path):
 
     image = Image.fromarray(a.astype('uint8'), mode="RGB")
     image.save(path)
+
 
 def biomes(world, biomes):
     """ 
@@ -52,14 +54,16 @@ def terrain(world):
     Save a snapshot of the world's terrain as a hillshaded PNG.
 
     :param world:   `World` The World object with `world.terrain` populated.
-    
+
     :returns:   `void`
     """
 
     save_as_png(np.round(hillshaded(world.terrain) * 255), 'data/worlds/' + world.name  + '/terrain.png')
 
+
 def water(world):
     save_as_png(np.round(watershaded(world.water) * 255), 'data/worlds/' + world.name + '/water.png')
+
 
 def snapWater(water, filepath):
     save_as_png(np.round(watershaded(water)*255), filepath)
@@ -69,13 +73,15 @@ def snapWater(water, filepath):
 _TERRAIN_CMAP = LinearSegmentedColormap.from_list('my_terrain', [
     (0.00, (0.15, 0.3, 0.45)),
     (0.19, (0.25, 0.5, 1.00)),
-    #(0.01, (0.15, 0.3, 0.15)),
+    # (0.01, (0.15, 0.3, 0.15)),
     (0.20, (0.3, 0.45, 0.3)),
     (0.50, (0.5, 0.5, 0.35)),
     (0.80, (0.4, 0.36, 0.33)),
     (1.00, (1.0, 1.0, 1.0)),
 ])
 #  Borrowed from: https://github.com/dandrino/terrain-erosion-3-ways/
+
+
 def hillshaded(a, land_mask=None, angle=270):
     """
     Takes a NumPy array heightmap and uses it to create a hillshaded pixel map
@@ -88,7 +94,7 @@ def hillshaded(a, land_mask=None, angle=270):
 
     :returns:   `array_like`    A NumPy array of pixels representing the map.
     """
-    
+
     if land_mask is None: land_mask = np.ones_like(a)
     ls = LightSource(azdeg=angle, altdeg=30)
     land = ls.shade(a, cmap=_TERRAIN_CMAP, vert_exag=10.0,
@@ -106,6 +112,8 @@ _WATER_CMAP= LinearSegmentedColormap.from_list('my_terrain', [
     (0.75, (0.2, 0.4, 0.8)),
     (1.00, (0.0, 0.0, 1.0)),
 ])
+
+
 def watershaded(a, angle=270):
     ls = LightSource(azdeg=angle, altdeg=80)
     land = ls.shade(a, cmap=_WATER_CMAP, vert_exag=10.0,

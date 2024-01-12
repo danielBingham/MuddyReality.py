@@ -11,6 +11,8 @@ import numpy as np
 import scipy as sp
 
 # Open CSV file as a dict.
+
+
 def read_csv(csv_path):
     with open(csv_path, 'r') as csv_file:
         return list(csv.DictReader(csv_file))
@@ -105,6 +107,8 @@ def load_from_file(path):
         return (result, None)
 
 # Linear interpolation of `x` to `y` with respect to `a`
+
+
 def lerp(x, y, a): return (1.0 - a) * x + a * y
 
 

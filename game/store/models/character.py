@@ -5,6 +5,7 @@ from game.store.models.base import JsonSerializable
 
 from game.account_menu.menu import AccountMenu
 
+
 class Attributes(JsonSerializable):
 
     def __init__(self):
@@ -76,7 +77,7 @@ class Reserves(JsonSerializable):
         # 1 wind allows you to run for 60 seconds.
         self.wind = 30 
         self.max_wind = 30 
-        
+
         # Energy is a measure of how much you can accomplish in a single day.
         # 1 energy is the cost equivalent of walking 1 meter.  Energy is
         # determined by stamina (stamina * 10), so as stamina increases, so too
@@ -109,7 +110,7 @@ class Reserves(JsonSerializable):
             hunger = 'starving'
 
         return hunger
-    
+
     def thirstString(self, prompt=False):
         thirst = ''
 
@@ -152,10 +153,10 @@ class Reserves(JsonSerializable):
 
     def windString(self, prompt=False):
         wind = ''
-        
+
         if prompt and self.wind / self.max_wind >= 1.0:
             return wind
-        
+
         if self.wind / self.max_wind >= 1.0:
             wind = 'breathing calmly'
         elif self.wind / self.max_wind < 1.0 \
@@ -169,15 +170,15 @@ class Reserves(JsonSerializable):
             wind = 'winded'
         else:
             wind = 'gasping'
-        
+
         return wind
 
     def energyString(self, prompt=False):
         energy = ''
-        
+
         if prompt and self.energy / self.max_energy > 0.5:
             return energy
-        
+
         if self.energy / self.max_energy > 0.5:
             energy = 'rested'
         elif self.energy / self.max_energy <= 0.5 \
@@ -188,7 +189,7 @@ class Reserves(JsonSerializable):
             energy = 'fatigued'
         else:
             energy = 'exhausted'
-        
+
         return energy
 
     def toString(self):
@@ -218,8 +219,9 @@ class Reserves(JsonSerializable):
 
         return self
 
+
 class Wound(JsonSerializable):
-    
+
     WOUND_SCRAPED = 'scraped'
 
     WOUND_CUT = 'cut'
@@ -427,7 +429,7 @@ class Character(NamedModel):
         super(Character, self).__init__()
 
         self.is_player_character = False
-       
+
         # The short description of the character.  Displayed when the character is looked at.
         self.description = ''
 
@@ -462,7 +464,7 @@ class Character(NamedModel):
         json['sex'] = self.sex
         json['position'] = self.position
         json['speed'] = self.speed
-       
+
         json['attributes'] = self.attributes.toJson()
         json['reserves'] = self.reserves.toJson()
 
@@ -521,6 +523,7 @@ class Character(NamedModel):
             self.room = data['room']
 
         return self
+
 
 class PlayerCharacter(Character):
 

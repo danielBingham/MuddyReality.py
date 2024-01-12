@@ -39,7 +39,7 @@ class CommandInterpreter:
         Command
             The matched `Command` object.  Or `None` if no object matched.
         """
-            
+
         for command in self.commands:
             if command.startswith(input):
                 return self.commands[command]

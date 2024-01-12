@@ -41,7 +41,7 @@ class Account(NamedModel):
 
     def fromJson(self, data):
         self.setId(data['name'])
-        
+
         self.password_hash = data['password_hash'].encode('utf-8')
 
         # Store will convert the list of names to actual object references in

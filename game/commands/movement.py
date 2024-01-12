@@ -1,5 +1,6 @@
 from game.interpreters.command.command import Command
 
+
 class North(Command):
     'Go north'
 
@@ -12,10 +13,11 @@ north
 
 Go to the room to the north, if possible.
         """
-    
+
     def execute(self, player, arguments):
         self.library.movement.move('north', player, arguments)
-            
+
+
 class East(Command):
     'Go east'
 
@@ -28,9 +30,10 @@ east
 
 Go to the room to the east, if possible.
         """
-    
+
     def execute(self, player, arguments):
         self.library.movement.move('east', player, arguments)
+
 
 class South(Command):
     'Go south'
@@ -44,9 +47,10 @@ south
 
 Go to the room to the south, if possible.
         """
-    
+
     def execute(self, player, arguments):
         self.library.movement.move('south', player, arguments)
+
 
 class West(Command):
     'Go west'
@@ -60,9 +64,10 @@ west
 
 Go to the room to the west, if possible.
         """
-    
+
     def execute(self, player, arguments):
         self.library.movement.move('west', player, arguments)
+
 
 class Up(Command):
     'Go up'
@@ -76,9 +81,10 @@ up
 
 Go to the room above, if possible.
         """
-    
+
     def execute(self, player, arguments):
         self.library.movement.move('up', player, arguments)
+
 
 class Down(Command):
     'Go down'
@@ -92,9 +98,10 @@ down
 
 Go to the room below, if possible.
         """
-    
+
     def execute(self, player, arguments):
         self.library.movement.move('down', player, arguments)
+
 
 class Walk(Command):
     'Start walking'
@@ -132,6 +139,7 @@ Your character will now run when moving.  You will run through 2 rooms in a sing
         player.character.speed = player.character.SPEED_RUNNING
         player.write("You begin to run.")
         self.library.room.writeToRoom(player.character, "%s begins to run." % player.character.name)
+
 
 class Sprint(Command):
     'Start sprinting'

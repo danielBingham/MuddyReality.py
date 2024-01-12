@@ -4,6 +4,7 @@ from game.library.room import RoomLibrary
 
 from game.library.movement import MovementLibrary
 
+
 class Library:
 
     def __init__(self, store):
