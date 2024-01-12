@@ -32,7 +32,7 @@ def erode(world):
 
     # Grid dimension constants
     dim = world.width 
-    shape = [ world.width ] * 2
+    shape = [world.width] * 2
     cell_width = world.room_width 
     cell_area = cell_width ** 2
 

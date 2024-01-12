@@ -13,7 +13,7 @@ tool_json = {
     "name": "tool",
     "description": "a tool",
     "details": "A tool for testing.",
-    "keywords": [ "tool" ],
+    "keywords": ["tool"],
     "length": 1,
     "width": 1,
     "height": 1,
@@ -41,7 +41,7 @@ tool_requiring_two_materials_json = {
     "name": "tool",
     "description": "a tool",
     "details": "A tool for testing.",
-    "keywords": [ "tool" ],
+    "keywords": ["tool"],
     "length": 1,
     "width": 1,
     "height": 1,
@@ -76,14 +76,14 @@ craftable_material_requires_tool_json = {
     "name": "craftable material",
     "description": "a craftable material",
     "details": "A material that requires a tool to craft.",
-    "keywords": [ "craftable material", "material" ],
+    "keywords": ["craftable material", "material"],
     "length": 1,
     "width": 1,
     "height": 1,
     "weight": 1,
     "traits": {
         "Material": {
-            "types": [ "material" ]
+            "types": ["material"]
         },
         "Craftable": {
             "requiredMaterials": [
@@ -95,7 +95,7 @@ craftable_material_requires_tool_json = {
                     "weight": 1
                 }
             ],
-            "requiredTools": [ "tool" ]
+            "requiredTools": ["tool"]
         }
     }
 }
@@ -104,14 +104,14 @@ material_json = {
     "name": "material",
     "description": "a material",
     "details": "A material for testing.",
-    "keywords": [ "material" ],
+    "keywords": ["material"],
     "length": 1,
     "width": 1,
     "height": 1,
     "weight": 1,
     "traits": {
         "Material": {
-            "types": [ "material" ]
+            "types": ["material"]
         }
     }
 }
@@ -372,8 +372,8 @@ def test_Craft_success_tool_requires_one_material():
     craft_command.execute(player, 'tool with material')
 
     player.write.assert_called_once_with("You craft tool.")
-    assert len([ item for item in player.character.inventory if item.getId() == tool.getId() ]) == 1
-    assert len([ item for item in player.character.inventory if item.getId() == material.getId() ]) == 0
+    assert len([item for item in player.character.inventory if item.getId() == tool.getId()]) == 1
+    assert len([item for item in player.character.inventory if item.getId() == material.getId()]) == 0
 
 
 def test_Craft_success_craftable_material_requries_material_and_tool():
@@ -414,7 +414,7 @@ def test_Craft_success_craftable_material_requries_material_and_tool():
     craft_command.execute(player, 'craftable material with material, tool')
 
     player.write.assert_called_once_with("You craft craftable material.")
-    assert len([ item for item in player.character.inventory if item.getId() == tool.getId() ]) == 1
-    assert len([ item for item in player.character.inventory if item.getId() == material.getId() ]) == 0
-    assert len([ item for item in player.character.inventory if item.getId() == craftable_material.getId() ]) == 1
+    assert len([item for item in player.character.inventory if item.getId() == tool.getId()]) == 1
+    assert len([item for item in player.character.inventory if item.getId() == material.getId()]) == 0
+    assert len([item for item in player.character.inventory if item.getId() == craftable_material.getId()]) == 1
 

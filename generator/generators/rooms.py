@@ -115,7 +115,7 @@ def generateNeighborDescription(world, rooms, y, x):
 
 def generateRooms(biomes, world):
 
-    rooms = [[ None for x in range(world.width) ] for y in range(world.width) ]
+    rooms = [[None for x in range(world.width)] for y in range(world.width)]
 
     # Generate and populate the rooms.
     id = 1
@@ -237,7 +237,7 @@ def generateRooms(biomes, world):
             print("Saving Room(%d)..." % rooms[y][x].id)
             rooms[y][x].save('data/worlds/' + world.name + '/rooms/')
 
-    return [[ rooms[y][x].id for x in range(len(rooms[y])) ] for y in range(len(rooms)) ]
+    return [[rooms[y][x].id for x in range(len(rooms[y]))] for y in range(len(rooms))]
 
 
 

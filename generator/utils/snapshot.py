@@ -41,7 +41,7 @@ def biomes(world, biomes):
     """ 
 
     print("Snapshotting biomes...")
-    pixels = [[ None for x in range(world.width * 10) ] for y in range(world.width * 10) ]
+    pixels = [[None for x in range(world.width * 10)] for y in range(world.width * 10)]
     for y in range(world.width * 10):
         for x in range(world.width * 10):
             pixels[y][x] = biomes[world.biomes[math.floor(y/10)][math.floor(x/10)]].color

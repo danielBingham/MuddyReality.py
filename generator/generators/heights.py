@@ -36,4 +36,4 @@ def generateHeights(world):
 
     print("Generating heightmap for world %s..." % world.name)
     terrain_heights = world.terrain.tolist() 
-    world.heights = [[ (terrain_heights[x][y] * 2000 - 400) for y in range(len(terrain_heights[x])) ] for x in range(len(terrain_heights))]
+    world.heights = [[(terrain_heights[x][y] * 2000 - 400) for y in range(len(terrain_heights[x]))] for x in range(len(terrain_heights))]

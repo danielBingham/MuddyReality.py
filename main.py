@@ -187,23 +187,23 @@ def main():
 
     commands['north'] = movement.North(library, store)
 
-    commands['open'] = manipulation.Open( library, store)
+    commands['open'] = manipulation.Open(library, store)
 
     commands['rest'] = reserves.Rest(library, store)
-    commands['run'] = movement.Run( library, store)
+    commands['run'] = movement.Run(library, store)
 
-    commands['quit'] = system.Quit( library, store)
+    commands['quit'] = system.Quit(library, store)
 
-    commands['south'] = movement.South( library, store)
-    commands['say'] = communication.Say( library, store)
-    commands['sleep'] = reserves.Sleep( library, store)
-    commands['sprint'] = movement.Sprint( library, store)
-    commands['status'] = information.Status( library, store)
+    commands['south'] = movement.South(library, store)
+    commands['say'] = communication.Say(library, store)
+    commands['sleep'] = reserves.Sleep(library, store)
+    commands['sprint'] = movement.Sprint(library, store)
+    commands['status'] = information.Status(library, store)
 
-    commands['west'] = movement.West( library, store)
-    commands['walk'] = movement.Walk( library, store)
-    commands['wield'] = manipulation.Wield( library, store)
-    commands['wake'] = reserves.Wake( library, store)
+    commands['west'] = movement.West(library, store)
+    commands['walk'] = movement.Walk(library, store)
+    commands['wield'] = manipulation.Wield(library, store)
+    commands['wake'] = reserves.Wake(library, store)
 
     commands['up'] = movement.Up(library, store)
     game_interpreter = CommandInterpreter(commands, library, store)

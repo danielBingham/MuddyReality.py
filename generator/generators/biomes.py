@@ -3,7 +3,7 @@ import sys, glob, random
 from generator.biome import Biome
 
 initial_biomes_by_height = [ 
-    { 'height': 2000, 'biome': 'pioneer-meadow' }
+    {'height': 2000, 'biome': 'pioneer-meadow'}
 ]
 
 
@@ -122,7 +122,7 @@ def disrupt(biomes, worldBiomes, iteration, x, y):
 
 
 def generateBiomes(biomes, world):
-    worldBiomes = [ [ { 'last_succession': 0, 'name': getInitialBiomeFromHeight(world.heights[y][x]) } for x in range(len(world.heights[y])) ] for y in range(len(world.heights)) ] 
+    worldBiomes = [[{'last_succession': 0, 'name': getInitialBiomeFromHeight(world.heights[y][x])} for x in range(len(world.heights[y]))] for y in range(len(world.heights))] 
 
     # Years to run the simulation
     iterations = 1000
@@ -131,11 +131,11 @@ def generateBiomes(biomes, world):
     for y in range(len(worldBiomes)):
         for x in range(len(worldBiomes[y])):
             if world.water[y][x] >= 0.3 and world.water[y][x] < 1:
-                worldBiomes[y][x] = { 'name': 'stream', 'last_succession': 0 }
+                worldBiomes[y][x] = {'name': 'stream', 'last_succession': 0}
             elif world.water[y][x] >= 1 and world.water[y][x] < 2:
-                worldBiomes[y][x] = { 'name': 'river', 'last_succession': 0 }
+                worldBiomes[y][x] = {'name': 'river', 'last_succession': 0}
             elif world.water[y][x] >= 2:
-                worldBiomes[y][x] = { 'name': 'lake', 'last_succession': 0 }
+                worldBiomes[y][x] = {'name': 'lake', 'last_succession': 0}
 
     for iteration in range(iterations):
         print("Succession: %d of %d years" % (iteration, iterations))
@@ -151,7 +151,7 @@ def generateBiomes(biomes, world):
 
                 disrupt(biomes, worldBiomes, iteration, x, y)
 
-    return [[ worldBiomes[y][x]['name'] for x in range(len(worldBiomes[y])) ] for y in range(len(worldBiomes))]
+    return [[worldBiomes[y][x]['name'] for x in range(len(worldBiomes[y]))] for y in range(len(worldBiomes))]
 
 
 

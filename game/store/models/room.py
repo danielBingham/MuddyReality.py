@@ -64,7 +64,7 @@ class Room(Model):
     WATER_SALT = 'salt'
     WATER_FRESH = 'fresh'
 
-    def __init__(self ):
+    def __init__(self):
         super(Room, self).__init__()
 
         self.title = ''

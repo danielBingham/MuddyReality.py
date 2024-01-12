@@ -147,7 +147,7 @@ List the equipment you are currently wearing, carrying, and wielding.
 
         equipment = player.character.body.worn
         player.write("You are wearing: ")
-        if ( equipment ):
+        if (equipment):
             for location in equipment:
                 player.write("%s on your %s" % (equipment[location].description, location))
         else:

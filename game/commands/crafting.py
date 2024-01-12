@@ -52,7 +52,7 @@ Attempt to craft a material or tool with materials or tools.  If the [target] ca
             materialKeywords = splitArguments[1].split(',')
             materialKeywords[:] = [keyword.strip() for keyword in materialKeywords]
         else:
-            materialKeywords = [ splitArguments[1].strip() ]
+            materialKeywords = [splitArguments[1].strip()]
 
         materials = []
         for keyword in materialKeywords:
