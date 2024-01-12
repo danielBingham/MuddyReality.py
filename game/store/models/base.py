@@ -29,7 +29,6 @@ class Model(JsonSerializable):
         if not os.path.exists(base_path):
             os.mkdir(base_path)
 
-
         filename = ''
         if isinstance(self.id, int):
             filename = base_path + str(self.id) + '.json'

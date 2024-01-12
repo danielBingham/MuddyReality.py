@@ -137,9 +137,9 @@ def main():
             world.room_width = int(arguments.room_width)
             world.save()
 
-
     print("Generating world %s, width [%d, %d] totaling %d rooms of size %d meters by %d meters" % (world.name, world.width, world.width, world.width * world.width, world.room_width, world.room_width))
     generate(world, arguments.heights_only, arguments.water_only, arguments.biomes_only, arguments.rooms_only, arguments.regenerate)
+
 
 if __name__ == '__main__':
     main()

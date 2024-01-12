@@ -282,7 +282,6 @@ class Store:
             character = PlayerCharacter()
             character.load(file_path)
 
-
             print("Loading %s's inventory..." % character.name)
             inventory = character.inventory
             character.inventory = []
@@ -297,7 +296,6 @@ class Store:
                     character.body.worn[body_part] = self.items.instance(itemId)
 
             self.characters.add(character)
-
 
         account_path = os.path.join(self.data_directory, 'accounts/')
         print("Loading accounts from %s..." % account_path)
@@ -352,7 +350,6 @@ class Store:
                     room.occupants.append(self.npcs.instance(characterId))
                 else:
                     print("Error! No NPC(%s) in Room(%s)." % (characterId, room.title))
-
 
         print("Connect player characters to the rooms they were in...")
         for id in self.characters.repo:

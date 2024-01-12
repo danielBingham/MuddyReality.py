@@ -76,7 +76,7 @@ class Harvestable(JsonSerializable):
         return json
 
     def fromJson(self, data):
-        if 'preDescription'in data:
+        if 'preDescription' in data:
             self.pre_description = data['preDescription']
         if 'postDescription' in data:
             self.post_description = data['postDescription']
@@ -414,7 +414,6 @@ class Item(NamedModel):
         if self.is_embedded:
             return "embedded"
         return None 
-
 
     def toJson(self):
         json = {}

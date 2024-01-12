@@ -27,7 +27,7 @@ def normalize(x, bounds=(0, 1)):
 def fbm(shape, p, lower=-np.inf, upper=np.inf):
     freqs = tuple(np.fft.fftfreq(n, d=1.0 / n) for n in shape)
     freq_radial = np.hypot(*np.meshgrid(*freqs))
-    envelope = (np.power(freq_radial, p, where=freq_radial!=0) *
+    envelope = (np.power(freq_radial, p, where=freq_radial != 0) *
                             (freq_radial > lower) * (freq_radial < upper))
     envelope[0][0] = 0.0
     phase_noise = np.exp(2j * np.pi * np.random.rand(*shape))

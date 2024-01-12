@@ -87,7 +87,7 @@ Get an item described by [item] from the current room and add it to your invento
                 player.character.room.items.remove(item)
                 player.character.inventory.append(item)
                 player.write("You pick up " + item.description + ".")
-                self.library.room.writeToRoom(player.character, player.character.name + ' picks up ' + item.description+ '.')
+                self.library.room.writeToRoom(player.character, player.character.name + ' picks up ' + item.description + '.')
             else:
                 player.write("You can't pick up " + item.description)
         else:
@@ -121,7 +121,7 @@ Drop an item described by [item] from your inventory and leave it in the current
             player.character.inventory.remove(item)
             player.character.room.items.append(item)
             player.write("You drop " + item.description + ".")
-            self.library.room.writeToRoom(player.character, player.character.name + ' drops ' + item.description+ '.')
+            self.library.room.writeToRoom(player.character, player.character.name + ' drops ' + item.description + '.')
         else:
             player.write("You don't seem to be carrying a " + arguments + ".")
 
@@ -154,7 +154,7 @@ Wield an item described by [item] as a weapon.
                 player.character.inventory.remove(item)
                 player.character.equipment['wield'] = item
                 player.write("You wield " + item.name + ".")
-                self.library.room.writeToRoom(player.character, player.character.name + ' wields ' + item.description+ '.')
+                self.library.room.writeToRoom(player.character, player.character.name + ' wields ' + item.description + '.')
             else:
                 player.write("You can't wield " + item.description + ".")
         else:

@@ -58,7 +58,7 @@ def terrain(world):
     :returns:   `void`
     """
 
-    save_as_png(np.round(hillshaded(world.terrain) * 255), 'data/worlds/' + world.name  + '/terrain.png')
+    save_as_png(np.round(hillshaded(world.terrain) * 255), 'data/worlds/' + world.name + '/terrain.png')
 
 
 def water(world):
@@ -67,6 +67,7 @@ def water(world):
 
 def snapWater(water, filepath):
     save_as_png(np.round(watershaded(water)*255), filepath)
+
 
 #  Borrowed from: https://github.com/dandrino/terrain-erosion-3-ways/
 # Used by hillshaded to map terrain height values to colors. 
@@ -103,7 +104,7 @@ def hillshaded(a, land_mask=None, angle=270):
     return util.lerp(water, land, land_mask[:, :, np.newaxis])
 
 
-_WATER_CMAP= LinearSegmentedColormap.from_list('my_terrain', [
+_WATER_CMAP = LinearSegmentedColormap.from_list('my_terrain', [
     (0.00, (0.75, 0.9, 0.9)),
     (0.05, (0.3, 0.8, 0.8)),
     (0.10, (0.3, 0.7, 0.8)),

@@ -250,7 +250,6 @@ class Wound(JsonSerializable):
         # The amount of pain caused by the wound.
         self.pain = 0
 
-
     def toJson(self):
         json = {}
         json['type'] = self.wound

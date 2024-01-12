@@ -11,11 +11,9 @@ class Heartbeat:
         self.game_hour = 60 * self.game_minute
         self.game_day = 24 * self.game_hour
 
-
     # A method called on every loop that can be used for actions that need to take
     # place every so many loops.  Used to control autonomous timing in the game
     # world.
-
 
     def heartbeat(self, loop_counter):
 
@@ -62,7 +60,6 @@ class Heartbeat:
                     character.reserves.wind = min(character.reserves.wind+5, character.reserves.max_wind)
                     character.reserves.energy = min(character.reserves.energy+100, character.reserves.max_energy)
 
-
         # Do tired calculations once a game hour. 
         #
         # The player's tiredness is self.stored as a 'sleep reserve' under
@@ -98,11 +95,10 @@ class Heartbeat:
                         character.position = character.POSITION_STANDING
                         player.write("You awaken, fully rested.")
 
-
                 # If they're tired, they have an increasing chance of falling
                 # asleep.
                 if character.reserves.sleep < 0:
-                    chance = random.randint(0,248)
+                    chance = random.randint(0, 248)
                     if abs(character.reserves.sleep) < chance:
                         character.position = character.POSITION_SLEEPING
                         character.player.write("You can't stay awake anymore.  You fall asleep.")

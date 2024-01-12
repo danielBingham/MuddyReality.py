@@ -94,7 +94,6 @@ Attempt to craft a material or tool with materials or tools.  If the [target] ca
             player.write("You don't have all the tools needed to craft %s." % craftTarget.name)
             return
 
-
         # Clone the craft target.
         crafted = self.store.items.instance(craftTarget.getId())
 
@@ -176,7 +175,6 @@ Harvest materials from an object in your environment.  The object can be either 
 
         player.write("\nYou " + harvest.action + " " + results + " from " + item.description + ".")
         self.library.room.writeToRoom(player.character, player.character.name + " " + harvest.action + " from " + item.description + ".")
-
 
     def execute(self, player, arguments):
         if player.character.position == player.character.POSITION_SLEEPING:

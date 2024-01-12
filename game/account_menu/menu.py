@@ -41,10 +41,8 @@ quit                - Leave the game.
             player.write(self.ACCOUNT_MENU, wrap=False)
             return self.NAME
 
-
         if command == "change" and arguments == "password":
             return "get-new-account-password" 
-
 
         if command == "list":
             if not player.account.characters:
@@ -56,13 +54,11 @@ quit                - Leave the game.
                 player.write("%s\n" % name.title())
             return self.NAME
 
-
         if command == "play":
             if arguments.lower() in player.account.characters:
                 player.character = player.account.characters[arguments.lower()]
                 player.character.player = player
                 player.status = player.STATUS_GAME
-
 
                 # If they aren't in the game world yet, send em to room 1.
                 if not player.character.room:
@@ -76,7 +72,6 @@ quit                - Leave the game.
 
             player.write("You don't seem to have a character by that name.")
             return self.NAME 
-
 
         if command == "create":
             name = arguments
@@ -94,7 +89,6 @@ quit                - Leave the game.
             player.character = None
 
             return self.NAME 
-
 
         if command == "quit":
             player.quit()

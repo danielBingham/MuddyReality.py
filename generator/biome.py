@@ -69,7 +69,6 @@ class Biome:
         # { name: 'forest fire', chance: 10, biome: 'meadow' }
         self.disruptions = []
 
-
     def toJson(self):
         json = {}
 

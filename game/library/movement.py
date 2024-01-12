@@ -22,7 +22,6 @@ class MovementLibrary:
             if not self.moveInDirection(player, direction):
                 return
 
-
     def moveInDirection(self, player, direction):
         room = player.character.room
         if direction in room.exits:
@@ -66,7 +65,6 @@ class MovementLibrary:
         else:
             player.write("You can't got that way.")
             return False
-
 
     def enter(self, character, room, speed='', direction=''):
         room.occupants.append(character)

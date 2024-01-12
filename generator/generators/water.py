@@ -179,7 +179,7 @@ def generateWater(world):
         delta_height_west = terrain_water - np.roll(terrain_water, 1, axis=1)
 
         # To get the the corners, we just combine the rolls for each direction appropriately.
-        delta_height_north_east = terrain_water - np.roll(terrain_water, (1, -1), axis=(0,1))
+        delta_height_north_east = terrain_water - np.roll(terrain_water, (1, -1), axis=(0, 1))
         delta_height_south_east = terrain_water - np.roll(terrain_water, (-1, -1), axis=(0, 1))
         delta_height_south_west = terrain_water - np.roll(terrain_water, (-1, 1), axis=(0, 1))
         delta_height_north_west = terrain_water - np.roll(terrain_water, (1, 1), axis=(0, 1))
@@ -222,7 +222,6 @@ def generateWater(world):
         flux_south_west = scaling_factor * flux_south_west / 2
         flux_west = scaling_factor * flux_west / 2
         flux_north_west = scaling_factor * flux_north_west / 2
-
 
         # Create the water delta by subtracting the flux out and then adding the flux in.
 

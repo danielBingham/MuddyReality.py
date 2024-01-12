@@ -110,7 +110,6 @@ class Player:
             self.prompt.is_in_buffer = True
             self.prompt.is_needed = False
 
-
     def setAccountState(self, state_string):
         """
         Set the current account state for players who are at the Account Menu.

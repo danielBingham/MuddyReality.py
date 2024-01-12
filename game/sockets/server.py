@@ -56,7 +56,6 @@ class ServerSocket:
             client = self.erroring.pop()
             client.handleError();
 
-
     def hasNewConnection(self):
         return self.newConnections
 

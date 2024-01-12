@@ -121,7 +121,7 @@ def generateRooms(biomes, world):
     id = 1
     for y in range(world.width):
         for x in range(world.width):
-            print("Generating (%d, %d) as Room(%d)..." % (x,y,id))
+            print("Generating (%d, %d) as Room(%d)..." % (x, y, id))
             biome = biomes[world.biomes[y][x]]
             height = world.terrain[y][x]
 
@@ -151,7 +151,6 @@ def generateRooms(biomes, world):
             room = rooms[y][x]
 
             room.description += " " + generateNeighborDescription(world, rooms, y, x)
-
 
     # Connect the rooms together.
     for y in range(len(rooms)):
@@ -196,7 +195,6 @@ def generateRooms(biomes, world):
                 exit.direction = 'west'
                 exit.room_to = rooms[y][x]
                 rooms[y][dx].exits['west'] = exit
-
 
             if not 'south' in rooms[y][x].exits:
                 dy = dY(world, y, 1)

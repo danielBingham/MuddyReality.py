@@ -29,7 +29,7 @@ Attempt to eat an item described by [item] as food.
             player.character.inventory.remove(item)
             player.character.reserves.calories += item.traits["Food"].calories
             player.write("You eat " + item.description + ".")
-            self.library.room.writeToRoom(player.character, player.character.name + ' eats ' + item.description+ '.')
+            self.library.room.writeToRoom(player.character, player.character.name + ' eats ' + item.description + '.')
         else:
             player.write("There doesn't seem to be a " + arguments + " to eat.")
 

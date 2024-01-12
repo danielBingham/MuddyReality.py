@@ -38,7 +38,6 @@ class ClientSocket:
 
         self.player = None
 
-
     def appendToOutputBuffer(self, output):
         self.outputBuffer += output
 
@@ -58,7 +57,6 @@ class ClientSocket:
     def hasOutput(self):
         return self.outputBuffer != self.outputBufferReset 
 
-
     def hasInput(self):
         return self.inputQueue
 
@@ -73,12 +71,10 @@ class ClientSocket:
         seq = telnetlib.IAC + telnetlib.WILL + telnetlib.ECHO
         self.socket.send(seq)
 
-
     ###
     # Read whatever text currently exists on this socket, and place it in the Player's input queue,
     # where it can be processed by any command interpreters.
     ###
-
 
     def read(self):
         data = self.socket.recv(4096)
@@ -91,11 +87,9 @@ class ClientSocket:
             # We're in an error state.  Close down the socket.
             self.close()
 
-
     ###
     # Take the next batch of text from the player's output queue and write it out to the socket.
     ###
-
 
     def write(self):
         if self.hasOutput():

@@ -26,7 +26,6 @@ class World:
         json['roomWidth'] = self.room_width
         json['initialWater'] = self.initial_water
 
-
         json['terrain'] = self.terrain.tolist()
         json['heights'] = self.heights
         json['water'] = self.water.tolist()

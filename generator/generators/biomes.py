@@ -93,7 +93,7 @@ def disrupt(biomes, worldBiomes, iteration, x, y):
 
     # Handle Disruptions
     for name in biome.disruptions:
-        roll = random.randint(1,100000) / 1000
+        roll = random.randint(1, 100000) / 1000
         disruption = biome.disruptions[name]
 
         if name == 'fire' and roll <= disruption['chance']:
@@ -101,9 +101,8 @@ def disrupt(biomes, worldBiomes, iteration, x, y):
             current['name'] = disruption['biome']
             current['last_succession'] = iteration
 
-
             spreadFire(1, biomes, worldBiomes, iteration, x-1, y)
-            spreadFire(1,biomes, worldBiomes, iteration, x+1, y)
+            spreadFire(1, biomes, worldBiomes, iteration, x+1, y)
             spreadFire(1, biomes, worldBiomes, iteration, x, y-1)
             spreadFire(1, biomes, worldBiomes, iteration, x, y+1)
 

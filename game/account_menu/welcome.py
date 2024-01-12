@@ -10,7 +10,7 @@ class WelcomeScreen(State):
     From here they can create a new account or login to an existing one.
     """
 
-    NAME="welcome-screen"
+    NAME = "welcome-screen"
     WELCOME_SCREEN = """
 Welcome to Muddy Reality!
 
@@ -42,7 +42,7 @@ If this is your first time, you'll need to create an account by typing "new".
 class GetAccountPassword(State):
     "Get the player's account password and validate it."
 
-    NAME="get-account-password"
+    NAME = "get-account-password"
 
     def introduce(self, player):
         player.write("Please enter the password for the account '" + player.account.name + "'.")

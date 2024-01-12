@@ -6,7 +6,7 @@ import game.account_menu.menu
 class GetNewAccountPassword(State):
     "Get a new password for an account."
 
-    NAME="get-new-account-password"
+    NAME = "get-new-account-password"
 
     def introduce(self, player):
         "See State::introduce()"
@@ -26,7 +26,7 @@ class GetNewAccountPassword(State):
 class ConfirmNewAccountPassword(State):
     "Confirm the player's newly set account password."
 
-    NAME="confirm-new-account-password"
+    NAME = "confirm-new-account-password"
 
     def introduce(self, player):
         "See State::introduce()"
