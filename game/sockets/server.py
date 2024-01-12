@@ -54,7 +54,7 @@ class ServerSocket:
     def handleErrorSet(self): 
         while self.erroring:
             client = self.erroring.pop()
-            client.handleError();
+            client.handleError()
 
     def hasNewConnection(self):
         return self.newConnections
@@ -62,7 +62,7 @@ class ServerSocket:
     def accept(self):
         try:
             client = ClientSocket(self.server.accept(), self)
-        except socket.error as error: 
+        except socket.error: 
             return None
 
         self.clients.append(client)

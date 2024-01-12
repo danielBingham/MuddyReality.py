@@ -1,7 +1,5 @@
 from game.interpreters.state.state import State
 
-import game.account_menu.menu 
-
 
 class GetNewAccountPassword(State):
     "Get a new password for an account."

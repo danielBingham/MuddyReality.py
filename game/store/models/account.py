@@ -1,7 +1,6 @@
-import json, os, bcrypt 
+import bcrypt 
 
 from game.store.models.base import NamedModel 
-from game.store.models.character import Character
 
 
 class Account(NamedModel):
@@ -28,16 +27,16 @@ class Account(NamedModel):
         return bcrypt.checkpw(password.encode('utf-8'), self.password_hash)
 
     def toJson(self):
-        json = {}
-        json['name'] = self.name 
+        data = {}
+        data['name'] = self.name 
 
-        json['password_hash'] = self.password_hash.decode('utf-8', 'strict')
+        data['password_hash'] = self.password_hash.decode('utf-8', 'strict')
 
-        json['characters'] = []
+        data['characters'] = []
         for name in self.characters:
-            json['characters'].append(name)
+            data['characters'].append(name)
 
-        return json
+        return data
 
     def fromJson(self, data):
         self.setId(data['name'])

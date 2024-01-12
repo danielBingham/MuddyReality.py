@@ -25,7 +25,7 @@ class MovementLibrary:
     def moveInDirection(self, player, direction):
         room = player.character.room
         if direction in room.exits:
-            if room.exits[direction].is_door and room.exits[direction].is_open == False:
+            if room.exits[direction].is_door and room.exits[direction].is_open is False:
                 player.write("The way " + room.exits[direction] + " is closed.")
                 return False 
 

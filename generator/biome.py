@@ -148,7 +148,7 @@ class Biome:
         file = open(path, 'r')
         try: 
             self.fromJson(json.load(file))
-        except:
+        except Exception:
             return False
         finally:
             file.close()

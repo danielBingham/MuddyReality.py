@@ -1,11 +1,8 @@
-import sys, glob, random
-
-from generator.biome import Biome
+import random
 
 initial_biomes_by_height = [ 
     {'height': 2000, 'biome': 'pioneer-meadow'}
 ]
-
 
 def getInitialBiomeFromHeight(height):
     for item in initial_biomes_by_height:

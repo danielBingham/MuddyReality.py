@@ -13,7 +13,7 @@ def loadItems():
         print("Loading item " + file_path + "...")
         item = Item()
         item.load(file_path)
-        if not item.id in items:
+        if item.id not in items:
             items[item.id] = item
         else:
             print("Error! Duplicate Item(%s)..." % item.id)
@@ -123,7 +123,6 @@ def generateRooms(biomes, world):
         for x in range(world.width):
             print("Generating (%d, %d) as Room(%d)..." % (x, y, id))
             biome = biomes[world.biomes[y][x]]
-            height = world.terrain[y][x]
 
             room = Room()
             room.id = id
@@ -157,7 +156,7 @@ def generateRooms(biomes, world):
         for x in range(len(rooms[y])):
             print("Connecting Room(%d)" % rooms[y][x].id)
 
-            if not 'north' in rooms[y][x].exits:
+            if 'north' not in rooms[y][x].exits:
                 dy = dY(world, y, -1)
 
                 exit = Exit(rooms[y][x])
@@ -170,7 +169,7 @@ def generateRooms(biomes, world):
                 exit.room_to = rooms[y][x]
                 rooms[dy][x].exits['south'] = exit
 
-            if not 'west' in rooms[y][x].exits:
+            if 'west' not in rooms[y][x].exits:
                 dx = dX(world, x, -1)
 
                 exit = Exit(rooms[y][x])
@@ -183,7 +182,7 @@ def generateRooms(biomes, world):
                 exit.room_to = rooms[y][x]
                 rooms[y][dx].exits['east'] = exit
 
-            if not 'east' in rooms[y][x].exits:
+            if 'east' not in rooms[y][x].exits:
                 dx = dX(world, x, 1)
 
                 exit = Exit(rooms[y][x])
@@ -196,7 +195,7 @@ def generateRooms(biomes, world):
                 exit.room_to = rooms[y][x]
                 rooms[y][dx].exits['west'] = exit
 
-            if not 'south' in rooms[y][x].exits:
+            if 'south' not in rooms[y][x].exits:
                 dy = dY(world, y, 1)
 
                 exit = Exit(rooms[y][x])
@@ -211,7 +210,6 @@ def generateRooms(biomes, world):
 
     items = loadItems()
 
-    room_area = world.room_width * world.room_width
     # Populate the rooms
     for y in range(len(rooms)):
         for x in range(len(rooms[y])):

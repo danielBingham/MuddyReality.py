@@ -1,9 +1,5 @@
 from game.interpreters.state.state import State
 
-from game.account_menu.creation import CreateNewAccount
-from game.account_menu.menu import AccountMenu
-
-
 class WelcomeScreen(State):
     """
     Introduce the game to the new player and start them on the account flow.

@@ -1,9 +1,5 @@
-import json
-
 from game.store.models.base import NamedModel
 from game.store.models.base import JsonSerializable
-
-from game.account_menu.menu import AccountMenu
 
 
 class Attributes(JsonSerializable):
@@ -26,18 +22,18 @@ class Attributes(JsonSerializable):
         self.max_constitution = 10
 
     def toJson(self):
-        json = {}
+        data = {}
 
-        json['strength'] = self.strength
-        json['maxStrength'] = self.max_strength
+        data['strength'] = self.strength
+        data['maxStrength'] = self.max_strength
 
-        json['stamina'] = self.stamina
-        json['maxStamina'] = self.max_stamina
+        data['stamina'] = self.stamina
+        data['maxStamina'] = self.max_stamina
 
-        json['constitution'] = self.constitution
-        json['maxConstitution'] = self.max_constitution
+        data['constitution'] = self.constitution
+        data['maxConstitution'] = self.max_constitution
 
-        return json
+        return data
 
     def fromJson(self, data):
         self.strength = data['strength']
@@ -194,22 +190,22 @@ class Reserves(JsonSerializable):
 
     def toString(self):
         reservesString = ("You are %s, %s, and %s.\nYou are %s and %s." %
-            (self.hungerString(), self.thirstString(), self.sleepString(), self.windString(), self.energyString()))
+                          (self.hungerString(), self.thirstString(), self.sleepString(), self.windString(), self.energyString()))
         return reservesString 
 
     def toJson(self):
-        json = {}
+        data = {}
 
-        json["calories"] = self.calories
-        json["maxCalories"] = self.max_calories
+        data["calories"] = self.calories
+        data["maxCalories"] = self.max_calories
 
-        json["thirst"] = self.thirst
-        json["maxThirst"] = self.max_thirst
+        data["thirst"] = self.thirst
+        data["maxThirst"] = self.max_thirst
 
-        json["sleep"] = self.sleep
-        json["maxSleep"] = self.max_sleep
+        data["sleep"] = self.sleep
+        data["maxSleep"] = self.max_sleep
 
-        return json
+        return data
 
     def fromJson(self, data):
 
@@ -251,12 +247,12 @@ class Wound(JsonSerializable):
         self.pain = 0
 
     def toJson(self):
-        json = {}
-        json['type'] = self.wound
-        json['bleed'] = self.bleed
-        json['infected'] = self.infected
-        json['pain'] = self.pain
-        return json
+        data = {}
+        data['type'] = self.wound
+        data['bleed'] = self.bleed
+        data['infected'] = self.infected
+        data['pain'] = self.pain
+        return data
 
     def fromJson(self, data):
         self.type = data['type']
@@ -289,16 +285,16 @@ class Body(JsonSerializable):
             return False
 
     def toJson(self):
-        json = {}
-        json['wounds'] = {}
+        data = {}
+        data['wounds'] = {}
         for body_part in self.wounds:
-            json['wounds'][body_part] = self.wounds[body_part]
+            data['wounds'][body_part] = self.wounds[body_part]
 
-        json['worn'] = {}
+        data['worn'] = {}
         for body_part in self.worn:
-            json['worn'][body_part] = self.worn[body_part].getId()
+            data['worn'][body_part] = self.worn[body_part].getId()
 
-        return json
+        return data
 
     def fromJson(self, data):
         if 'wounds' in data:
@@ -455,29 +451,29 @@ class Character(NamedModel):
         self.room = None
 
     def toJson(self):
-        json = {}
+        data = {}
 
-        json['name'] = self.name
-        json['description'] = self.description
-        json['details'] = self.details
-        json['sex'] = self.sex
-        json['position'] = self.position
-        json['speed'] = self.speed
+        data['name'] = self.name
+        data['description'] = self.description
+        data['details'] = self.details
+        data['sex'] = self.sex
+        data['position'] = self.position
+        data['speed'] = self.speed
 
-        json['attributes'] = self.attributes.toJson()
-        json['reserves'] = self.reserves.toJson()
+        data['attributes'] = self.attributes.toJson()
+        data['reserves'] = self.reserves.toJson()
 
-        json['bodyType'] = self.body_type 
-        json['body'] = self.body.toJson()
+        data['bodyType'] = self.body_type 
+        data['body'] = self.body.toJson()
 
-        json['inventory'] = []
+        data['inventory'] = []
         for item in self.inventory:
-            json['inventory'].append(item.getId())
+            data['inventory'].append(item.getId())
 
         if self.room:
-            json['room'] = self.room.getId()
+            data['room'] = self.room.getId()
 
-        return json
+        return data
 
     def fromJson(self, data):
         self.setId(data['name'])

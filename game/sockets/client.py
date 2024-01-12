@@ -1,4 +1,4 @@
-import socket, telnetlib
+import telnetlib
 
 ###
 # ClientSocket

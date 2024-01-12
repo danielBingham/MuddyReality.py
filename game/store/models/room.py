@@ -112,7 +112,7 @@ class Room(Model):
         output += "---\n"
         output += "Exits: "
         for direction in Room.DIRECTIONS:
-            if not direction in self.exits:
+            if direction not in self.exits:
                 continue
 
             output += self.exits[direction].room_to.getColorString()

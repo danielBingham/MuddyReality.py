@@ -6,7 +6,6 @@
 #   https://hal.inria.fr/inria-00402079/document
 
 import numpy as np
-import scipy as sp
 
 import generator.utils.util as util
 
@@ -16,7 +15,7 @@ import generator.utils.util as util
 def apply_slippage(terrain, repose_slope, cell_width):
     delta = util.simple_gradient(terrain) / cell_width
     smoothed = util.gaussian_blur(terrain, sigma=1.5)
-    should_smooth = np.abs(delta) > repose_slope
+    # should_smooth = np.abs(delta) > repose_slope
     result = np.select([np.abs(delta) > repose_slope], [smoothed], terrain)
     return result
 
@@ -44,7 +43,8 @@ def erode(world):
     min_height_delta = 0.05
     repose_slope = 0.03
     gravity = 30.0
-    gradient_sigma = 0.5
+    # Unused?
+    # gradient_sigma = 0.5
 
     # Sediment constants
     sediment_capacity_constant = 50.0

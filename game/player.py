@@ -120,9 +120,9 @@ class Player:
             The name of the state we want to set for the character.
         """
 
-        if self.status != self.STATUS_ACCOUNT and state_string != None:
+        if self.status != self.STATUS_ACCOUNT and state_string is not None:
             raise ValueError("Can't set player account state when the player is in the game.")
-        elif state_string != None:
+        elif state_string is not None:
             self.last_account_state = self.current_account_state
             self.current_account_state = state_string
             if self.last_account_state != self.current_account_state:

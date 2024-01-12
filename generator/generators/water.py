@@ -9,10 +9,8 @@
 
 import math
 import numpy as np
-import scipy as sp
 import imageio
 
-import generator.utils.util as util
 import generator.utils.snapshot as snapshot
 
 
@@ -27,7 +25,6 @@ def generateWater(world):
 
     # Grid dimension constants
     dim = world.width 
-    shape = [world.width] * 2
     cell_width = world.room_width 
     cell_area = cell_width ** 2
 
@@ -40,8 +37,8 @@ def generateWater(world):
     # Time helper values.
     seconds_per_year = 365*24*60*60
     seconds_per_day = 24*60*60
-    seconds_per_hour = 60*60
-    seconds_per_minute = 60
+    # seconds_per_hour = 60*60
+    # seconds_per_minute = 60
 
     # The length of an iteration in seconds.
     iteration_length = seconds_per_day
@@ -97,7 +94,7 @@ def generateWater(world):
     flux_north_west = np.zeros_like(terrain)
 
     # The water velocity.
-    velocity = np.zeros_like(terrain)
+    # velocity = np.zeros_like(terrain)
 
     if debug:
         print("\n\n Terrain: ")

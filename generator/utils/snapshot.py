@@ -96,10 +96,11 @@ def hillshaded(a, land_mask=None, angle=270):
     :returns:   `array_like`    A NumPy array of pixels representing the map.
     """
 
-    if land_mask is None: land_mask = np.ones_like(a)
+    if land_mask is None: 
+        land_mask = np.ones_like(a)
     ls = LightSource(azdeg=angle, altdeg=30)
     land = ls.shade(a, cmap=_TERRAIN_CMAP, vert_exag=10.0,
-                  blend_mode='overlay')[:, :, :3]
+                    blend_mode='overlay')[:, :, :3]
     water = np.tile((0.25, 0.35, 0.55), a.shape + (1,))
     return util.lerp(water, land, land_mask[:, :, np.newaxis])
 
@@ -118,5 +119,5 @@ _WATER_CMAP = LinearSegmentedColormap.from_list('my_terrain', [
 def watershaded(a, angle=270):
     ls = LightSource(azdeg=angle, altdeg=80)
     land = ls.shade(a, cmap=_WATER_CMAP, vert_exag=10.0,
-                  blend_mode='overlay')[:, :, :3]
+                    blend_mode='overlay')[:, :, :3]
     return land

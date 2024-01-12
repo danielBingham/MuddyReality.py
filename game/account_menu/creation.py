@@ -1,8 +1,5 @@
 from game.interpreters.state.state import State
 
-from game.account_menu.password import GetNewAccountPassword 
-
-
 class CreateNewAccount(State):
     "Create a new account for `player`."
 

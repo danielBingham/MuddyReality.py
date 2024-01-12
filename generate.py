@@ -5,7 +5,7 @@
 #
 # Generates a world of the given size.
 ###############################################################################
-import sys, argparse, random, glob, math
+import sys, argparse, random, glob 
 
 import generator.utils.snapshot as snapshot
 
@@ -35,7 +35,7 @@ def loadBiomes():
         if not biome.load(file_path):
             print("Error! Failed to load %s..." % file_path)
         else:
-            if not biome.name in biomes:
+            if biome.name not in biomes:
                 biomes[biome.name] = biome
             else:
                 print("Error! Duplicate Biome(%s)" % biome.name)

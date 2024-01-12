@@ -1,6 +1,3 @@
-import math
-import numpy as np
-
 from generator.generators.erosion import erode
 import generator.utils.util as util
 
