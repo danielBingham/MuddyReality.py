@@ -3,7 +3,7 @@ from unittest.mock import Mock, call
 from game.library.library import Library
 from game.store.store import Store
 from game.player import Player
-from game.store.models.character import PlayerCharacter, Character
+from game.store.models.character import PlayerCharacter 
 from game.store.models.room import Room
 
 from game.commands.information import Status, Look
@@ -219,3 +219,40 @@ Exits: \033[38;2;255;255;255meast \033[0m
 """, wrap=False)
 
 
+def test_Look_in_direction():
+    """
+    Test the player looking in a direction.
+    """
+
+    store = Store('test', '')
+    library = Library(store)
+
+    look = Look(library, store)
+
+    socket = Mock()
+    player = Player(socket, None, None)
+    player.write = Mock()
+
+    player.character = PlayerCharacter()
+    player.character.fromJson(character_json)
+
+    room = Room()
+    room.fromJson(room_json)
+
+    room_east = Room()
+    room_east.fromJson(room_east_json)
+    
+    room.exits['east'].room_to = room_east
+    room_east.exits['west'].room_to = room
+
+    player.character.room = room
+    room.occupants.append(player.character)
+
+    look.execute(player, 'east')
+
+    player.write.assert_called_once_with("""\033[38;2;255;255;255mA Test Room East\033[0m
+A test room to the east.  Used for testing.
+---
+---
+Exits: \033[38;2;255;255;255mwest \033[0m
+""", wrap=False)

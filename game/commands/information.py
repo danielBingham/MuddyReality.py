@@ -50,7 +50,7 @@ Look around.  If [direction] is excluded, then you will look at your current roo
 
         if arguments and arguments in self.DIRECTIONS:
             if arguments in player.character.room.exits:
-                player.write(player.character.room.exits[arguments].room_to.describe(player))
+                player.write(player.character.room.exits[arguments].room_to.describe(player), wrap=False)
             else:
                 player.write("Nothing there.")
         else:
