@@ -6,7 +6,7 @@ from game.player import Player
 from game.store.models.character import PlayerCharacter, Character
 from game.store.models.room import Room
 
-from game.commands.information import Status 
+from game.commands.information import Status, Look
 
 character_json = {
     "attributes": {
@@ -61,7 +61,7 @@ def test_Status():
     player.character.room = room
     room.occupants.append(player.character)
 
-    status.execute(player, 'Hello')
+    status.execute(player, '')
 
     player.write.assert_has_calls([
                                 call("You are Character."),
@@ -97,7 +97,7 @@ def test_Status_mid_reserves():
     player.character.room = room
     room.occupants.append(player.character)
 
-    status.execute(player, 'Hello')
+    status.execute(player, '')
 
     player.write.assert_has_calls([
                                 call("You are Character."),
@@ -133,12 +133,89 @@ def test_Status_low_reserves():
     player.character.room = room
     room.occupants.append(player.character)
 
-    status.execute(player, 'Hello')
+    status.execute(player, '')
 
     player.write.assert_has_calls([
                                 call("You are Character."),
                                 call("You are standing and walking."),
                                 call("You are ravenous, dehydrated, and drowsy.\nYou are winded and fatigued.")
     ])
+
+
+room_json = {
+    "id": 1,
+    "title": "A Test Room",
+    "description": "A test room.  Used for testing.",
+    "color": [ 255,255,255 ],
+    "water": 0,
+    "waterType": "no-water",
+    "waterVelocity": 0,
+    "exits": {
+        "east": {
+            "direction": "east",
+            "room_to": 2,
+            "is_door": False,
+            "is_open": True
+        }
+    },
+    "items": [ ]
+}
+
+room_east_json = {
+    "id": 2,
+    "title": "A Test Room East",
+    "description": "A test room to the east.  Used for testing.",
+    "color": [ 255,255,255 ],
+    "water": 0,
+    "waterType": "no-water",
+    "waterVelocity": 0,
+    "exits": {
+        "west": {
+            "direction": "west",
+            "room_to": 1,
+            "is_door": False,
+            "is_open": True
+        }
+    },
+    "items": [ ]
+}
+
+def test_Look():
+    """
+    Test the player looking with no arguments.
+    """
+
+    store = Store('test', '')
+    library = Library(store)
+
+    look = Look(library, store)
+
+    socket = Mock()
+    player = Player(socket, None, None)
+    player.write = Mock()
+
+    player.character = PlayerCharacter()
+    player.character.fromJson(character_json)
+
+    room = Room()
+    room.fromJson(room_json)
+
+    room_east = Room()
+    room_east.fromJson(room_east_json)
+    
+    room.exits['east'].room_to = room_east
+    room_east.exits['west'].room_to = room
+
+    player.character.room = room
+    room.occupants.append(player.character)
+
+    look.execute(player, '')
+
+    player.write.assert_called_once_with("""\033[38;2;255;255;255mA Test Room\033[0m
+A test room.  Used for testing.
+---
+---
+Exits: \033[38;2;255;255;255meast \033[0m
+""", wrap=False)
 
 
