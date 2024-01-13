@@ -157,6 +157,7 @@ Harvest materials from an object in your environment.  The object can be either 
             player.write("\nYou didn't harvest long enough to produce anything.")
             return
 
+
         if harvest.consumed:
             if in_inventory:
                 player.character.inventory.remove(item)
@@ -173,7 +174,7 @@ Harvest materials from an object in your environment.  The object can be either 
         else:
             harvest.harvested = True
 
-        player.write("\nYou " + harvest.action + " " + results + " from " + item.description + ".")
+        player.write("\nYou %s %s from %s." % (harvest.action, results, item.description))
         self.library.room.writeToRoom(player.character, 
                                       "%s %s from %s." %
                                       (player.character.name, harvest.action, item.description))

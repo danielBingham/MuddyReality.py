@@ -592,9 +592,9 @@ def test_Harvest_target_already_harvested():
 
     player.write.assert_called_once_with("a harvestable item has already been harvested.  There's nothing left!")
 
-def test_Harvest_successfully_started():
+def test_Harvest_successfully_started_from_item_in_room():
     """
-    Test a player successfully beginning a harvest.
+    Test a player successfully beginning to harvest an item in the room.
     """
 
     store = Store('test', '')
@@ -626,3 +626,398 @@ def test_Harvest_successfully_started():
     assert player.character.action is harvest_command
     assert player.character.action_time == instance.traits["Harvestable"].time
     assert player.character.action_data == { "harvesting": instance, "in_inventory": False }
+
+
+def test_Harvest_successfully_started_from_item_in_inventory():
+    """
+    Test a player successfully beginning to harvest an item in their inventory.
+    """
+
+    store = Store('test', '')
+
+    harvestable = Item()
+    harvestable.fromJson(harvestable_json)
+    store.items.add(harvestable)
+
+    library = Library(store)
+
+    harvest_command = Harvest(library, store)
+
+    socket = Mock()
+    player = Player(socket, None, None)
+    player.write = Mock()
+
+    player.character = PlayerCharacter()
+    player.character.player = player
+
+    player.character.room = Room()
+    player.character.room.occupants.append(player.character)
+
+    instance = store.items.instance(harvestable.getId())
+    player.character.inventory.append(instance)
+
+    harvest_command.execute(player, 'harvestable')
+
+    player.write.assert_called_once_with("You begin to harvest a harvestable item.")
+    assert player.character.action is harvest_command
+    assert player.character.action_time == instance.traits["Harvestable"].time
+    assert player.character.action_data == { "harvesting": instance, "in_inventory": True }
+
+def test_Harvest_step():
+    """
+    Test a harvest step.
+    """
+
+    store = Store('test', '')
+
+    harvestable = Item()
+    harvestable.fromJson(harvestable_json)
+    store.items.add(harvestable)
+
+    library = Library(store)
+
+    harvest_command = Harvest(library, store)
+
+    socket = Mock()
+    player = Player(socket, None, None)
+    player.write = Mock()
+
+    player.character = PlayerCharacter()
+    player.character.player = player
+
+    player.character.room = Room()
+    player.character.room.occupants.append(player.character)
+
+    instance = store.items.instance(harvestable.getId())
+    player.character.action = harvest_command
+    player.character.action_time = instance.traits["Harvestable"].time
+    player.character.action_data = { "harvesting": instance, "in_inventory": False }
+    player.character.room.items.append(instance)
+
+    harvest_command.step(player)
+
+    assert player.character.reserves.calories == player.character.reserves.max_calories - 10
+
+def test_Harvest_successfully_finished():
+    """
+    Test finishing a harvest.
+    """
+
+    store = Store('test', '')
+
+    harvestable = Item()
+    harvestable.fromJson(harvestable_json)
+    store.items.add(harvestable)
+
+    harvested = Item()
+    harvested.fromJson(harvested_item_json)
+    store.items.add(harvested)
+
+    library = Library(store)
+
+    harvest_command = Harvest(library, store)
+
+    socket = Mock()
+    player = Player(socket, None, None)
+    player.write = Mock()
+
+    player.character = PlayerCharacter()
+    player.character.player = player
+
+    room = Room()
+    player.character.room = room
+    player.character.room.occupants.append(player.character)
+
+    instance = store.items.instance(harvestable.getId())
+    player.character.room.items.append(instance)
+
+    player.character.action = harvest_command
+    player.character.action_time = 0
+    player.character.action_data = { "harvesting": instance, "in_inventory": False }
+
+    harvest_command.finish(player)
+
+    player.write.assert_called_once_with("\nYou harvest 1 harvested item from a harvestable item.")
+    assert len([ item for item in player.character.inventory if item.getId() == harvested.getId()]) == 1
+    assert len([ item for item in room.items if item.getId() == harvestable.getId() ]) == 1
+    assert instance.traits["Harvestable"].harvested is True
+
+
+harvestable_consumed_json = {
+    "name": "harvestable",
+    "description": "a harvestable item",
+    "details": "An item that can be harvested.",
+    "keywords": ["harvestable"],
+    "length": 1,
+    "width": 1,
+    "height": 1,
+    "weight": 1,
+    "traits": {
+        "Harvestable": {
+            "products": [
+                {
+                    "product": "harvested item",
+                    "amount": 1
+                }
+            ],
+            "preDescription": "This item can be harvested.",
+            "postDescription": "This item has been harvested.",
+            "consumed": True,
+            "calories": 100,
+            "time": 10,
+            "action": "harvest",
+            "required_tools": [ ]
+        }
+    }
+}
+
+def test_Harvest_successfully_finished_for_consumed_item():
+    """
+    Test finishing a harvest for an item that is consumed by harvesting.
+    """
+
+    store = Store('test', '')
+
+    harvestable = Item()
+    harvestable.fromJson(harvestable_consumed_json)
+    store.items.add(harvestable)
+
+    harvested = Item()
+    harvested.fromJson(harvested_item_json)
+    store.items.add(harvested)
+
+    library = Library(store)
+
+    harvest_command = Harvest(library, store)
+
+    socket = Mock()
+    player = Player(socket, None, None)
+    player.write = Mock()
+
+    player.character = PlayerCharacter()
+    player.character.player = player
+
+    room = Room()
+    player.character.room = room
+    player.character.room.occupants.append(player.character)
+
+    instance = store.items.instance(harvestable.getId())
+    player.character.room.items.append(instance)
+
+    player.character.action = harvest_command
+    player.character.action_time = 0
+    player.character.action_data = { "harvesting": instance, "in_inventory": False }
+
+    harvest_command.finish(player)
+
+    player.write.assert_called_once_with("\nYou harvest 1 harvested item from a harvestable item.")
+    assert len([ item for item in player.character.inventory if item.getId() == harvested.getId()]) == 1
+    assert len([ item for item in room.items if item.getId() == harvestable.getId() ]) == 0
+
+
+harvestable_replaced_json = {
+    "name": "harvestable",
+    "description": "a harvestable item",
+    "details": "An item that can be harvested.",
+    "keywords": ["harvestable"],
+    "length": 1,
+    "width": 1,
+    "height": 1,
+    "weight": 1,
+    "traits": {
+        "Harvestable": {
+            "products": [
+                {
+                    "product": "harvested item",
+                    "amount": 1
+                }
+            ],
+            "preDescription": "This item can be harvested.",
+            "postDescription": "This item has been harvested.",
+            "consumed": False,
+            "replacedWith": "replacement",
+            "calories": 100,
+            "time": 10,
+            "action": "harvest",
+            "required_tools": [ ]
+        }
+    }
+}
+
+replacement_json = {
+    "name": "replacement",
+    "description": "a replacement item",
+    "details": "An item that replaced a harvestable.",
+    "keywords": ["replacement"],
+    "length": 1,
+    "width": 1,
+    "height": 1,
+    "weight": 1,
+    "traits": { }
+}
+
+def test_Harvest_successfully_finished_for_replaced_item():
+    """
+    Test finishing a harvest for an item that is replaced during harvesting.
+    """
+
+    store = Store('test', '')
+
+    harvestable = Item()
+    harvestable.fromJson(harvestable_replaced_json)
+    store.items.add(harvestable)
+
+    replacement = Item()
+    replacement.fromJson(replacement_json)
+    store.items.add(replacement)
+
+    harvested = Item()
+    harvested.fromJson(harvested_item_json)
+    store.items.add(harvested)
+
+    library = Library(store)
+
+    harvest_command = Harvest(library, store)
+
+    socket = Mock()
+    player = Player(socket, None, None)
+    player.write = Mock()
+
+    player.character = PlayerCharacter()
+    player.character.player = player
+
+    room = Room()
+    player.character.room = room
+    player.character.room.occupants.append(player.character)
+
+    instance = store.items.instance(harvestable.getId())
+    player.character.room.items.append(instance)
+
+    player.character.action = harvest_command
+    player.character.action_time = 0
+    player.character.action_data = { "harvesting": instance, "in_inventory": False }
+
+    harvest_command.finish(player)
+
+    player.write.assert_called_once_with("\nYou harvest 1 harvested item from a harvestable item.")
+    assert len([ item for item in player.character.inventory if item.getId() == harvested.getId()]) == 1
+    assert len([ item for item in room.items if item.getId() == harvestable.getId() ]) == 0
+    assert len([ item for item in room.items if item.getId() == replacement.getId() ]) == 1
+
+
+harvestable_multiple_products_json = {
+    "name": "harvestable",
+    "description": "a harvestable item",
+    "details": "An item that can be harvested.",
+    "keywords": ["harvestable"],
+    "length": 1,
+    "width": 1,
+    "height": 1,
+    "weight": 1,
+    "traits": {
+        "Harvestable": {
+            "products": [
+                {
+                    "product": "harvested item",
+                    "amount": 4
+                }
+            ],
+            "preDescription": "This item can be harvested.",
+            "postDescription": "This item has been harvested.",
+            "consumed": False,
+            "calories": 100,
+            "time": 10,
+            "action": "harvest",
+            "required_tools": [ ]
+        }
+    }
+}
+
+def test_Harvest_cancelled_partially_completed():
+    """
+    Test a harvest attempt that was cancelled while partially complete.
+    """
+
+    store = Store('test', '')
+
+    harvestable = Item()
+    harvestable.fromJson(harvestable_multiple_products_json)
+    store.items.add(harvestable)
+
+    harvested = Item()
+    harvested.fromJson(harvested_item_json)
+    store.items.add(harvested)
+
+    library = Library(store)
+
+    harvest_command = Harvest(library, store)
+
+    socket = Mock()
+    player = Player(socket, None, None)
+    player.write = Mock()
+
+    player.character = PlayerCharacter()
+    player.character.player = player
+
+    room = Room()
+    player.character.room = room
+    player.character.room.occupants.append(player.character)
+
+    instance = store.items.instance(harvestable.getId())
+    player.character.room.items.append(instance)
+
+    player.character.action = harvest_command
+    player.character.action_time = 5 
+    player.character.action_data = { "harvesting": instance, "in_inventory": False }
+
+    harvest_command.cancel(player)
+
+    player.write.assert_called_once_with("\nYou harvest 2 harvested item from a harvestable item.")
+    assert len([ item for item in player.character.inventory if item.getId() == harvested.getId()]) == 2
+    assert len([ item for item in room.items if item.getId() == harvestable.getId() ]) == 1
+    assert instance.traits["Harvestable"].harvested is True
+
+
+def test_Harvest_cancelled_incomplete():
+    """
+    Test a harvest attempt that was cancelled without going long enough to produce anything.
+    """
+
+    store = Store('test', '')
+
+    harvestable = Item()
+    harvestable.fromJson(harvestable_multiple_products_json)
+    store.items.add(harvestable)
+
+    harvested = Item()
+    harvested.fromJson(harvested_item_json)
+    store.items.add(harvested)
+
+    library = Library(store)
+
+    harvest_command = Harvest(library, store)
+
+    socket = Mock()
+    player = Player(socket, None, None)
+    player.write = Mock()
+
+    player.character = PlayerCharacter()
+    player.character.player = player
+
+    room = Room()
+    player.character.room = room
+    player.character.room.occupants.append(player.character)
+
+    instance = store.items.instance(harvestable.getId())
+    player.character.room.items.append(instance)
+
+    player.character.action = harvest_command
+    player.character.action_time = 9 
+    player.character.action_data = { "harvesting": instance, "in_inventory": False }
+
+    harvest_command.cancel(player)
+
+    player.write.assert_called_once_with("\nYou didn't harvest long enough to produce anything.")
+    assert len([ item for item in player.character.inventory if item.getId() == harvested.getId()]) == 0
+    assert len([ item for item in room.items if item.getId() == harvestable.getId() ]) == 1
+    assert instance.traits["Harvestable"].harvested is False 

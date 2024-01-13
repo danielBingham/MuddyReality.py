@@ -83,8 +83,8 @@ class Harvestable(JsonSerializable):
 
         self.consumed = data['consumed']
 
-        if 'replaceWith' in data:
-            self.replace_with = data['replaceWith']
+        if 'replacedWith' in data:
+            self.replaced_with = data['replacedWith']
 
         self.calories = data['calories']
         self.time = data['time']
