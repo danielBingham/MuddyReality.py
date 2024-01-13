@@ -174,7 +174,9 @@ Harvest materials from an object in your environment.  The object can be either 
             harvest.harvested = True
 
         player.write("\nYou " + harvest.action + " " + results + " from " + item.description + ".")
-        self.library.room.writeToRoom(player.character, player.character.name + " " + harvest.action + " from " + item.description + ".")
+        self.library.room.writeToRoom(player.character, 
+                                      "%s %s from %s." %
+                                      (player.character.name, harvest.action, item.description))
 
     def execute(self, player, arguments):
         if player.character.position == player.character.POSITION_SLEEPING:
@@ -192,15 +194,15 @@ Harvest materials from an object in your environment.  The object can be either 
             in_inventory = False
 
         if not item:
-            player.write("You can't find a " + arguments + " to harvest.")
+            player.write("You can't find a '%s' to harvest." % arguments)
             return
 
         if "Harvestable" not in item.traits:
-            player.write("You can't harvest " + item.description)
+            player.write("You can't harvest %s." % item.description)
             return
 
         if item.traits["Harvestable"].harvested:
-            player.write("That has already been harvested.  There's nothing left!")
+            player.write("%s has already been harvested.  There's nothing left!" % item.description)
             return
 
         player.write("You begin to harvest %s." % item.description)
