@@ -256,3 +256,72 @@ A test room to the east.  Used for testing.
 ---
 Exits: \033[38;2;255;255;255mwest \033[0m
 """, wrap=False)
+
+
+def test_Look_in_while_sleeping():
+    """
+    Test the player attempting to look while asleep.
+    """
+
+    store = Store('test', '')
+    library = Library(store)
+
+    look = Look(library, store)
+
+    socket = Mock()
+    player = Player(socket, None, None)
+    player.write = Mock()
+
+    player.character = PlayerCharacter()
+    player.character.fromJson(character_json)
+    player.character.position = player.character.POSITION_SLEEPING
+
+    room = Room()
+    room.fromJson(room_json)
+
+    room_east = Room()
+    room_east.fromJson(room_east_json)
+    
+    room.exits['east'].room_to = room_east
+    room_east.exits['west'].room_to = room
+
+    player.character.room = room
+    room.occupants.append(player.character)
+
+    look.execute(player, '')
+
+    player.write.assert_called_once_with("You can't see in your sleep.")
+
+
+def test_Look_in_non_direction():
+    """
+    Test the player attempting to look in a direction with no exit.
+    """
+
+    store = Store('test', '')
+    library = Library(store)
+
+    look = Look(library, store)
+
+    socket = Mock()
+    player = Player(socket, None, None)
+    player.write = Mock()
+
+    player.character = PlayerCharacter()
+    player.character.fromJson(character_json)
+
+    room = Room()
+    room.fromJson(room_json)
+
+    room_east = Room()
+    room_east.fromJson(room_east_json)
+    
+    room.exits['east'].room_to = room_east
+    room_east.exits['west'].room_to = room
+
+    player.character.room = room
+    room.occupants.append(player.character)
+
+    look.execute(player, 'north')
+
+    player.write.assert_called_once_with("Nothing there.")
