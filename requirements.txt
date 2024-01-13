@@ -1,5 +1,5 @@
-bcrypt = 3.2.0
-flake8 = 7.0.0
-numpy = 1.26.2
-pytest = 7.4.4
-scipy = 1.11.4
+bcrypt==3.2.0
+flake8==7.0.0
+numpy==1.26.2
+pytest==7.4.4
+scipy==1.11.4
