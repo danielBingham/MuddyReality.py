@@ -61,7 +61,7 @@ def gameLoop(serverSocket, library, store, account_interpreter, game_interpreter
     # The length of a single loop in milliseconds.
     loop_length = 1000/loops_a_second
 
-    heartbeat = Heartbeat(store, loops_a_second)
+    heartbeat = Heartbeat(store, library, loops_a_second)
 
     # The Game Loop
     while serverSocket.isOpen:

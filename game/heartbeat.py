@@ -3,8 +3,9 @@ import random
 
 class Heartbeat:
 
-    def __init__(self, store, loops_a_second):
+    def __init__(self, store, library, loops_a_second):
         self.store = store
+        self.library = library
         self.loops_a_second = loops_a_second
 
         self.game_minute = loops_a_second
