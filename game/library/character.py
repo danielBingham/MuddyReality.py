@@ -32,9 +32,14 @@ class CharacterLibrary:
         CharacterLibrary:   Returns `self` to allow chaining.
         """
 
-        if character.player:
-            character.player.status = character.player.STATUS_ACCOUNT
-            character.player.account_state = "menu"
+        player = character.player
+        if player:
+            player.status = character.player.STATUS_ACCOUNT
+            player.current_account_state = "account-menu"
+
+            character.position = character.POSITION_DEAD
+            player.character = None
+            character.player = None
         return self
 
     def adjustSleep(self, character, amount):
@@ -81,8 +86,8 @@ class CharacterLibrary:
             # max_calories is the number of calories needed to survive a day,
             # this results in stamina effectively being the number of days a
             # character can survive without eating.
-            character.stamina = character.max_stamina + (character.reserves.calories / character.reserves.max_calories)
-            if character.stamina <= 0:
+            character.attributes.stamina = character.attributes.max_stamina + (character.reserves.calories / character.reserves.max_calories)
+            if character.attributes.stamina <= 0:
                 self.kill(character)
         return True
 
@@ -106,8 +111,8 @@ class CharacterLibrary:
             return False
         character.reserves.thirst += amount
         if character.reserves.thirst < 0:
-            character.stamina = character.max_stamina + 4 * (character.reserves.thirst / character.reserves.max_thirst)
-            if character.stamina <= 0:
+            character.attributes.stamina = character.attributes.max_stamina + 4 * (character.reserves.thirst / character.reserves.max_thirst)
+            if character.attributes.stamina <= 0:
                 self.kill(character)
         return True
 
@@ -128,9 +133,9 @@ class CharacterLibrary:
         """
 
         # Wind can't go negative.
-        if self.reserves.wind + amount < 0:
+        if character.reserves.wind + amount < 0:
             return False
-        self.reserves.wind = min(self.reserves.wind + amount, self.reserves.max_wind)
+        character.reserves.wind = min(character.reserves.wind + amount, character.reserves.max_wind)
         return True
 
     def adjustEnergy(self, character, amount):
@@ -150,9 +155,9 @@ class CharacterLibrary:
         """
 
         # Energy can't go negative.
-        if self.reserves.energy + amount < 0:
+        if character.reserves.energy + amount < 0:
             return False
-        self.reserves.energy = min(self.reserves.energy + amount, self.reserves.max_energy)
+        character.reserves.energy = min(character.reserves.energy + amount, character.reserves.max_energy)
         return True
 
     def calculateReserves(self, character):
