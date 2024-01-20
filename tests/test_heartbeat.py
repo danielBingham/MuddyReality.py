@@ -28,6 +28,7 @@ def test_advanceActions_should_step():
     dummyCommand.finish = Mock()
 
     player.character = PlayerCharacter()
+    player.character.player = player
 
     player.character.action = dummyCommand
     player.character.action_time = 2
@@ -63,6 +64,7 @@ def test_advanceActions_should_finish():
     dummyCommand.finish = Mock()
 
     player.character = PlayerCharacter()
+    player.character.player = player
 
     player.character.action = dummyCommand
     player.character.action_time = 1
@@ -124,6 +126,7 @@ def test_advanceAction_skips_characters_with_no_action():
     dummyCommand.finish = Mock()
 
     player.character = PlayerCharacter()
+    player.character.player = player
 
     player.character.action = None 
     player.character.action_time = 0
@@ -154,6 +157,8 @@ def test_calculateReserves_character_is_standing():
     player.write = Mock()
 
     player.character = PlayerCharacter()
+    player.character.player = player
+
     player.character.position = player.character.POSITION_STANDING
 
     store.players.append(player)
@@ -181,6 +186,8 @@ def test_calculateReserves_character_with_low_reseves_who_is_standing():
     player.write = Mock()
 
     player.character = PlayerCharacter()
+    player.character.player = player
+
     player.character.position = player.character.POSITION_STANDING
 
     player.character.reserves.calories = 2
@@ -212,6 +219,8 @@ def test_calculateReserves_character_who_is_resting():
     player.write = Mock()
 
     player.character = PlayerCharacter()
+    player.character.player = player
+
     player.character.position = player.character.POSITION_RESTING
 
     store.players.append(player)
@@ -239,6 +248,8 @@ def test_calculateReserves_character_with_low_reseves_who_is_resting():
     player.write = Mock()
 
     player.character = PlayerCharacter()
+    player.character.player = player
+
     player.character.position = player.character.POSITION_RESTING
 
     player.character.reserves.calories = 2
@@ -270,6 +281,8 @@ def test_calculateSleep_character_who_is_standing():
     player.write = Mock()
 
     player.character = PlayerCharacter()
+    player.character.player = player
+
     player.character.position = player.character.POSITION_STANDING
 
     store.players.append(player)
@@ -296,6 +309,8 @@ def test_calculateSleep_character_who_is_sleeping():
     player.write = Mock()
 
     player.character = PlayerCharacter()
+    player.character.player = player
+
     player.character.position = player.character.POSITION_SLEEPING
 
     store.players.append(player)
@@ -323,6 +338,8 @@ def test_calculateSleep_character_with_low_reserves_who_is_standing():
     player.write = Mock()
 
     player.character = PlayerCharacter()
+    player.character.player = player
+
     player.character.position = player.character.POSITION_STANDING
 
     player.character.reserves.sleep = 1
@@ -352,6 +369,8 @@ def test_calculateSleep_character_with_low_reserves_who_is_sleeping():
     player.write = Mock()
 
     player.character = PlayerCharacter()
+    player.character.player = player
+
     player.character.position = player.character.POSITION_SLEEPING
 
     player.character.reserves.sleep = 0

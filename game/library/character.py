@@ -1,3 +1,5 @@
+import random
+
 class CharacterLibrary:
     """
     A library containing behavior for acting on and interacting with Characters. 
@@ -59,6 +61,19 @@ class CharacterLibrary:
         """
 
         character.reserves.sleep += amount
+
+        if character.position == character.POSITION_SLEEPING and character.reserves.sleep >= 16:
+            character.position = character.POSITION_STANDING
+            if character.player:
+                character.player.write("You awaken, fully rested.")
+
+        # If they're tired, they have an increasing chance of falling asleep.
+        if character.position != character.POSITION_SLEEPING and character.reserves.sleep < 0:
+            chance = random.randint(0, 248)
+            if abs(character.reserves.sleep) < chance:
+                character.position = character.POSITION_SLEEPING
+                character.player.write("You can't stay awake anymore.  You fall asleep.")
+
         return True
 
     def adjustCalories(self, character, amount):

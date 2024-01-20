@@ -1,6 +1,5 @@
 import random 
 
-
 class Heartbeat:
 
     def __init__(self, store, library, loops_a_second):
@@ -91,14 +90,14 @@ class Heartbeat:
             if not character:
                 continue
 
-            character.reserves.calories -= 2
-            character.reserves.thirst -= 2 
+            self.library.character.adjustCalories(character, -2)
+            self.library.character.adjustThirst(character, -2)
 
             if character.position == character.POSITION_STANDING:
-                character.reserves.wind = min(character.reserves.wind+3, character.reserves.max_wind)
+                self.library.character.adjustWind(character, 3)
             elif character.position == character.POSITION_RESTING:
-                character.reserves.wind = min(character.reserves.wind+5, character.reserves.max_wind)
-                character.reserves.energy = min(character.reserves.energy+100, character.reserves.max_energy)
+                self.library.character.adjustWind(character, 5)
+                self.library.character.adjustEnergy(character, 100)
 
 
     def calculateSleep(self):
@@ -128,22 +127,9 @@ class Heartbeat:
 
             # If they're awake, then get more tired.
             if character.position != character.POSITION_SLEEPING:
-                character.reserves.sleep -= 1
+                self.library.character.adjustSleep(character, -1)
 
             # If they're asleep they recover.
             elif character.position == character.POSITION_SLEEPING:
-                character.reserves.sleep += 2
-
-                character.reserves.energy = min(character.reserves.energy+625, character.reserves.max_energy)
-
-                if character.reserves.sleep >= 16:
-                    character.position = character.POSITION_STANDING
-                    player.write("You awaken, fully rested.")
-
-            # If they're tired, they have an increasing chance of falling
-            # asleep.
-            if character.reserves.sleep < 0:
-                chance = random.randint(0, 248)
-                if abs(character.reserves.sleep) < chance:
-                    character.position = character.POSITION_SLEEPING
-                    player.write("You can't stay awake anymore.  You fall asleep.")
+                self.library.character.adjustSleep(character, 2)
+                self.library.character.adjustEnergy(character, 625)
