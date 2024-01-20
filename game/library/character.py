@@ -102,6 +102,7 @@ class CharacterLibrary:
             # this results in stamina effectively being the number of days a
             # character can survive without eating.
             character.attributes.stamina = character.attributes.max_stamina + (character.reserves.calories / character.reserves.max_calories)
+            self.calculateReserves(character)
             if character.attributes.stamina <= 0:
                 self.kill(character)
         return True
@@ -127,6 +128,7 @@ class CharacterLibrary:
         character.reserves.thirst += amount
         if character.reserves.thirst < 0:
             character.attributes.stamina = character.attributes.max_stamina + 4 * (character.reserves.thirst / character.reserves.max_thirst)
+            self.calculateReserves(character)
             if character.attributes.stamina <= 0:
                 self.kill(character)
         return True
