@@ -1,5 +1,3 @@
-import random 
-
 class Heartbeat:
 
     def __init__(self, store, library, loops_a_second):

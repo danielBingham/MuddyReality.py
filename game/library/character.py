@@ -187,10 +187,10 @@ class CharacterLibrary:
             The character who's reserves we want to calculate.
         """
 
-        self.reserves.max_energy = self.attributes.stamina * 1000
-        if self.reserves.energy >= self.reserves.max_energy:
-            self.reserves.energy = self.reserves.max_energy
+        character.reserves.max_energy = character.attributes.stamina * 1000
+        if character.reserves.energy >= character.reserves.max_energy:
+            character.reserves.energy = character.reserves.max_energy
 
-        self.reserves.max_wind = self.attributes.stamina * 3
-        if self.reserves.wind >= self.reserves.max_wind:
-            self.reserves.wind = self.reserves.max_wind
+        character.reserves.max_wind = character.attributes.stamina * 3
+        if character.reserves.wind >= character.reserves.max_wind:
+            character.reserves.wind = character.reserves.max_wind

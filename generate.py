@@ -5,92 +5,131 @@
 #
 # Generates a world of the given size.
 ###############################################################################
-import sys, argparse, random, glob 
+import sys, argparse, random 
 
 import generator.utils.snapshot as snapshot
 
-from generator.world import World
-from generator.biome import Biome
+from generator.store.store import Store
 
 from generator.generators.heights import generateTerrain, generateHeights 
-from generator.generators.water import generateWater
+from generator.generators.water import WaterGenerator 
 from generator.generators.biomes import generateBiomes
 from generator.generators.rooms import generateRooms
 
 
-def loadBiomes():
-    """
-    Load the biomes that we'll use to generate the world.
+class Generator:
 
-    :returns:   `dict(Biome)`   A dictionary of all the biomes keyed by `Biome.name`.
-    """
+    def __init__(self):
+        self.store = Store()
 
-    biomes = {}
+        self.arguments = {}
 
-    print("Loading biomes...")
-    biome_list = glob.glob('data/biomes/**/*.json', recursive=True)
-    for file_path in biome_list:
-        print("Loading biome " + file_path + "...")
-        biome = Biome()
-        if not biome.load(file_path):
-            print("Error! Failed to load %s..." % file_path)
-        else:
-            if biome.name not in biomes:
-                biomes[biome.name] = biome
-            else:
-                print("Error! Duplicate Biome(%s)" % biome.name)
-
-    return biomes
+        self.generate_all = True
+        self.generate_heights = False 
+        self.generate_water = False 
+        self.generate_biomes = False 
+        self.generate_rooms = False 
+        
+        self.regenerate_all = False 
+        self.regenerate_heights = False 
+        self.regenerate_water = False 
+        self.regenerate_biomes = False 
+        self.regenerate_rooms = False 
 
 
-def generate(world, heights_only=False, water_only=False, biomes_only=False, rooms_only=False, regenerate=False):
-    '''
-    Generate the world.
-    ''' 
+    def initialize(self, arguments):
+        """
+        Initialize the generator from the command line arguments.
 
-    biomes = loadBiomes()
+        Parameters
+        ----------
+        arguments:  dict
+            A dictionary of command line arguments.
+        """
 
-    print(world.terrain.size)
-    print(world.terrain)
-    if not water_only and not biomes_only and not rooms_only and (world.terrain.size == 0 or regenerate): 
-        generateTerrain(world)
-        snapshot.terrain(world)
+        self.store.initializeWorld(arguments.name, int(arguments.width), int(arguments.room_width))
 
-        generateHeights(world)
+        self.store.world.initial_water = int(arguments.initial_water)
+        self.arguments = arguments
 
-    if not heights_only and not biomes_only and not rooms_only and (world.water.size == 0 or regenerate):
-        if world.terrain.size == 0 or not world.heights:
-            print("Error! Must have generated a heightmap to generate water.")
-            return
+        # Which stages should we generate?  If no specific stage is specified,
+        # then we generate all of them.
+        self.generate_all = not (arguments.generate_heights or arguments.generate_water 
+                                 or arguments.generate_biomes or arguments.generate_rooms)
 
-        generateWater(world)
-        snapshot.water(world)
+        self.generate_heights = self.generate_all or arguments.generate_heights \
+            or arguments.generate_water or arguments.generate_biomes \
+            or arguments.generate_rooms
+        self.generate_water = self.generate_all or arguments.generate_water \
+            or arguments.generate_biomes or arguments.generate_rooms
+        self.generate_biomes = self.generate_all or arguments.generate_biomes \
+            or arguments.generate_rooms
+        self.generate_rooms = self.generate_all or arguments.generate_rooms 
 
-    if not heights_only and not water_only and not rooms_only and (not world.biomes or regenerate):
-        if world.terrain.size == 0 or not world.heights:
-            print("Error! Must have generated a heightmap to generate biomes.")
-            return
-        if world.water.size == 0:
-            print("Error! Must have generated water to generate biomes.")
-            return
+        # Should we regenerate any stages? If we regenerate all, then we set
+        # them all to to regenerate.
+        self.regenerate_all = arguments.regnerate_all
+        self.regenerate_heights = arguments.regenerate_all or arguments.regenerate_heights
+        self.regenerate_water = arguments.regenerate_all or arguments.regenerate_water
+        self.regenerate_biomes = arguments.regenreate_all or arguments.regenerate_biomes
+        self.regenerate_rooms = arguments.regenerate_all or arguments.regenerate_rooms
 
-        world.biomes = generateBiomes(biomes, world)
-        snapshot.biomes(world, biomes)
+        if int(arguments.width) != self.world.width or int(arguments.room_width) != self.world.room_width:
+            if not self.regenerate_all:
+                print("Error! You can't regenerate a single stage with different world parameters.  If you want to change the world width or room_width, please regenerate the whole world.")
+                sys.exit() 
+            elif self.regenerate_all:
+                print("Regenerating world with new world parameters...")
+                self.world.width = int(arguments.width)
+                self.world.room_width = int(arguments.room_width)
+                self.world.save()
 
-    if not heights_only and not water_only and not biomes_only and (not world.rooms or regenerate):
-        if world.terrain.size == 0 or not world.heights:
-            print("Error! Must have generated a heightmap to generate rooms.")
-            return
-        if world.water.size == 0:
-            print("Error! Must have generated water to generate rooms.")
-            return
-        if not world.biomes:
-            print("Error! Must have generated biomes to generate rooms.")
-            return
 
-        world.rooms = generateRooms(biomes, world)
+    def generate(self):
+        '''
+        Generate the self.world.
+        ''' 
 
-    world.save() 
+        if self.generate_heights and (self.world.terrain.size == 0 or self.regenerate_heights): 
+            generateTerrain(self.world)
+            snapshot.terrain(self.world)
+
+            generateHeights(self.world)
+
+        if self.generate_water and (self.world.water.size == 0 or self.regenerate_water):
+            if self.world.terrain.size == 0 or not self.world.heights:
+                print("Error! Must have generated a heightmap to generate water.")
+                return
+
+            water_generator = WaterGenerator(self.world, self.arguments)
+            water_generator.generate()
+            snapshot.water(self.world)
+
+        if self.generate_biomes and (not self.world.biomes or self.regenerate_biomes):
+            if self.world.terrain.size == 0 or not self.world.heights:
+                print("Error! Must have generated a heightmap to generate biomes.")
+                return
+            if self.world.water.size == 0:
+                print("Error! Must have generated water to generate biomes.")
+                return
+
+            self.world.biomes = generateBiomes(self.biomes, self.world)
+            snapshot.biomes(self.world, self.biomes)
+
+        if self.generate_rooms and (not self.world.rooms or self.regenerate_rooms):
+            if self.world.terrain.size == 0 or not self.world.heights:
+                print("Error! Must have generated a heightmap to generate rooms.")
+                return
+            if self.world.water.size == 0:
+                print("Error! Must have generated water to generate rooms.")
+                return
+            if not self.world.biomes:
+                print("Error! Must have generated biomes to generate rooms.")
+                return
+
+            self.world.rooms = generateRooms(self.biomes, self.world)
+
+        self.world.save() 
 
 
 def main():
@@ -106,40 +145,38 @@ def main():
     parser.add_argument('--width', default=100, help='Width of the world in rooms.  World will be square with width^2 total rooms..')
     parser.add_argument('--room-width', dest='room_width', default=100, help='Width of an individual room in meters.  World will be (room-width*width)^2 total area.')
 
-    parser.add_argument('--initial-water', default=30, dest='initial_water', help='The initial water that will be dumped on the world and allowed to flow to the low areas in depth (meters) per world point.')
-
     # Parameters for controlling which parts of the generating we're doing.
-    parser.add_argument('--heights-only', dest='heights_only', action='store_true', help='Only generate the height map.  Will generate the worlds.json file if it does not exist.')
-    parser.add_argument('--water-only', dest='water_only', action='store_true', help='Only generate the worlds water.')
-    parser.add_argument('--biomes-only', dest='biomes_only', action='store_true', help='Only generate the biomes. world.json matching `name` must have heights already generated.')
-    parser.add_argument('--rooms-only', dest='rooms_only', action='store_true', help='Only generate the rooms. world.json matching `name` must have heights and biomes already generated.')
+    parser.add_argument('--generate-heights', dest='generate_heights', action='store_true', help='Only generate the height map.  Will generate the worlds.json file if it does not exist.')
+    parser.add_argument('--generate-water', dest='generate_water', action='store_true', help='Only generate the worlds water.')
+    parser.add_argument('--generate-biomes', dest='generate_biomes', action='store_true', help='Only generate the biomes. world.json matching `name` must have heights already generated.')
+    parser.add_argument('--generate-rooms', dest='generate_rooms', action='store_true', help='Only generate the rooms. world.json matching `name` must have heights and biomes already generated.')
 
-    parser.add_argument('--regenerate', action='store_true', help='Regenerate the world, overriding any previously generated world.') 
+    # Parmeters for controlling what, if anything, we should regenerate.  If
+    # none of these are true, then anything previously generated will be reused
+    # as is.  That stage of generation will be skipped.
+    parser.add_argument('--regenerate-all', dest='regenerate_all', action='store_true', help='Regenerate the world, overriding any previously generated world.') 
+    parser.add_argument('--rengerate-heights', dest='regenerate_heights', action='store_true', help="Regenerate the world's heightmap, overriding any previously generated terrain.")
+    parser.add_argument('--regenerate-water', dest='regenerate_water', action='store_true', help="Regenerate the world's water, overriding any previously generated water.")
+    parser.add_argument('--regenerate-biomes', dest='regenerate_biomes', action='store_true', help="Regenerate the world's biomes, overriding any previously generated biomes.")
+    parser.add_argument('--regenerate-rooms', dest='regenerate_rooms', action='store_true', help="Regenerate the world's rooms, overriding any previously generated rooms.")
+
+    # Water generation parameters
+    parser.add_argument('--water-initial-amount', default=30, dest='water__initial_amount', help="The initial water that will be dumped on the world and allowed to flow to the low areas in depth (meters) per world point.")
+    parser.add_argument('--water-algorithm', default='inria', dest='water__algorithm', help='Choose the algorithm that will be used to generate water.')
+    parser.add_argument('--water-debug', dest="water__debug", action="store_true", help="Turn on debugging output for the water algorith.")
+    parser.add_argument("--water-snapshot", dest="water__snapshot", action="store_true", help="Turn on snapshotting for the water algorithm.  This will take an image snapshot of the water at the end of each iteration and then construct an animation of them showing the full water flow for the duration of the simulation at the end.  Images will be stored in the `snaps/` directory.")
+
+                        
+
 
     arguments = parser.parse_args()
-    print(arguments)
 
-    world = World(arguments.name,  int(arguments.width), int(arguments.room_width))
+    generator = Generator()
+    generator.initialize(arguments)
 
-    world.initial_water = int(arguments.initial_water)
 
-    if not world.load():
-        world.save()
-
-    if int(arguments.width) != world.width or int(arguments.room_width) != world.room_width:
-        if not arguments.regenerate or arguments.heights_only \
-                or arguments.water_only or arguments.biomes_only or arguments.rooms_only:
-            print("Error! You can't regenerate a single stage with different world parameters.  If you want to change the world width or room_width, please regenerate the whole world.")
-            sys.exit() 
-        elif arguments.regenerate:
-            print("Regenerating world with new world parameters...")
-            world.width = int(arguments.width)
-            world.room_width = int(arguments.room_width)
-            world.save()
-
-    print("Generating world %s, width [%d, %d] totaling %d rooms of size %d meters by %d meters" % (world.name, world.width, world.width, world.width * world.width, world.room_width, world.room_width))
-    generate(world, arguments.heights_only, arguments.water_only, arguments.biomes_only, arguments.rooms_only, arguments.regenerate)
-
+    print("Generating world %s, width [%d, %d] totaling %d rooms of size %d meters by %d meters" % (generator.world.name, generator.world.width, generator.world.width, generator.world.width * generator.world.width, generator.world.room_width, generator.world.room_width))
+    generator.generate()
 
 if __name__ == '__main__':
     main()
