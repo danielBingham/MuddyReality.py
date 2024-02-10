@@ -2,7 +2,7 @@
     "name": "oak board",
     "description": "an oak board",
     "details": "A long, straight board made of oak wood. It has been well hewn, likely by an axe.",
-    "keywords": [ "wood" , "oak" , "board" ],
+    "keywords": "hewn wood board",
     "length": 2,
     "width": 0.15,
     "height": 0.03,

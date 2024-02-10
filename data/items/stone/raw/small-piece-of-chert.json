@@ -2,7 +2,7 @@
     "name": "small piece of chert",
     "description": "a small piece of chert",
     "details": "This is a small piece of chert, a rock that flakes rather easily making it potentially useful.",
-    "keywords": [ "chert", "piece", "rock", "stone"],
+    "keywords": "chert rock stone",
     "length": 0.1,
     "width": 0.2,
     "height": 0.1,

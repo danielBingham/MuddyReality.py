@@ -2,7 +2,7 @@
     "name": "fiberous plants",
     "description": "some fiberous plants",
     "details": "This is a patch of fiberous plants.  They might make good cordage",
-    "keywords": [ "fiberous", "plants"],
+    "keywords": "fiberous plants",
     "length": 0.1,
     "width": 0.1,
     "height": 0.1,

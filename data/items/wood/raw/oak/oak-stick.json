@@ -2,7 +2,7 @@
     "name": "oak stick",
     "description": "a small, greyish-brown stick",
     "details": "A small, hairless stick with greyish-brown bark and pointed, brownish buds.",
-    "keywords": [ "small greyish-brown stick", "greyish-brown", "stick", "wood", "oak" ],
+    "keywords": "small greyish-brown stick",
     "length": 0.3,
     "width": 0.02,
     "height": 0.02,

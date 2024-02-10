@@ -7,6 +7,17 @@ class ItemLibrary:
         self.library = library
         self.store = store
 
+    def matchKeywords(self, keywords, to_match):
+        while True:
+            if to_match.startswith(keywords):
+                return True
+
+            token_end = to_match.find(' ')
+            if token_end == -1:
+                return False
+
+            to_match = to_match[token_end:]
+
     def findItemByKeywords(self, items, keywords):
         """
         Find an item from a list of items by searching its keywords
@@ -34,18 +45,17 @@ class ItemLibrary:
 
         count = 0
         for item in items:
-            if item.name.startswith(keywords):
+            if self.matchKeywords(keywords, item.name):
                 count += 1
                 if count < which:
                     continue
                 else:
                     return item
-            else:
-                for keyword in item.keywords:
-                    if keyword.startswith(keywords):
-                        count += 1
-                        if count < which:
-                            continue
-                        else:
-                            return item
+            elif self.matchKeywords(keywords, item.keywords):
+                count += 1
+                if count < which:
+                    continue
+                else:
+                    return item
+
         return None

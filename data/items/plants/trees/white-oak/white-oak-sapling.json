@@ -2,7 +2,7 @@
     "name": "white oak sapling",
     "description": "a sapling with light gray, smooth bark and oblong, seven-lobed leaves",
     "details": "A small sapling.  Its bark is light gray and smooth.  Its leaves are a bright, yellow green. They are arranged alternately along the twigs, and are oblong seven lobes.",
-    "keywords": [ "sapling", "tree", "light gray scaly bark", "gray scaly bark", "scaly bark", "oblong seven lobed leaves", "seven lobed leaves", "lobed leaves", "oak tree" ],
+    "keywords": "sapling light gray scaly bark oblong seven lobed leaves tree",
     "length": 2,
     "width": 2,
     "height": 2,

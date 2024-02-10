@@ -2,7 +2,7 @@
     "name": "oak stave",
     "description": "an oak stave",
     "details": "A cleaned oak stave, reasonably straight.",
-    "keywords": [ "wood", "stave", "oak" ],
+    "keywords": "cleaned oak stave",
     "length": 2,
     "width": 0.1,
     "height": 0.1,

@@ -1,0 +1,13 @@
+{
+    "name": "mature american mountain ash tree",
+    "description": "a mature tree with light gray, smooth bark with scales on the surface and alternate, compound, odd-pinnate leaves",
+    "details": "This is a mature tree. It is on the small side for a tree. It's bark is light gray, smooth, and has scales on the surface.  The outer layer of the bark on the branches is papery and easily separable. The leaves are alternate, compound, odd-pinnate, and longer than a hand with a significant number of leaflets.  The leaflets are lanceolate or long oval, about a finger's length and half again as broad.  They have a wedge shaped or rounded base. The petiole is dark green or red. ",
+    "keywords": "mature tree light gray smooth bark surface scales alternate compound odd-pinnate leaves",
+    "length": 7,
+    "width": 7,
+    "height": 10,
+    "weight": 9200,
+    "canPickUp": false,
+    "isGrowing": true,
+    "traits": { }
+}

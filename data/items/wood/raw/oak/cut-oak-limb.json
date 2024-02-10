@@ -1,8 +1,8 @@
 {
-    "name": "large cut oak limb",
+    "name": "cut oak limb",
     "description": "a large, cut limb with greyish-brown bark",
     "details": "A large limb cut off at the base.  It has greyish-brown bark, hairless twigs, and pointed, brownish buds.  Its leaves are a deep, dark green on top and paler underneath. They are arranged alternately along the twigs, and are broadly oblong with three to six lobes.",
-    "keywords": [ "large greyish-brown branch", "greyish-brown", "branch", "wood", "oak" ],
+    "keywords": "large cut limb greyish-brown bark hairless twigs pointed brownish buds",
     "length": 2,
     "width": 0.1,
     "height": 0.1,

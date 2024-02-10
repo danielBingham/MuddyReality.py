@@ -2,7 +2,7 @@
     "name": "stone knapper",
     "description": "a stone knapper",
     "details": "This is a large rock hammer that can be used to knock chips off of certain other kinds of rock in order to create knapped tools.",
-    "keywords": [ "stone", "knapper" ],
+    "keywords": "rock hammer",
     "length": 0.2,
     "width": 0.2,
     "height": 0.2,

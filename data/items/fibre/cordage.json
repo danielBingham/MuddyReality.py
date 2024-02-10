@@ -2,7 +2,7 @@
     "name": "cordage",
     "description": "a length of cordage",
     "details": "This is a length of cordage, wound from some sort of fiberous plant material.",
-    "keywords": [ "cordage" ],
+    "keywords": "cordage",
     "length": 0.1,
     "width": 0.1,
     "height": 0.1,

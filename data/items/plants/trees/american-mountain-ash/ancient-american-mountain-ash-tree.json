@@ -1,0 +1,13 @@
+{
+    "name": "ancient american mountain ash tree",
+    "description": "an ancient tree with light gray, smooth bark with scales on the surface and alternate, compound, odd-pinnate leaves",
+    "details": "This tree, while not particularly large, is clearly ancient. It's bark is light gray, smooth, and has scales on the surface.  The outer layer of the bark on the branches is papery and easily separable. The leaves are alternate, compound, odd-pinnate, and longer than a hand with a significant number of leaflets.  The leaflets are lanceolate or long oval, about a finger's length and half again as broad.  They have a wedge shaped or rounded base. The petiole is dark green or red. ",
+    "keywords": "ancient tree light gray smooth bark surface scales alternate compound odd-pinnate leaves",
+    "length": 8,
+    "width": 8,
+    "height": 12,
+    "weight": 21000,
+    "canPickUp": false,
+    "isGrowing": true,
+    "traits": { }
+}
