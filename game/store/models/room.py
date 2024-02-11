@@ -64,8 +64,8 @@ class Room(Model):
     WATER_SALT = 'salt'
     WATER_FRESH = 'fresh'
 
-    def __init__(self):
-        super(Room, self).__init__()
+    def __init__(self, time):
+        super(Room, self).__init__(time)
 
         self.title = ''
         self.description = ''
@@ -86,28 +86,29 @@ class Room(Model):
     def getColorReset(self):
         return "\033[0m"
 
-    def describe(self, time, player):
+    def describe(self, player):
         output = ""
 
-        if self.color:
+        if self.color and not self.time.night:
             output += self.getColorString()
         output += self.wrapper.fill(str(self.title)) 
-        if self.color:
+        if self.color and not self.time.night:
             output += self.getColorReset() 
 
         output += "\n"
 
-        output += self.wrapper.fill(str(self.description)) + "\n"
-        output += "---\n"
-        for occupant in self.occupants:
-            if occupant != player.character:
-                output += occupant.name.title() + " is here.\n"
+        if not self.time.night:
+            output += self.wrapper.fill(str(self.description)) + "\n"
+            output += "---\n"
+            for occupant in self.occupants:
+                if occupant != player.character:
+                    output += occupant.name.title() + " is here.\n"
 
-        for item in self.items:
-            if item.groundAction():
-                output += "%s is %s here.\n" % (item.describe(time), item.groundAction())
-            else:
-                output += "%s is here.\n" % (item.describe(time))
+            for item in self.items:
+                if item.groundAction():
+                    output += "%s is %s here.\n" % (item.describe(), item.groundAction())
+                else:
+                    output += "%s is here.\n" % (item.describe())
 
         output += "---\n"
         output += "Exits: "
@@ -115,7 +116,8 @@ class Room(Model):
             if direction not in self.exits:
                 continue
 
-            output += self.exits[direction].room_to.getColorString()
+            if not self.time.night:
+                output += self.exits[direction].room_to.getColorString()
             if self.exits[direction].is_door:
                 if self.exits[direction].is_open:
                     output += "(" + direction + ") "
@@ -123,7 +125,9 @@ class Room(Model):
                     output += "[" + direction + "] "
             else:
                 output += direction + " "
-            output += self.getColorReset()
+
+            if not self.time.night:
+                output += self.getColorReset()
 
         output += "\n"
         return output

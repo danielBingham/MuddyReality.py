@@ -14,7 +14,7 @@ open [direction|door|item]
 Open will open a door or an item described by [direction|door|item].
         """
 
-    def execute(self, time, player, arguments):
+    def execute(self, player, arguments):
         if player.character.position == player.character.POSITION_SLEEPING:
             player.write("You can't open anything in your sleep.")
             return
@@ -41,7 +41,7 @@ close [direction|door|item]
 Close will close a door or an item described by [direction|door|item].
         """
 
-    def execute(self, time, player, arguments):
+    def execute(self, player, arguments):
         if player.character.position == player.character.POSITION_SLEEPING:
             player.write("You can't close anything in your sleep.")
             return
@@ -72,7 +72,7 @@ get [item]
 Get an item described by [item] from the current room and add it to your inventory.
         """
 
-    def execute(self, time, player, arguments):
+    def execute(self, player, arguments):
         if player.character.position == player.character.POSITION_SLEEPING:
             player.write("You can't pick anything up in your sleep.")
             return
@@ -107,7 +107,7 @@ drop [item]
 Drop an item described by [item] from your inventory and leave it in the current room.
         """
 
-    def execute(self, time, player, arguments):
+    def execute(self, player, arguments):
         if player.character.position == player.character.POSITION_SLEEPING:
             player.write("You can't drop anything in your sleep.")
             return
@@ -139,7 +139,7 @@ wield [item]
 Wield an item described by [item] as a weapon.
         """
 
-    def execute(self, time, player, arguments):
+    def execute(self, player, arguments):
         if player.character.position == player.character.POSITION_SLEEPING:
             player.write("You can't wield anything in your sleep.")
             return

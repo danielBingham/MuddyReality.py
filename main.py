@@ -25,10 +25,10 @@ import game.commands.reserves as reserves
 import game.commands.system as system
 
 from game.heartbeat import Heartbeat
-from game.heartbeat import Time
+from game.world_time import WorldTime 
 
 
-def gameLoop(serverSocket, library, store, account_interpreter, game_interpreter):
+def gameLoop(serverSocket, world_time, library, store, account_interpreter, game_interpreter):
     """
     The primary game loop.  This method loops indefinitely (until killed using
     a keyboard interrupt).  It handles new connections to the game and
@@ -52,13 +52,8 @@ def gameLoop(serverSocket, library, store, account_interpreter, game_interpreter
     void
     """
 
-    # Number of loops we want to perform each second. 
-    loops_a_second = 10
-
     # The length of a single loop in milliseconds.
-    loop_length = 1000/loops_a_second
-
-    time = Time(loops_a_second)
+    loop_length = 1000/world_time.loops_a_second
 
     heartbeat = Heartbeat(store, library)
 
@@ -66,7 +61,7 @@ def gameLoop(serverSocket, library, store, account_interpreter, game_interpreter
     while serverSocket.isOpen:
         start_time = time.time()*1000
 
-        time.tick() 
+        world_time.tick() 
 
         # Poll for input and output ready clients and then handle the
         # communication.  Also accept new clients.
@@ -89,9 +84,9 @@ def gameLoop(serverSocket, library, store, account_interpreter, game_interpreter
 
         # Handle New Input
         for player in store.players:
-            player.interpret(time)
+            player.interpret()
 
-        heartbeat.heartbeat(time)
+        heartbeat.heartbeat(world_time)
 
         # Write prompts at the end of the loop if any reading or writing has
         # been done.
@@ -129,6 +124,8 @@ def main():
     parser.add_argument('--data', default='data/', help='The location of the data directory, relative to this file.')
     parser.add_argument('--world', default='base', help='The name of the world we want to run the server for.') 
 
+    parser.add_argument('--loops-a-second', dest='loops_a_second', default=10, help='The number of loops to allow in a second.')
+
     arguments = parser.parse_args()
 
     random.seed()
@@ -138,21 +135,23 @@ def main():
 
     data_directory = arguments.data
 
+    world_time = WorldTime(arguments.loops_a_second)
+
     serverSocket = ServerSocket(host, port)
 
-    store = Store(arguments.world, data_directory)
+    store = Store(world_time, arguments.world, data_directory)
     store.load()
 
     library = Library(store)
 
     # Initialize the states for the Account flow state interpreter.
     states = {}
-    states['welcome-screen'] = welcome.WelcomeScreen(library, store)
-    states['get-account-password'] = welcome.GetAccountPassword(library, store)
-    states['create-new-account'] = creation.CreateNewAccount(library, store)
-    states['account-menu'] = menu.AccountMenu(library, store)
-    states['get-new-account-password'] = password.GetNewAccountPassword(library, store)
-    states['confirm-new-account-password'] = password.ConfirmNewAccountPassword(library, store)
+    states['welcome-screen'] = welcome.WelcomeScreen(world_time, library, store)
+    states['get-account-password'] = welcome.GetAccountPassword(world_time, library, store)
+    states['create-new-account'] = creation.CreateNewAccount(world_time, library, store)
+    states['account-menu'] = menu.AccountMenu(world_time, library, store)
+    states['get-new-account-password'] = password.GetNewAccountPassword(world_time, library, store)
+    states['confirm-new-account-password'] = password.ConfirmNewAccountPassword(world_time, library, store)
     account_interpreter = StateInterpreter(states, library, store)
 
     # Initialize the command list for commands in the game.
@@ -167,55 +166,57 @@ def main():
     # List is also intentionally in alphabetic order (except where player
     # convenience dictates breaking it) to enable ease of use.
     commands = {}
-    commands['close'] = manipulation.Close(library, store)
-    commands['craft'] = crafting.Craft(library, store)
+    commands['close'] = manipulation.Close(world_time, library, store)
+    commands['craft'] = crafting.Craft(world_time, library, store)
 
-    commands['down'] = movement.Down(library, store)
-    commands['drink'] = reserves.Drink(library, store)
-    commands['drop'] = manipulation.Drop(library, store)
+    commands['down'] = movement.Down(world_time, library, store)
+    commands['drink'] = reserves.Drink(world_time, library, store)
+    commands['drop'] = manipulation.Drop(world_time, library, store)
 
-    commands['east'] = movement.East(library, store)
-    commands['eat'] = reserves.Eat(library, store)
-    commands['equipment'] = information.Equipment(library, store)
-    commands['examine'] = information.Examine(library, store)
+    commands['east'] = movement.East(world_time, library, store)
+    commands['eat'] = reserves.Eat(world_time, library, store)
+    commands['equipment'] = information.Equipment(world_time, library, store)
+    commands['examine'] = information.Examine(world_time, library, store)
 
-    commands['get'] = manipulation.Get(library, store)
+    commands['get'] = manipulation.Get(world_time, library, store)
 
-    commands['harvest'] = crafting.Harvest(library, store)
+    commands['harvest'] = crafting.Harvest(world_time, library, store)
     # Help needs a reference to the command list so that it
     # can walk the list to describe the commands.
-    commands['help'] = system.Help(commands, library, store)
+    commands['help'] = system.Help(commands, world_time, library, store)
 
-    commands['inventory'] = information.Inventory(library, store)
+    commands['inventory'] = information.Inventory(world_time, library, store)
 
-    commands['look'] = information.Look(library, store)
+    commands['look'] = information.Look(world_time, library, store)
 
-    commands['north'] = movement.North(library, store)
+    commands['north'] = movement.North(world_time, library, store)
 
-    commands['open'] = manipulation.Open(library, store)
+    commands['open'] = manipulation.Open(world_time, library, store)
 
-    commands['rest'] = reserves.Rest(library, store)
-    commands['run'] = movement.Run(library, store)
+    commands['rest'] = reserves.Rest(world_time, library, store)
+    commands['run'] = movement.Run(world_time, library, store)
 
-    commands['quit'] = system.Quit(library, store)
+    commands['quit'] = system.Quit(world_time, library, store)
 
-    commands['south'] = movement.South(library, store)
-    commands['say'] = communication.Say(library, store)
-    commands['sleep'] = reserves.Sleep(library, store)
-    commands['sprint'] = movement.Sprint(library, store)
-    commands['status'] = information.Status(library, store)
+    commands['south'] = movement.South(world_time, library, store)
+    commands['say'] = communication.Say(world_time, library, store)
+    commands['sleep'] = reserves.Sleep(world_time, library, store)
+    commands['sprint'] = movement.Sprint(world_time, library, store)
+    commands['status'] = information.Status(world_time, library, store)
 
-    commands['west'] = movement.West(library, store)
-    commands['walk'] = movement.Walk(library, store)
-    commands['wield'] = manipulation.Wield(library, store)
-    commands['wake'] = reserves.Wake(library, store)
+    commands['time'] = information.Time(world_time, library, store)
 
-    commands['up'] = movement.Up(library, store)
+    commands['west'] = movement.West(world_time, library, store)
+    commands['walk'] = movement.Walk(world_time, library, store)
+    commands['wield'] = manipulation.Wield(world_time, library, store)
+    commands['wake'] = reserves.Wake(world_time, library, store)
+
+    commands['up'] = movement.Up(world_time, library, store)
     game_interpreter = CommandInterpreter(commands, library, store)
 
     print('Starting up the server on world "' + store.world.name + '" on port ' + repr(port))
     try:
-        gameLoop(serverSocket, library, store, account_interpreter, game_interpreter)
+        gameLoop(serverSocket, world_time, library, store, account_interpreter, game_interpreter)
     except KeyboardInterrupt:
         print("Shutting down.")
         serverSocket.shutdown()

@@ -420,8 +420,8 @@ class Character(NamedModel):
 
     POSITION_DEAD = 'dead'
 
-    def __init__(self):
-        super(Character, self).__init__()
+    def __init__(self, time):
+        super(Character, self).__init__(time)
 
         self.is_player_character = False
 
@@ -522,8 +522,8 @@ class Character(NamedModel):
 
 class PlayerCharacter(Character):
 
-    def __init__(self):
-        super(PlayerCharacter, self).__init__()
+    def __init__(self, time):
+        super(PlayerCharacter, self).__init__(time)
 
         self.is_player_character = True 
 

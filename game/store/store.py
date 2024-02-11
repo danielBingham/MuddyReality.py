@@ -37,7 +37,7 @@ class ModelRepository:
 
     """
 
-    def __init__(self, store, type):
+    def __init__(self, store, world_time, type):
         """Initialize the ModelRepository.
 
         Initializes the ModelRepository with its parent store and with the
@@ -52,6 +52,8 @@ class ModelRepository:
         type: Class 
            The class of Model that this repository will manage. 
         """
+
+        self.time = world_time
 
         self.store = store
         self.type = type
@@ -92,10 +94,25 @@ class ModelRepository:
         if not id.isdigit():
             id = str(id).lower()
 
-        model = self.type(self.store)
+        model = self.type(self.time)
         model.setId(id)
         self.add(model)
         return model 
+
+    def load(self, path):
+        """
+        Load a model from a filepath.
+
+        Parameters
+        ----------
+        path: string
+            The filepath to the json data we want to load this model.
+        """
+
+        model = self.type(self.time)
+        model.load(path)
+        self.add(model)
+        return model
 
     def getById(self, id):
         """Get the instance identified by ``id`` from the repository.
@@ -163,7 +180,10 @@ class PrototypeRepository(ModelRepository):
         """
 
         if self.hasId(id):
-            return copy.deepcopy(self.getById(id))
+            model = self.getById(id)
+            instance = self.type(self.time)
+            instance.fromJson(model.toJson())
+            return instance
         else:
             return None
 
@@ -190,7 +210,7 @@ class Store:
         A ModelPrototypeRepository of all the Items that can exist in the game.
     """
 
-    def __init__(self, world='base', data_directory='data/'):
+    def __init__(self, world_time, world='base', data_directory='data/'):
         """
         Initialize the Store.
 
@@ -199,20 +219,25 @@ class Store:
 
         Parameters
         ----------
+        world_time: GameTime
+            The object storing the game time and allowing interaction with it.
         world:  string
             The name of the game world we want to load.
+        data_directory: string
+            The path to the data directory.
         """
+        self.time = world_time
 
         self.data_directory = 'data/'
         self.world = world
 
         self.players = []
 
-        self.accounts = ModelRepository(self, Account) 
-        self.characters = ModelRepository(self, Character)
-        self.rooms = ModelRepository(self, Room) 
-        self.npcs = PrototypeRepository(self, Character) 
-        self.items = PrototypeRepository(self, Item) 
+        self.accounts = ModelRepository(self, self.time, Account) 
+        self.characters = ModelRepository(self, self.time, PlayerCharacter)
+        self.rooms = ModelRepository(self, self.time, Room) 
+        self.npcs = PrototypeRepository(self, self.time, Character) 
+        self.items = PrototypeRepository(self, self.time, Item) 
 
     def saveCharacter(self, character):
         """
@@ -252,7 +277,7 @@ class Store:
         world_name = self.world
         world_path = os.path.join(self.data_directory, 'worlds', world_name, 'world.json')
         print("Loading the world from %s..." % world_path)
-        self.world = World() 
+        self.world = World(self.time) 
         self.world.load(world_path)
 
         item_path = os.path.join(self.data_directory, 'items/')
@@ -260,18 +285,14 @@ class Store:
         item_list = glob.glob(item_path + '**/*.json', recursive=True)
         for file_path in item_list:
             print("Loading item " + file_path + "...")
-            item = Item()
-            item.load(file_path)
-            self.items.add(item)
+            self.items.load(file_path)
 
         npc_path = os.path.join(self.data_directory, 'npcs/')
         print("Loading non-player characters from %s..." % npc_path)
         npc_list = glob.glob(npc_path + '**/*.json', recursive=True)
         for file_path in npc_list:
             print("Loading npc %s..." % file_path)
-            npc = Character()
-            npc.load(file_path)
-            self.npcs.add(npc)
+            self.npcs.load(file_path)
 
         character_path = os.path.join(self.data_directory, 'characters/')
         print("Loading player characters from %s..." % character_path)
@@ -279,8 +300,7 @@ class Store:
         for file_path in character_list:
             print("Loading character %s..." % file_path)
 
-            character = PlayerCharacter()
-            character.load(file_path)
+            character = self.characters.load(file_path)
 
             print("Loading %s's inventory..." % character.name)
             inventory = character.inventory
@@ -295,15 +315,12 @@ class Store:
                 if self.items.hasId(itemId):
                     character.body.worn[body_part] = self.items.instance(itemId)
 
-            self.characters.add(character)
-
         account_path = os.path.join(self.data_directory, 'accounts/')
         print("Loading accounts from %s..." % account_path)
         account_list = glob.glob(account_path + '*.json') 
         for file_path in account_list:
             print("Loading account " + file_path + "...")
-            account = Account()
-            account.load(file_path)
+            account = self.accounts.load(file_path)
 
             characters = account.characters
             account.characters = {} 
@@ -311,16 +328,12 @@ class Store:
                 account.characters[name] = self.characters.getById(name)
                 account.characters[name].account = account
 
-            self.accounts.add(account)
-
         room_path = os.path.join(self.data_directory, 'worlds', self.world.name, 'rooms/')
         print("Loading rooms from %s..." % room_path)
         room_list = glob.glob(room_path + '*.json') 
         for file_path in room_list:
             print("Loading room " + file_path + "...")
-            room = Room()
-            room.load(file_path)
-            self.rooms.add(room)
+            self.rooms.load(file_path)
 
         print("Connecting rooms and loading items into rooms...")
         for id in self.rooms.repo:

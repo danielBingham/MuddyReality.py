@@ -30,6 +30,8 @@ class Harvestable(JsonSerializable):
 
         self.products = []
 
+        self.harvest_time = None
+
         self.pre_description = None 
         self.post_description = None
 
@@ -57,6 +59,9 @@ class Harvestable(JsonSerializable):
         for product in self.products:
             json['products'].append(product.toJson())
 
+        if self.harvest_time:
+            json['harvestTime'] = self.harvest_time
+
         if self.pre_description:
             json['preDescription'] = self.pre_description
         if self.post_description:
@@ -76,6 +81,9 @@ class Harvestable(JsonSerializable):
         return json
 
     def fromJson(self, data):
+        if 'harvestTime' in data:
+            self.harvest_time = data['harvestTime']
+
         if 'preDescription' in data:
             self.pre_description = data['preDescription']
         if 'postDescription' in data:
@@ -369,8 +377,8 @@ class Container(JsonSerializable):
 class Item(NamedModel):
     'Represents an item in a game.'
 
-    def __init__(self):
-        super(Item, self).__init__()
+    def __init__(self, time):
+        super(Item, self).__init__(time)
 
         # The short description of the item.  Displayed when the item is looked at.
         self.description = ''
@@ -399,18 +407,18 @@ class Item(NamedModel):
         # items to give it a variety of uses and features.
         self.traits = {} 
 
-    def describe(self, time):
+    def describe(self):
         output = self.description
         if self.season_description:
-            output += self.season_description[time.season]
+            output += self.season_description[self.time.season]
         return output
 
-    def detail(self, time):
+    def detail(self):
         output = self.details
-        if self.season_details:
-            output += " " + self.season_details[time.season]
+        if self.season_details and self.time.season in self.season_details:
+            output += " " + self.season_details[self.time.season]
         if "Harvestable" in self.traits:
-            if not self.traits["Harvestable"].harvestTime or time.MONTH_NAME[time.month] in self.traits["Harvestable"].harvestTime:
+            if not self.traits["Harvestable"].harvest_time or self.time.MONTH_NAME[self.time.month] in self.traits["Harvestable"].harvest_time:
                 if self.traits["Harvestable"].harvested:
                     output += " " + self.traits["Harvestable"].post_description
                 else:
@@ -459,11 +467,11 @@ class Item(NamedModel):
         self.setId(data['name'])
 
         self.description = data['description']
-        if data['seasonDescription']:
+        if 'seasonDescription' in data:
             self.season_description = data['seasonDescription']
 
         self.details = data['details']
-        if data['seasonDetails']:
+        if 'seasonDetails' in data:
             self.season_details = data['seasonDetails']
 
         self.keywords = data['keywords']

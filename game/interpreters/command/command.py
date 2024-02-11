@@ -3,7 +3,7 @@ class Command:
     A base class for commands used by the CommandInterpreter. 
     """
 
-    def __init__(self, library, store):
+    def __init__(self, time, library, store):
         """
         Initialize the command.
 
@@ -15,6 +15,7 @@ class Command:
             The game store.
         """
 
+        self.time = time
         self.library = library
         self.store = store 
 

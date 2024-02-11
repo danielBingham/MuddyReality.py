@@ -1,88 +1,3 @@
-class Time:
-
-    MONTH_NAME = [ "", "January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"]
-
-    def __init__(self, loops_a_second):
-        self.loops_a_second = loops_a_second
-
-        self.loops_a_minute = self.loops_a_second
-        self.loops_an_hour = 60 * self.loops_a_minute
-        self.loops_a_day = 24 * self.loops_an_hour
-        self.loops_a_month = 30 * self.loops_a_day
-        self.loops_a_year = 12 * self.loops_a_year
-
-        self.year = 1
-        self.month = 1
-        self.day = 1
-        self.hour = 0
-        self.minute = 0
-        self.second = 0
-
-        self.season = "Winter" 
-
-        self.loop = 0
-
-        self.events = {}
-
-    def after(self, loops, action):
-        target_loop = self.loop + loops
-        if not target_loop in self.events:
-            self.events[target_loop] = []
-        self.events[target_loop].append(action)
-
-    def tick(self):
-        self.loop += 1
-
-        if self.loop % self.loops_a_second == 0:
-            self.second += 1
-
-        if self.second >= 60:
-            self.second = 0
-            self.minute += 1
-
-        if self.minute >= 60:
-            self.second = 0
-            self.minute = 0
-            self.hour += 1
-
-        if self.hour >= 24:
-            self.second = 0
-            self.minute = 0
-            self.hour = 0
-            self.day += 1
-
-        if self.day > 30:
-            self.second = 0
-            self.minute = 0
-            self.hour = 0
-            self.day = 1
-            self.month += 1
-
-        if self.month > 12:
-            self.second = 0
-            self.minute = 0
-            self.hour = 0
-            self.day = 1
-            self.month = 1
-            self.year += 1
-
-        # Dec, Jan, Feb are Winter
-        if self.month == 12 or self.month == 1 or self.month == 2:
-            self.season = "winter" 
-        # Mar, Apr, May are Spring
-        elif self.month == 3 or self.month == 4 or self.month == 5:
-            self.season = "spring" 
-        # Jun, July, Aug are Summer
-        elif self.month == 6 or self.month == 7 or self.month == 8:
-            self.season = "summer" 
-        # Sep, Oct, Nov are Fall
-        elif self.month == 9 or self.month == 10 or self.month == 11:
-            self.season = "fall" 
-
-        if self.loop in self.events:
-            for action in self.events[self.loop]:
-                action()
- 
 class Heartbeat:
 
     def __init__(self, store, library):
@@ -120,7 +35,7 @@ class Heartbeat:
             self.calculateReserves()
 
         # Do sleep calculations once per game hour.
-        if time.loop % time.loops_a_minute == 0:
+        if time.loop % time.loops_an_hour == 0:
             self.calculateSleep()
 
 

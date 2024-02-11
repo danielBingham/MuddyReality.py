@@ -3,8 +3,8 @@ from game.store.models.base import NamedModel
 
 class World(NamedModel):
 
-    def __init__(self):
-        super(World, self).__init__()
+    def __init__(self, time):
+        super(World, self).__init__(time)
 
         self.name = '' 
         self.width = 0 

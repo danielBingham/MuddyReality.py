@@ -15,7 +15,9 @@ class JsonSerializable:
 
 class Model(JsonSerializable):
 
-    def __init__(self):
+    def __init__(self, time):
+        self.time = time
+
         self.id = ''  
 
     def getId(self):
@@ -57,8 +59,8 @@ class Model(JsonSerializable):
 
 class NamedModel(Model):
 
-    def __init__(self):
-        super(NamedModel, self).__init__()
+    def __init__(self, time):
+        super(NamedModel, self).__init__(time)
         self.name = ''
 
     def setId(self, name):

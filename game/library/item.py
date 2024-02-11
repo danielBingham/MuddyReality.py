@@ -16,7 +16,7 @@ class ItemLibrary:
             if token_end == -1:
                 return False
 
-            to_match = to_match[token_end:]
+            to_match = to_match[token_end+1:]
 
     def findItemByKeywords(self, items, keywords):
         """
