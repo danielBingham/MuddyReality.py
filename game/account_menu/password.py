@@ -11,7 +11,7 @@ class GetNewAccountPassword(State):
 
         player.setPrompt("Enter New Password: ")
 
-    def execute(self, player, input):
+    def execute(self, time, player, input):
         "See State::execute()"
 
         if player.account:
@@ -31,7 +31,7 @@ class ConfirmNewAccountPassword(State):
 
         player.setPrompt("Confirm Password: ")
 
-    def execute(self, player, input):
+    def execute(self, time, player, input):
         "See State::execute()"
 
         if player.account and input == player.account_state_data['password']:

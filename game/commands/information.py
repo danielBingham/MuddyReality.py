@@ -14,7 +14,7 @@ report
 Get detailed information about your character.
         """
 
-    def execute(self, player, arguments):
+    def execute(self, time, player, arguments):
         character = player.character
         player.write("You are %s." % (character.name.title()))
         player.write("You are %s and %s." % (character.position, character.speed))
@@ -43,14 +43,14 @@ look [op:direction]
 Look around.  If [direction] is excluded, then you will look at your current room.  If [direction] is included, you will look in that direction.
         """
 
-    def execute(self, player, arguments):
+    def execute(self, time, player, arguments):
         if player.character.position == player.character.POSITION_SLEEPING:
             player.write("You can't see in your sleep.")
             return
 
         if arguments and arguments in self.DIRECTIONS:
             if arguments in player.character.room.exits:
-                player.write(player.character.room.exits[arguments].room_to.describe(player), wrap=False)
+                player.write(player.character.room.exits[arguments].room_to.describe(time, player), wrap=False)
             else:
                 player.write("Nothing there.")
         else:
@@ -70,22 +70,22 @@ examine [op:object]
 Get detailed information about a room or object.  If [object] is excluded, the room will be described.  Otherwise [object] will be examined.
         """
 
-    def execute(self, player, arguments):
+    def execute(self, time, player, arguments):
         if player.character.position == player.character.POSITION_SLEEPING:
             player.write("You can't examine anything in your sleep.")
             return
 
         if not arguments:
             proxy = Look(self.store)
-            return proxy.execute(player, arguments)
+            return proxy.execute(time, player, arguments)
 
         if arguments in Look.DIRECTIONS:
             proxy = Look(self.store)
-            return proxy.execute(player, arguments)
+            return proxy.execute(time, player, arguments)
 
         item = self.library.item.findItemByKeywords(player.character.inventory, arguments)
         if item:
-            player.write(item.detail())
+            player.write(item.detail(time))
             return
 
         for occupant in player.character.room.occupants:
@@ -95,7 +95,7 @@ Get detailed information about a room or object.  If [object] is excluded, the r
 
         item = self.library.item.findItemByKeywords(player.character.room.items, arguments)
         if item:
-            player.write(item.detail())
+            player.write(item.detail(time))
             return
 
         player.write("There doesn't seem to be a " + arguments + " to examine.")
@@ -114,7 +114,7 @@ inventory
 List the current contents of your inventory.
         """
 
-    def execute(self, player, arguments):
+    def execute(self, time, player, arguments):
         if player.character.position == player.character.POSITION_SLEEPING:
             player.write("You can't check your inventory in your sleep.")
             return
@@ -122,7 +122,7 @@ List the current contents of your inventory.
         player.write("You are carrying:\n")
         if player.character.inventory:
             for item in player.character.inventory:
-                player.write(item.description)
+                player.write(item.describe(time))
         else:
             player.write("Nothing.")
 
@@ -140,7 +140,7 @@ equipment
 List the equipment you are currently wearing, carrying, and wielding.
         """
 
-    def execute(self, player, arguments):
+    def execute(self, time, player, arguments):
         if player.character.position == player.character.POSITION_SLEEPING:
             player.write("You can't check your equipment in your sleep.")
             return
@@ -149,7 +149,7 @@ List the equipment you are currently wearing, carrying, and wielding.
         player.write("You are wearing: ")
         if (equipment):
             for location in equipment:
-                player.write("%s on your %s" % (equipment[location].description, location))
+                player.write("%s on your %s" % (equipment[location].describe(time), location))
         else:
             player.write("Nothing.")
 

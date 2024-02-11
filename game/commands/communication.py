@@ -18,7 +18,7 @@ say [text]
 Your character will say `[text]` outloud so that everyone in the vicinity (your current room) can hear it.
         """
 
-    def execute(self, player, arguments):
+    def execute(self, time, player, arguments):
         "See Command.execute()"
 
         if player.character.position == player.character.POSITION_SLEEPING:

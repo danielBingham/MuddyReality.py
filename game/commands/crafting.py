@@ -16,7 +16,7 @@ craft [target] with [op:tool], [op:material], [op:material], [op:etc...]
 Attempt to craft a material or tool with materials or tools.  If the [target] can be crafted with the listed [materials] and [tools] and  all materials and tools are in the character's inventory, then a new [target] will be created.  Materials will be used up to create the [target], but tools will remain in the character's inventory.
         """
 
-    def execute(self, player, arguments):
+    def execute(self, time, player, arguments):
         if player.character.position == player.character.POSITION_SLEEPING:
             player.write("You can't craft in your sleep.")
             return
@@ -179,7 +179,7 @@ Harvest materials from an object in your environment.  The object can be either 
                                       "%s %s from %s." %
                                       (player.character.name, harvest.action, item.description))
 
-    def execute(self, player, arguments):
+    def execute(self, time, player, arguments):
         if player.character.position == player.character.POSITION_SLEEPING:
             player.write("You can't harvest in your sleep.")
             return

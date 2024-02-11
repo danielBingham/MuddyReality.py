@@ -15,7 +15,7 @@ eat [item]
 Attempt to eat an item described by [item] as food.
         """
 
-    def execute(self, player, arguments):
+    def execute(self, time, player, arguments):
         if player.character.position == player.character.POSITION_SLEEPING:
             player.write("You can't eat in your sleep.")
             return
@@ -43,7 +43,7 @@ class Drink(Command):
     def help(self):
         return ""
 
-    def execute(self, player, arguments):
+    def execute(self, time, player, arguments):
         if player.character.position == Character.POSITION_SLEEPING:
             player.write("You can't drink while you're asleep.")
             return
@@ -72,7 +72,7 @@ rest
 Your character sits down to rest.
         """
 
-    def execute(self, player, arguments):
+    def execute(self, time, player, arguments):
         if player.character.position == Character.POSITION_SLEEPING:
             player.write("You can't rest while you're asleep.")
             return
@@ -99,7 +99,7 @@ sleep
 Will put your character to sleep.  You will awaken once refreshed.
         """
 
-    def execute(self, player, arguments):
+    def execute(self, time, player, arguments):
         if player.character.position == Character.POSITION_SLEEPING:
             player.write("You are already asleep.")
             return
@@ -128,7 +128,7 @@ wake
 You will attempt to wake up before fully refreshed.
         """
 
-    def execute(self, player, arguments):
+    def execute(self, time, player, arguments):
         if player.character.position != Character.POSITION_SLEEPING:
             player.write("You are already awake.")
             return

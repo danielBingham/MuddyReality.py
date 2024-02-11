@@ -86,7 +86,7 @@ class Room(Model):
     def getColorReset(self):
         return "\033[0m"
 
-    def describe(self, player):
+    def describe(self, time, player):
         output = ""
 
         if self.color:
@@ -105,9 +105,9 @@ class Room(Model):
 
         for item in self.items:
             if item.groundAction():
-                output += "%s is %s here.\n" % ((item.description[0].title() + item.description[1:]), item.groundAction())
+                output += "%s is %s here.\n" % (item.describe(time), item.groundAction())
             else:
-                output += "%s is here.\n" % (item.description[0].title() + item.description[1:])
+                output += "%s is here.\n" % (item.describe(time))
 
         output += "---\n"
         output += "Exits: "

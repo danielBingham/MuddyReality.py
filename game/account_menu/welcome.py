@@ -19,7 +19,7 @@ If this is your first time, you'll need to create an account by typing "new".
         player.write(self.WELCOME_SCREEN)
         player.setPrompt("Account Name: ")
 
-    def execute(self, player, input):
+    def execute(self, time, player, input):
         "See State::execute()"
 
         if input == "new":
@@ -44,7 +44,7 @@ class GetAccountPassword(State):
         player.write("Please enter the password for the account '" + player.account.name + "'.")
         player.setPrompt("Password: ")
 
-    def execute(self, player, input):
+    def execute(self, time, player, input):
         if player.account.isPassword(input):
             return "account-menu" 
         else:

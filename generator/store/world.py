@@ -10,8 +10,6 @@ class World:
         self.width = width
         self.room_width = room_width
 
-        self.initial_water = 0
-
         self.terrain = np.array([]) 
         self.heights = []
         self.water = np.array([]) 
@@ -24,7 +22,6 @@ class World:
         json['name'] = self.name
         json['width'] = self.width
         json['roomWidth'] = self.room_width
-        json['initialWater'] = self.initial_water
 
         json['terrain'] = self.terrain.tolist()
         json['heights'] = self.heights
@@ -38,7 +35,6 @@ class World:
         self.name = json['name']
         self.width = json['width']
         self.room_width = json['roomWidth']
-        self.initial_water = json['initialWater']
 
         self.terrain = np.array(json['terrain'])
         self.heights = json['heights']

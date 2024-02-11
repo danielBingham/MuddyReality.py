@@ -4,10 +4,21 @@ import imageio
 import generator.utils.util as util
 import generator.utils.snapshot as snapshot
 
-class DandrioWater:
+
+class DandrinoWater:
+    """
+    Borrowed from: https://github.com/dandrino/terrain-erosion-3-ways/blob/master/util.py
+    Semi-phisically-based hydraulic erosion simulation. Code is inspired by the 
+    code found here:
+      http://ranmantaru.com/blog/2011/10/08/water-erosion-on-heightmap-terrain/
+    With some theoretical inspiration from here:
+       https://hal.inria.fr/inria-00402079/document
+    """
 
     def __init__(self, world, arguments):
         self.world = world
+
+        self.flat_terrain = arguments.water__flat_terrain
 
         self.take_snapshot = False
         if arguments.water__snapshot:
@@ -41,8 +52,9 @@ class DandrioWater:
 
         print("Generating water using dandrio's algorithm...")
 
-        # terrain = world.terrain
-        terrain = np.zeros_like(self.world.terrain)
+        terrain = self.world.terrain
+        if self.flat_terrain:
+            terrain = np.zeros_like(self.world.terrain)
 
         # The amount of water. Responsible for carrying sediment.
         water = np.zeros_like(terrain)

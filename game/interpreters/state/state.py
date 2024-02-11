@@ -33,7 +33,7 @@ class State:
 
         pass
 
-    def execute(self, player, input):
+    def execute(self, player, input, time):
         """
         Execute the behavior defined for the current state with the given `input`.
 

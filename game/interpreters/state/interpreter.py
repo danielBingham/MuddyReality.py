@@ -41,10 +41,10 @@ class StateInterpreter:
         void
         """
 
-        state = self.states.get(player.current_account_state)
+        state = self.states[player.current_account_state]
         state.introduce(player)
 
-    def interpret(self, player, input):
+    def interpret(self, time, player, input):
         """
         Execute the state assigned to `player` with `input`.
 
@@ -60,6 +60,6 @@ class StateInterpreter:
         void
         """
 
-        state = self.states.get(player.current_account_state)
-        player.setAccountState(state.execute(player, input))
+        state = self.states[player.current_account_state]
+        player.setAccountState(state.execute(time, player, input))
 

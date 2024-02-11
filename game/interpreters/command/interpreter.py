@@ -45,7 +45,7 @@ class CommandInterpreter:
                 return self.commands[command]
         return None
 
-    def interpret(self, player, input):
+    def interpret(self, time, player, input):
         """
         Interpret a player's input, finding the matching command argument and
         then executing it with any remaining arguments.
@@ -78,7 +78,7 @@ class CommandInterpreter:
 
         command_object = self.findCommand(command)
         if command_object:
-            command_object.execute(player, arguments)
+            command_object.execute(time, player, arguments)
         else:
             player.write("I don't think you can do that...")
 

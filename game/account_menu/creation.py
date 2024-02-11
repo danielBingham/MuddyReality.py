@@ -10,7 +10,7 @@ class CreateNewAccount(State):
 
         player.setPrompt("Enter New Account Name: ")
 
-    def execute(self, player, input):
+    def execute(self, time, player, input):
         "See State::execute()"
 
         if self.store.accounts.hasId(input):

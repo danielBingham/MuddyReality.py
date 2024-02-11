@@ -13,7 +13,7 @@ quit
 Your character will leave the game and you will return to the account menu where you can quit or play another character.
         """
 
-    def execute(self, player, arguments):
+    def execute(self, time, player, arguments):
         self.store.saveCharacter(player.character)
 
         player.write('You leave the game.')
@@ -43,7 +43,7 @@ help [op:topic]
 Get help about a topic.  `[topic]` is optional.  If it is left off, help will list all available commands in the game with a short description of them.
         """
 
-    def execute(self, player, arguments):
+    def execute(self, time, player, arguments):
         if not arguments:
             for command in self.commands:
                 description = self.commands[command].describe()

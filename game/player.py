@@ -131,7 +131,7 @@ class Player:
             self.last_account_state = self.current_account_state
             self.current_account_state = None
 
-    def interpret(self):
+    def interpret(self, time):
         """
         Interpret the player's input, using the interpreter appropriate to the
         player's current status.
@@ -160,9 +160,9 @@ class Player:
             # prompt.
             if input:
                 if self.status == self.STATUS_ACCOUNT:
-                    self.account_interpreter.interpret(self, input)
+                    self.account_interpreter.interpret(time, self, input)
                 elif self.status == self.STATUS_GAME:
-                    self.game_interpreter.interpret(self, input)
+                    self.game_interpreter.interpret(time, self, input)
                 else:
                     raise RuntimeError("Player status %s is invalid." % self.status)
 

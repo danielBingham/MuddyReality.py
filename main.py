@@ -25,6 +25,7 @@ import game.commands.reserves as reserves
 import game.commands.system as system
 
 from game.heartbeat import Heartbeat
+from game.heartbeat import Time
 
 
 def gameLoop(serverSocket, library, store, account_interpreter, game_interpreter):
@@ -51,21 +52,21 @@ def gameLoop(serverSocket, library, store, account_interpreter, game_interpreter
     void
     """
 
-    # Number of loops we've run.  Reset once it hits a certain value.  Used to
-    # determine how often to perform certain tasks.
-    loop_counter = 0
-
     # Number of loops we want to perform each second. 
     loops_a_second = 10
 
     # The length of a single loop in milliseconds.
     loop_length = 1000/loops_a_second
 
-    heartbeat = Heartbeat(store, library, loops_a_second)
+    time = Time(loops_a_second)
+
+    heartbeat = Heartbeat(store, library)
 
     # The Game Loop
     while serverSocket.isOpen:
         start_time = time.time()*1000
+
+        time.tick() 
 
         # Poll for input and output ready clients and then handle the
         # communication.  Also accept new clients.
@@ -88,15 +89,9 @@ def gameLoop(serverSocket, library, store, account_interpreter, game_interpreter
 
         # Handle New Input
         for player in store.players:
-            player.interpret()
+            player.interpret(time)
 
-        # Reset the loop counter at a value well below max int.  We only need
-        # it to continue to increment, it doesn't matter what the value is.
-        loop_counter = loop_counter + 1
-        if loop_counter == 100000*loops_a_second:
-            loop_counter = 0
-
-        heartbeat.heartbeat(loop_counter)
+        heartbeat.heartbeat(time)
 
         # Write prompts at the end of the loop if any reading or writing has
         # been done.
@@ -108,9 +103,19 @@ def gameLoop(serverSocket, library, store, account_interpreter, game_interpreter
         # than we want to.  If we're going too slow, then we'll just have to
         # keep going and hope we catch up.
         end_time = time.time()*1000
-        if end_time - start_time < loop_length:
-            sleep_time = loop_length - (end_time - start_time)
-            time.sleep(sleep_time/1000)
+        loop_time = end_time - start_time
+        if loop_time < loop_length:
+            sleep_time = loop_length - loop_time - overrun
+            if sleep_time > 0:
+                time.sleep(sleep_time/1000)
+        elif loop_time > loop_length:
+            overrun = loop_time - loop_length 
+
+        # Reset overrun.
+        if loop_time <= loop_length:
+            overrun = 0
+
+
 
 
 def main():

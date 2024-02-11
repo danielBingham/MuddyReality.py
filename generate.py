@@ -48,8 +48,8 @@ class Generator:
         """
 
         self.store.initializeWorld(arguments.name, int(arguments.width), int(arguments.room_width))
+        self.world = self.store.world
 
-        self.store.world.initial_water = int(arguments.initial_water)
         self.arguments = arguments
 
         # Which stages should we generate?  If no specific stage is specified,
@@ -68,10 +68,10 @@ class Generator:
 
         # Should we regenerate any stages? If we regenerate all, then we set
         # them all to to regenerate.
-        self.regenerate_all = arguments.regnerate_all
+        self.regenerate_all = arguments.regenerate_all
         self.regenerate_heights = arguments.regenerate_all or arguments.regenerate_heights
         self.regenerate_water = arguments.regenerate_all or arguments.regenerate_water
-        self.regenerate_biomes = arguments.regenreate_all or arguments.regenerate_biomes
+        self.regenerate_biomes = arguments.regenerate_all or arguments.regenerate_biomes
         self.regenerate_rooms = arguments.regenerate_all or arguments.regenerate_rooms
 
         if int(arguments.width) != self.world.width or int(arguments.room_width) != self.world.room_width:
@@ -87,8 +87,11 @@ class Generator:
 
     def generate(self):
         '''
-        Generate the self.world.
+        Generate the world.
         ''' 
+
+        print("Generating world %s, width [%d, %d] totaling %d rooms of size %d meters by %d meters" \
+              % (self.world.name, self.world.width, self.world.width, self.world.width * self.world.width, self.world.room_width, self.world.room_width))
 
         if self.generate_heights and (self.world.terrain.size == 0 or self.regenerate_heights): 
             generateTerrain(self.world)
@@ -165,17 +168,12 @@ def main():
     parser.add_argument('--water-algorithm', default='inria', dest='water__algorithm', help='Choose the algorithm that will be used to generate water.')
     parser.add_argument('--water-debug', dest="water__debug", action="store_true", help="Turn on debugging output for the water algorith.")
     parser.add_argument("--water-snapshot", dest="water__snapshot", action="store_true", help="Turn on snapshotting for the water algorithm.  This will take an image snapshot of the water at the end of each iteration and then construct an animation of them showing the full water flow for the duration of the simulation at the end.  Images will be stored in the `snaps/` directory.")
-
-                        
-
+    parser.add_argument("--water-flat-terrain", dest="water__flat_terrain", action="store_true", help="Run the water simulation on a flat terrain instead of the terrain generated in the previous step.")
 
     arguments = parser.parse_args()
 
     generator = Generator()
     generator.initialize(arguments)
-
-
-    print("Generating world %s, width [%d, %d] totaling %d rooms of size %d meters by %d meters" % (generator.world.name, generator.world.width, generator.world.width, generator.world.width * generator.world.width, generator.world.room_width, generator.world.room_width))
     generator.generate()
 
 if __name__ == '__main__':

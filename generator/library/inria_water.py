@@ -7,7 +7,7 @@
 #
 ###############################################################################
 
-import math
+import math, random
 import numpy as np
 import imageio
 
@@ -33,6 +33,10 @@ class InriaWater:
         if arguments.water__snapshot:
             self.take_snapshot = True
 
+        self.flat_terrain = False
+        if arguments.water__flat_terrain:
+            self.flat_terrain = True 
+
         # Grid dimension constants
         self.dim = self.world.width 
         self.cell_width = self.world.room_width 
@@ -49,6 +53,11 @@ class InriaWater:
 
         # The total time to simulate in seconds.
         self.simulation_time = 3 * self.SECONDS_PER_YEAR 
+
+
+        # The initial amount of water to spread over the world, measured in
+        # meters (the height of water at any particular point on the map).
+        self.initial_water = arguments.water__initial_amount
 
         # The rate at which water height increases due to rain, measured in meters/s. 
         #
@@ -73,12 +82,14 @@ class InriaWater:
         print("Generating water using inria algorithm...")
 
         terrain = np.array(self.world.terrain) * 2000
+        if self.flat_terrain:
+            terrain = np.zeros_like(terrain)
 
         # The water height in meters.  Represents the height of water on any
         # individual point on the map, equivalent to the value used to measure rain
         # accumulation.  Note: This is in meters, not meters^3.  This represents
         # water height, not water volume.
-        water = np.ones_like(terrain) * self.world.initial_water 
+        water = np.ones_like(terrain) * self.initial_water 
 
         start_water = np.sum(water)
 
@@ -114,7 +125,7 @@ class InriaWater:
 
             if iteration < iterations:
                 # Add water through precipitation. 
-                water += self.rain_per_iteration
+                water += self.rain_per_iteration * np.random.rand(*np.shape(water))
 
             if self.debug:
                 print("\n\nWater: ")
@@ -220,14 +231,14 @@ class InriaWater:
             # TODO Add an increasing energy loss term to force water to settle once
             # it fills a depression.  With the current algorithm, it will slosh
             # around indefinitely.
-            flux_north = scaling_factor * flux_north / 2
-            flux_north_east = scaling_factor * flux_north_east / 2
-            flux_east = scaling_factor * flux_east / 2
-            flux_south_east = scaling_factor * flux_south_east / 2
-            flux_south = scaling_factor * flux_south / 2
-            flux_south_west = scaling_factor * flux_south_west / 2
-            flux_west = scaling_factor * flux_west / 2
-            flux_north_west = scaling_factor * flux_north_west / 2
+            flux_north = scaling_factor * flux_north #/ 2
+            flux_north_east = scaling_factor * flux_north_east #/ 2
+            flux_east = scaling_factor * flux_east #/ 2
+            flux_south_east = scaling_factor * flux_south_east #/ 2
+            flux_south = scaling_factor * flux_south #/ 2
+            flux_south_west = scaling_factor * flux_south_west #/ 2
+            flux_west = scaling_factor * flux_west #/ 2
+            flux_north_west = scaling_factor * flux_north_west #/ 2
 
             # Create the water delta by subtracting the flux out and then adding the flux in.
 

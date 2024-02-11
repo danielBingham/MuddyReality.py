@@ -374,12 +374,14 @@ class Item(NamedModel):
 
         # The short description of the item.  Displayed when the item is looked at.
         self.description = ''
+        self.season_description = None 
 
         # The long description of the item.  Displayed when the item is examined closely.
         self.details = ''
+        self.season_details = None 
 
         # The list of keywords that may be used to reference the item in commands.
-        self.keywords = [] 
+        self.keywords = '' 
 
         self.length = 0 # size in meters 
         self.width = 0 # size in meters 
@@ -397,13 +399,22 @@ class Item(NamedModel):
         # items to give it a variety of uses and features.
         self.traits = {} 
 
-    def detail(self):
+    def describe(self, time):
+        output = self.description
+        if self.season_description:
+            output += self.season_description[time.season]
+        return output
+
+    def detail(self, time):
         output = self.details
+        if self.season_details:
+            output += " " + self.season_details[time.season]
         if "Harvestable" in self.traits:
-            if self.traits["Harvestable"].harvested:
-                output += " " + self.traits["Harvestable"].post_description
-            else:
-                output += " " + self.traits["Harvestable"].pre_description
+            if not self.traits["Harvestable"].harvestTime or time.MONTH_NAME[time.month] in self.traits["Harvestable"].harvestTime:
+                if self.traits["Harvestable"].harvested:
+                    output += " " + self.traits["Harvestable"].post_description
+                else:
+                    output += " " + self.traits["Harvestable"].pre_description
         return output 
 
     def groundAction(self):
@@ -420,7 +431,13 @@ class Item(NamedModel):
 
         json['name'] = self.name
         json['description'] = self.description
+        if self.season_description:
+            json['seasonDescription'] = self.season_description
+
         json['details'] = self.details
+        if self.season_details:
+            json['seasonDetails'] = self.season_details
+            
         json['keywords'] = self.keywords
 
         json['length'] = self.length
@@ -442,7 +459,13 @@ class Item(NamedModel):
         self.setId(data['name'])
 
         self.description = data['description']
+        if data['seasonDescription']:
+            self.season_description = data['seasonDescription']
+
         self.details = data['details']
+        if data['seasonDetails']:
+            self.season_details = data['seasonDetails']
+
         self.keywords = data['keywords']
 
         self.length = data['length']

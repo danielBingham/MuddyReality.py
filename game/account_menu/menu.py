@@ -28,7 +28,7 @@ quit                - Leave the game.
         player.setPrompt("> ")
         player.write(self.ACCOUNT_MENU, wrap=False)
 
-    def execute(self, player, input):
+    def execute(self, time, player, input):
         "See State::execute()"
 
         try:

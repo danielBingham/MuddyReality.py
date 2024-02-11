@@ -1,7 +1,19 @@
 {
     "name": "downy serviceberry tree",
-    "description": "a small tree with smooth, furrowed gray bark and ovate leaves with pointed tips",
-    "details": "A small tree grows here.  It has smooth, furrowed gray bark.  The leaves are ovate with pointed tips and finely serrated margins.",
+    "description": "a small tree with smooth, furrowed gray bark",
+    "seasonDescription": {
+        "winter": "and slender buds pointed at the tip",
+        "spring": ", ovate leaves with pointed tips and downy undersides, and white flowers",
+        "summer": "and ovate leaves with pointed tips",
+        "fall": "and ovate, orangish-yellow leaves with pointed tips"
+    },
+    "details": "A small tree grows here.  It has smooth, furrowed gray bark.",
+    "seasonDetails": {
+        "winter": "The twigs end in slender buds that are pointed at the tip with more than two scales.",
+        "spring": "The young, green leaves are ovate wite pointed tips, finely serrated margins, and downy undersides. It has perfect, white flowers with five petals.  The flowers are bunched in pendulous racemes of four to ten.",
+        "summer": "The green leaves are ovate with pointed tips and finely serrated margins.",
+        "fall": "The orangish-yellow leaves are ovate with pointed tips and finely serrated margins."
+    },
     "keywords": "small tree smooth furrowed gray bark ovate leaves pointed tips",
     "length": 6,
     "width": 6,
@@ -17,6 +29,7 @@
                     "amount": 2
                 }
             ],
+            "harvestTime": [ "June", "July", "August" ],
             "preDescription": "The tree is covered with small, dark blue berries.",
             "postDescription": "The tree has been picked clean of berries.",
             "consumed": false,
