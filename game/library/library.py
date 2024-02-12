@@ -1,6 +1,7 @@
 from game.library.item import ItemLibrary
 from game.library.character import CharacterLibrary
 from game.library.room import RoomLibrary
+from game.library.world import WorldLibrary
 
 from game.library.movement import MovementLibrary
 
@@ -15,6 +16,7 @@ class Library:
         self.character = CharacterLibrary(self, store)
         self.item = ItemLibrary(self, store) 
         self.room = RoomLibrary(self, store)
+        self.world = WorldLibrary(self, store)
 
         # System libraries.  Libraries that contain beheavior related to one
         # of the game's systems.

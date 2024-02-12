@@ -26,6 +26,10 @@ Attempt to eat an item described by [item] as food.
 
         item = self.library.item.findItemByKeywords(player.character.inventory, arguments)
         if item and "Food" in item.traits:
+            if item.traits["Food"].calories + player.character.reserves.calories >= player.character.reserves.max_calories:
+                player.write("You're too full to eat %s!" % self.library.item.describe(item))
+                return
+
             player.character.inventory.remove(item)
             player.character.reserves.calories += item.traits["Food"].calories
             player.write("You eat " + item.description + ".")
@@ -49,6 +53,10 @@ class Drink(Command):
             return
 
         if player.character.room.water_type == player.character.room.WATER_FRESH:
+            if player.character.reserves.thirst + 500 >= player.character.reserves.max_thirst:
+                player.write("You're too bloated to drink more.")
+                return 
+
             player.character.reserves.thirst += 500
 
             player.write("You drink from the fresh water.")

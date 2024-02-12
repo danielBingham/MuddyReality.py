@@ -1,11 +1,11 @@
 {
     "name": "downy serviceberry sapling",
-    "description": "a sapling with smooth gray bark and ovate leaves with pointed tips",
+    "description": "a sapling with smooth gray bark",
     "seasonDescription": {
-        "winter": "and slender buds pointed at the tip",
-        "spring": ", ovate leaves with pointed tips and downy undersides, and white flowers",
-        "summer": "and ovate leaves with pointed tips",
-        "fall": "and ovate, orangish-yellow leaves with pointed tips"
+        "winter": " and slender buds with pointed tips",
+        "spring": ", ovate leaves with pointed tips and downy undersides",
+        "summer": " and ovate leaves with pointed tips",
+        "fall": " and ovate, orange-yellow leaves with pointed tips"
     },
     "details": "A small sapling grows here. It has smooth gray bark.",
     "seasonDetails": {

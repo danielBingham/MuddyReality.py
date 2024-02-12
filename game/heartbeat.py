@@ -5,7 +5,7 @@ class Heartbeat:
         self.library = library
 
 
-    def heartbeat(self, time):
+    def heartbeat(self):
         """
         A method called on every loop that can be used for actions that need to
         take place every so many loops.  Used to control autonomous timing in
@@ -21,6 +21,8 @@ class Heartbeat:
         -------
         void
         """
+
+        time = self.store.world.time
 
         # Save characters once per game hour, real life minute.
         if time.loop % time.loops_an_hour == 0:
@@ -92,7 +94,6 @@ class Heartbeat:
                 self.library.character.adjustWind(character, 5)
                 self.library.character.adjustEnergy(character, 100)
 
-
     def calculateSleep(self):
         """
         Do sleep calculations. 
@@ -125,4 +126,6 @@ class Heartbeat:
             # If they're asleep they recover.
             elif character.position == character.POSITION_SLEEPING:
                 self.library.character.adjustSleep(character, 2)
+
+                # It takes two full nights of sleep to recover all of your energy.
                 self.library.character.adjustEnergy(character, 625)

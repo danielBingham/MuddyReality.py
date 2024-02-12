@@ -142,10 +142,12 @@ class Material(JsonSerializable):
         return self.fromJson(data)
 
     def toJson(self):
-        return self.__dict__
+        data = {}
+        data['types'] = self.types
+        return data
 
     def fromJson(self, data):
-        self.__dict__ = data
+        self.types = data['types']
         return self
 
 
@@ -154,7 +156,7 @@ class Tool(JsonSerializable):
 
     def __init__(self):
         # The an array of types this tool fulfills. 
-        self.types = [] 
+        self.type = [] 
 
     def toPrototypeJson(self):
         return self.toJson()
@@ -163,10 +165,12 @@ class Tool(JsonSerializable):
         return self.fromJson(data)
 
     def toJson(self):
-        return self.__dict__
+        data = {}
+        data['type'] = self.type
+        return data
 
     def fromJson(self, data):
-        self.__dict__ = data
+        self.type = data['type']
         return self
 
 
@@ -199,10 +203,20 @@ class RequiredMaterial(JsonSerializable):
         return self.fromJson(data)
 
     def toJson(self):
-        return self.__dict__
+        data = {}
+        data['type'] = self.type
+        data['weight'] = self.weight
+        data['length'] = self.length
+        data['width'] = self.width
+        data['height'] = self.height
+        return data
 
     def fromJson(self, data):
-        self.__dict__ = data
+        self.type = data['type']
+        self.weight = data['weight']
+        self.length = data['length']
+        self.width = data['width']
+        self.height = data['height']
         return self
 
 
@@ -377,8 +391,8 @@ class Container(JsonSerializable):
 class Item(NamedModel):
     'Represents an item in a game.'
 
-    def __init__(self, time):
-        super(Item, self).__init__(time)
+    def __init__(self):
+        super(Item, self).__init__()
 
         # The short description of the item.  Displayed when the item is looked at.
         self.description = ''
@@ -406,33 +420,6 @@ class Item(NamedModel):
         # The traits of this item.  Various traits may be composed on to each
         # items to give it a variety of uses and features.
         self.traits = {} 
-
-    def describe(self):
-        output = self.description
-        if self.season_description:
-            output += self.season_description[self.time.season]
-        return output
-
-    def detail(self):
-        output = self.details
-        if self.season_details and self.time.season in self.season_details:
-            output += " " + self.season_details[self.time.season]
-        if "Harvestable" in self.traits:
-            if not self.traits["Harvestable"].harvest_time or self.time.MONTH_NAME[self.time.month] in self.traits["Harvestable"].harvest_time:
-                if self.traits["Harvestable"].harvested:
-                    output += " " + self.traits["Harvestable"].post_description
-                else:
-                    output += " " + self.traits["Harvestable"].pre_description
-        return output 
-
-    def groundAction(self):
-        if self.can_pick_up:
-            return "laying"
-        if self.is_growing:
-            return "growing"
-        if self.is_embedded:
-            return "embedded"
-        return None 
 
     def toJson(self):
         json = {}

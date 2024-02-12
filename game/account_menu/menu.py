@@ -67,7 +67,7 @@ quit                - Leave the game.
                     self.library.movement.enter(player.character, player.character.room)
 
                 player.write("Welcome back, %s!" % player.character.name.title())
-                player.write(player.character.room.describe(player), wrap=False)
+                player.write(self.library.room.describe(player.character.room, player), wrap=False)
                 return None
 
             player.write("You don't seem to have a character by that name.")

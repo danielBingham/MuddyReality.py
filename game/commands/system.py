@@ -29,8 +29,8 @@ Your character will leave the game and you will return to the account menu where
 class Help(Command):
     'List help contents.'
 
-    def __init__(self, commands, time, library, store):
-        super(Help, self).__init__(time, library, store)
+    def __init__(self, commands, library, store):
+        super(Help, self).__init__(library, store)
         self.commands = commands
 
     def describe(self):

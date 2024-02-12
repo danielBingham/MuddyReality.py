@@ -37,7 +37,7 @@ class ModelRepository:
 
     """
 
-    def __init__(self, store, world_time, type):
+    def __init__(self, store, type):
         """Initialize the ModelRepository.
 
         Initializes the ModelRepository with its parent store and with the
@@ -52,8 +52,6 @@ class ModelRepository:
         type: Class 
            The class of Model that this repository will manage. 
         """
-
-        self.time = world_time
 
         self.store = store
         self.type = type
@@ -94,7 +92,7 @@ class ModelRepository:
         if not id.isdigit():
             id = str(id).lower()
 
-        model = self.type(self.time)
+        model = self.type()
         model.setId(id)
         self.add(model)
         return model 
@@ -109,7 +107,7 @@ class ModelRepository:
             The filepath to the json data we want to load this model.
         """
 
-        model = self.type(self.time)
+        model = self.type()
         model.load(path)
         self.add(model)
         return model
@@ -181,7 +179,7 @@ class PrototypeRepository(ModelRepository):
 
         if self.hasId(id):
             model = self.getById(id)
-            instance = self.type(self.time)
+            instance = self.type()
             instance.fromJson(model.toJson())
             return instance
         else:
@@ -210,7 +208,7 @@ class Store:
         A ModelPrototypeRepository of all the Items that can exist in the game.
     """
 
-    def __init__(self, world_time, world='base', data_directory='data/'):
+    def __init__(self, world='base', data_directory='data/'):
         """
         Initialize the Store.
 
@@ -226,18 +224,16 @@ class Store:
         data_directory: string
             The path to the data directory.
         """
-        self.time = world_time
-
         self.data_directory = 'data/'
         self.world = world
 
         self.players = []
 
-        self.accounts = ModelRepository(self, self.time, Account) 
-        self.characters = ModelRepository(self, self.time, PlayerCharacter)
-        self.rooms = ModelRepository(self, self.time, Room) 
-        self.npcs = PrototypeRepository(self, self.time, Character) 
-        self.items = PrototypeRepository(self, self.time, Item) 
+        self.accounts = ModelRepository(self, Account) 
+        self.characters = ModelRepository(self, PlayerCharacter)
+        self.rooms = ModelRepository(self, Room) 
+        self.npcs = PrototypeRepository(self, Character) 
+        self.items = PrototypeRepository(self, Item) 
 
     def saveCharacter(self, character):
         """
@@ -277,7 +273,7 @@ class Store:
         world_name = self.world
         world_path = os.path.join(self.data_directory, 'worlds', world_name, 'world.json')
         print("Loading the world from %s..." % world_path)
-        self.world = World(self.time) 
+        self.world = World() 
         self.world.load(world_path)
 
         item_path = os.path.join(self.data_directory, 'items/')

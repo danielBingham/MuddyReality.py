@@ -6,8 +6,8 @@ from game.store.models.base import NamedModel
 class Account(NamedModel):
     'Represents the account of a player, organizing their characters.'
 
-    def __init__(self, time):
-        super(Account, self).__init__(time)
+    def __init__(self):
+        super(Account, self).__init__()
 
         self.password_hash = ''
 

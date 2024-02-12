@@ -1,7 +1,7 @@
 class State:
     "A base class for States used with the StateInterpreter."
 
-    def __init__(self, time, library, store):
+    def __init__(self, library, store):
         """
         Initialize the state.
 
@@ -13,7 +13,6 @@ class State:
             The game store.
         """
 
-        self.time = time
         self.library = library
         self.store = store
 

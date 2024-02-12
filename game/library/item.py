@@ -7,6 +7,35 @@ class ItemLibrary:
         self.library = library
         self.store = store
 
+    def describe(self, item):
+        output = item.description
+        if item.season_description:
+            output += item.season_description[self.store.world.time.season]
+        return output
+
+    def detail(self, item):
+        time = self.store.world.time
+
+        output = item.details
+        if item.season_details and time.season in item.season_details:
+            output += " " + item.season_details[time.season]
+        if "Harvestable" in item.traits:
+            if not item.traits["Harvestable"].harvest_time or time.MONTH_NAME[time.month] in item.traits["Harvestable"].harvest_time:
+                if item.traits["Harvestable"].harvested:
+                    output += " " + item.traits["Harvestable"].post_description
+                else:
+                    output += " " + item.traits["Harvestable"].pre_description
+        return output 
+
+    def groundAction(self, item):
+        if item.can_pick_up:
+            return "laying"
+        if item.is_growing:
+            return "growing"
+        if item.is_embedded:
+            return "embedded"
+        return None 
+
     def matchKeywords(self, keywords, to_match):
         while True:
             if to_match.startswith(keywords):

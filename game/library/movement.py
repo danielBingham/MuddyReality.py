@@ -41,16 +41,34 @@ class MovementLibrary:
             # of sprinting.
             speed = ""
             if player.character.speed == player.character.SPEED_RUNNING:
+                if player.character.reserves.energy - 100 < 0:
+                    player.write("You're too tired to run any further.")
+                    return False
+                if player.character.reserves.wind - 1 < 0:
+                    player.character("You're too winded to run any further.")
+                    return False
+
                 speed = "run"
-                player.character.reserves.calories -= 4 
-                player.character.reserves.energy -= 100 
-                player.character.reserves.wind -= 1
+                self.library.character.adjustCalories(player.character, -4)
+                self.library.character.adjustEnergy(player.character, -100)
+                self.library.character.adjustWind(player.character, -1)
             elif player.character.speed == player.character.SPEED_SPRINTING:
+                if player.character.reserves.energy - 150 < 0:
+                    player.write("You're too tired to sprint any further.")
+                    return False
+                if player.character.reserves.wind - 3 < 0:
+                    player.character("You're too winded to sprint any further.")
+                    return False
+
                 speed = "sprint"
-                player.character.reserves.calories -= 6 
-                player.character.reserves.energy -= 150 
-                player.character.reserves.wind -= 3
+                self.library.character.adjustCalories(player.charcter, -6)
+                self.library.character.adjustEnergy(player.character, -150)
+                self.library.character.adjustWind(player.character, -3)
             else:
+                if player.character.reserves.energy - 25 < 0:
+                    player.write("You're too tired to walk any further.")
+                    return False
+
                 speed = "walk"
                 player.character.reserves.calories -= 1 
                 player.character.reserves.energy -= 25 
@@ -60,7 +78,7 @@ class MovementLibrary:
             self.leave(player.character, player.character.room, speed=speed, direction=direction)
             self.enter(player.character, room.exits[direction].room_to, speed=speed, direction=direction)
 
-            player.write("\n" + player.character.room.describe(player), wrap=False)
+            player.write("\n" + self.library.room.describe(player.character.room, player), wrap=False)
             return True
         else:
             player.write("You can't got that way.")

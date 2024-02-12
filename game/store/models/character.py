@@ -205,13 +205,30 @@ class Reserves(JsonSerializable):
         data["sleep"] = self.sleep
         data["maxSleep"] = self.max_sleep
 
+        data["wind"] = self.wind
+        data["maxWind"] = self.max_wind
+
+        data["energy"] = self.energy
+        data["maxEnergy"] = self.max_energy
+
         return data
 
     def fromJson(self, data):
 
         self.calories = data["calories"]
+        self.max_calories = data["maxCalories"]
+
         self.thirst = data["thirst"]
+        self.max_thirst = data["maxThirst"]
+
         self.sleep = data["sleep"]
+        self.max_sleep = data["maxSleep"]
+
+        self.energy = data["energy"]
+        self.max_energy = data["maxEnergy"]
+
+        self.wind = data["wind"]
+        self.max_wind = data["maxWind"]
 
         return self
 
@@ -420,8 +437,8 @@ class Character(NamedModel):
 
     POSITION_DEAD = 'dead'
 
-    def __init__(self, time):
-        super(Character, self).__init__(time)
+    def __init__(self):
+        super(Character, self).__init__()
 
         self.is_player_character = False
 
@@ -522,8 +539,8 @@ class Character(NamedModel):
 
 class PlayerCharacter(Character):
 
-    def __init__(self, time):
-        super(PlayerCharacter, self).__init__(time)
+    def __init__(self):
+        super(PlayerCharacter, self).__init__()
 
         self.is_player_character = True 
 

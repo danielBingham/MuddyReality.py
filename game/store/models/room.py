@@ -1,5 +1,3 @@
-from textwrap import TextWrapper
-
 from game.store.models.base import JsonSerializable
 from game.store.models.base import Model
 
@@ -37,9 +35,6 @@ class Exit(JsonSerializable):
 class Room(Model):
     "A location in the game world."
 
-    # A static text wrapper we use to wrap descriptive text.
-    wrapper = TextWrapper(width=80, replace_whitespace=False, initial_indent='', break_on_hyphens=False)
-
     # A list of possible directions leading out of this room.
     DIRECTIONS = [
         'north',
@@ -64,8 +59,8 @@ class Room(Model):
     WATER_SALT = 'salt'
     WATER_FRESH = 'fresh'
 
-    def __init__(self, time):
-        super(Room, self).__init__(time)
+    def __init__(self):
+        super(Room, self).__init__()
 
         self.title = ''
         self.description = ''
@@ -79,58 +74,6 @@ class Room(Model):
 
         self.occupants = []
         self.items = []
-
-    def getColorString(self):
-        return "\033[38;2;" + str(self.color[0]) + ";" + str(self.color[1]) + ";" + str(self.color[2]) + "m"
-
-    def getColorReset(self):
-        return "\033[0m"
-
-    def describe(self, player):
-        output = ""
-
-        if self.color and not self.time.night:
-            output += self.getColorString()
-        output += self.wrapper.fill(str(self.title)) 
-        if self.color and not self.time.night:
-            output += self.getColorReset() 
-
-        output += "\n"
-
-        if not self.time.night:
-            output += self.wrapper.fill(str(self.description)) + "\n"
-            output += "---\n"
-            for occupant in self.occupants:
-                if occupant != player.character:
-                    output += occupant.name.title() + " is here.\n"
-
-            for item in self.items:
-                if item.groundAction():
-                    output += "%s is %s here.\n" % (item.describe(), item.groundAction())
-                else:
-                    output += "%s is here.\n" % (item.describe())
-
-        output += "---\n"
-        output += "Exits: "
-        for direction in Room.DIRECTIONS:
-            if direction not in self.exits:
-                continue
-
-            if not self.time.night:
-                output += self.exits[direction].room_to.getColorString()
-            if self.exits[direction].is_door:
-                if self.exits[direction].is_open:
-                    output += "(" + direction + ") "
-                else:
-                    output += "[" + direction + "] "
-            else:
-                output += direction + " "
-
-            if not self.time.night:
-                output += self.getColorReset()
-
-        output += "\n"
-        return output
 
     def toJson(self):
         json = {}

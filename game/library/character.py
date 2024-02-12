@@ -36,12 +36,14 @@ class CharacterLibrary:
 
         player = character.player
         if player:
-            player.status = character.player.STATUS_ACCOUNT
-            player.current_account_state = "account-menu"
-
+            player.write("You have died.")
             character.position = character.POSITION_DEAD
+
             player.character = None
             character.player = None
+
+            player.status = player.STATUS_ACCOUNT
+            player.setAccountState("account-menu")
         return self
 
     def adjustSleep(self, character, amount):

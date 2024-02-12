@@ -1,8 +1,14 @@
+from textwrap import TextWrapper
+
 from game.store.models.character import PlayerCharacter
+from game.store.models.room import Room
 
 
 class RoomLibrary:
     "Behavior for acting on and interacting with Rooms."
+
+    # A static text wrapper we use to wrap descriptive text.
+    wrapper = TextWrapper(width=80, replace_whitespace=False, initial_indent='', break_on_hyphens=False)
 
     def __init__(self, library, store):
         """
@@ -18,6 +24,60 @@ class RoomLibrary:
 
         self.store = store
         self.library = library
+
+    def getColorString(self, room):
+        return "\033[38;2;" + str(room.color[0]) + ";" + str(room.color[1]) + ";" + str(room.color[2]) + "m"
+
+    def getColorReset(self):
+        return "\033[0m"
+
+    def describe(self, room, player):
+        time = self.store.world.time
+
+        output = ""
+
+        if room.color and not time.night:
+            output += self.getColorString(room)
+        output += self.wrapper.fill(str(room.title)) 
+        if room.color and not time.night:
+            output += self.getColorReset() 
+
+        output += "\n"
+
+        if not time.night:
+            output += self.wrapper.fill(str(room.description)) + "\n"
+            output += "---\n"
+            for occupant in room.occupants:
+                if occupant != player.character:
+                    output += occupant.name.title() + " is here.\n"
+
+            for item in room.items:
+                if self.library.item.groundAction(item):
+                    output += "%s is %s here.\n" % (self.library.item.describe(item), self.library.item.groundAction(item))
+                else:
+                    output += "%s is here.\n" % (self.library.item.describe(item))
+
+        output += "---\n"
+        output += "Exits: "
+        for direction in Room.DIRECTIONS:
+            if direction not in room.exits:
+                continue
+
+            if not time.night:
+                output += self.getColorString(room.exits[direction].room_to)
+            if room.exits[direction].is_door:
+                if room.exits[direction].is_open:
+                    output += "(" + direction + ") "
+                else:
+                    output += "[" + direction + "] "
+            else:
+                output += direction + " "
+
+            if not time.night:
+                output += self.getColorReset()
+
+        output += "\n"
+        return output
 
     def writeToRoom(self, character, text):
         """

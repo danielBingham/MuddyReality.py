@@ -50,11 +50,12 @@ Look around.  If [direction] is excluded, then you will look at your current roo
 
         if arguments and arguments in self.DIRECTIONS:
             if arguments in player.character.room.exits:
-                player.write(player.character.room.exits[arguments].room_to.describe(player), wrap=False)
+                exit = player.character.room.exits[arguments]
+                player.write(self.library.room.describe(exit.room_to, player), wrap=False)
             else:
                 player.write("Nothing there.")
         else:
-            player.write(player.character.room.describe(player), wrap=False)
+            player.write(self.library.room.describe(player.character.room, player), wrap=False)
 
 
 class Examine(Command):
@@ -85,7 +86,7 @@ Get detailed information about a room or object.  If [object] is excluded, the r
 
         item = self.library.item.findItemByKeywords(player.character.inventory, arguments)
         if item:
-            player.write(item.detail())
+            player.write(self.library.item.detail(item))
             return
 
         for occupant in player.character.room.occupants:
@@ -95,7 +96,7 @@ Get detailed information about a room or object.  If [object] is excluded, the r
 
         item = self.library.item.findItemByKeywords(player.character.room.items, arguments)
         if item:
-            player.write(item.detail())
+            player.write(self.library.item.detail(item))
             return
 
         player.write("There doesn't seem to be a " + arguments + " to examine.")
@@ -122,7 +123,7 @@ List the current contents of your inventory.
         player.write("You are carrying:\n")
         if player.character.inventory:
             for item in player.character.inventory:
-                player.write(item.describe())
+                player.write(self.library.item.describe(item))
         else:
             player.write("Nothing.")
 
@@ -149,7 +150,7 @@ List the equipment you are currently wearing, carrying, and wielding.
         player.write("You are wearing: ")
         if (equipment):
             for location in equipment:
-                player.write("%s on your %s" % (equipment[location].describe(), location))
+                player.write("%s on your %s" % (self.library.item.describe(equipment[location]), location))
         else:
             player.write("Nothing.")
 
@@ -167,23 +168,25 @@ Get information about the date and time.
         """
 
     def execute(self, player, arguments):
+        time = self.store.world.time
+
         ## Time of day based on hour.
-        if self.time.hour <= 6:
+        if time.hour <= 6:
             player.write("It is night.")
-        elif self.time.hour == 7:
+        elif time.hour == 7:
             player.write("It is dawn.")
-        elif self.time.hour > 7 and self.time.hour < 12:
+        elif time.hour > 7 and time.hour < 12:
             player.write("It is morning.")
-        elif self.time.hour == 12:
+        elif time.hour == 12:
             player.write("It is noon.")
-        elif self.time.hour > 12 and self.time.hour < 19:
+        elif time.hour > 12 and time.hour < 19:
             player.write("It is afternoon.")
-        elif self.time.hour == 19:
+        elif time.hour == 19:
             player.write("It is dusk.")
-        elif self.time.hour >= 20:
+        elif time.hour >= 20:
             player.write("It is night.")
 
         ## Seasons based on months
-        player.write("It is %s." % (self.time.SEASON_NAME[self.time.month]))
+        player.write("It is %s." % (time.SEASON_NAME[time.month]))
          
 
