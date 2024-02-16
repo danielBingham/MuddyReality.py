@@ -5,6 +5,7 @@ from game.store.store import Store
 from game.player import Player
 from game.store.models.character import PlayerCharacter, Character
 from game.store.models.room import Room
+from game.store.models.world import World
 
 from game.commands.communication import Say
 
@@ -15,6 +16,7 @@ def test_Say_to_empty_room():
     """
 
     store = Store('test', '')
+    store.world = World()
     library = Library(store)
 
     say = Say(library, store)
@@ -40,6 +42,7 @@ def test_Say_to_player_populated_room():
     """
 
     store = Store('test', '')
+    store.world = World()
     library = Library(store)
 
     say = Say(library, store)
@@ -84,6 +87,7 @@ def test_Say_to_npc_populated_room():
     """
 
     store = Store('test', '')
+    store.world = World()
     library = Library(store)
 
     say = Say(library, store)

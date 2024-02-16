@@ -4,6 +4,7 @@ from game.heartbeat import Heartbeat
 from game.library.library import Library
 from game.store.store import Store
 from game.player import Player
+from game.store.models.world import World
 from game.store.models.character import PlayerCharacter
 
 from game.interpreters.command.command import Command
@@ -14,9 +15,11 @@ def test_advanceActions_should_step():
     """
 
     store = Store('test', '')
+    store.world = World()
+
     library = Library(store)
 
-    heartbeat = Heartbeat(store, library, 10)
+    heartbeat = Heartbeat(store, library)
 
     socket = Mock()
     player = Player(socket, None, None)
@@ -50,9 +53,10 @@ def test_advanceActions_should_finish():
 
 
     store = Store('test', '')
+    store.world = World()
     library = Library(store)
 
-    heartbeat = Heartbeat(store, library, 10)
+    heartbeat = Heartbeat(store, library)
 
     socket = Mock()
     player = Player(socket, None, None)
@@ -86,9 +90,10 @@ def test_advanceAction_skips_players_without_characters():
 
 
     store = Store('test', '')
+    store.world = World()
     library = Library(store)
 
-    heartbeat = Heartbeat(store, library, 10)
+    heartbeat = Heartbeat(store, library)
 
     socket = Mock()
     player = Player(socket, None, None)
@@ -112,9 +117,10 @@ def test_advanceAction_skips_characters_with_no_action():
     """
 
     store = Store('test', '')
+    store.world = World()
     library = Library(store)
 
-    heartbeat = Heartbeat(store, library, 10)
+    heartbeat = Heartbeat(store, library)
 
     socket = Mock()
     player = Player(socket, None, None)
@@ -148,9 +154,10 @@ def test_calculateReserves_character_is_standing():
     """
 
     store = Store('test', '')
+    store.world = World()
     library = Library(store)
 
-    heartbeat = Heartbeat(store, library, 10)
+    heartbeat = Heartbeat(store, library)
 
     socket = Mock()
     player = Player(socket, None, None)
@@ -177,9 +184,10 @@ def test_calculateReserves_character_with_low_reseves_who_is_standing():
     """
 
     store = Store('test', '')
+    store.world = World()
     library = Library(store)
 
-    heartbeat = Heartbeat(store, library, 10)
+    heartbeat = Heartbeat(store, library)
 
     socket = Mock()
     player = Player(socket, None, None)
@@ -210,9 +218,10 @@ def test_calculateReserves_character_who_is_resting():
     """
 
     store = Store('test', '')
+    store.world = World()
     library = Library(store)
 
-    heartbeat = Heartbeat(store, library, 10)
+    heartbeat = Heartbeat(store, library)
 
     socket = Mock()
     player = Player(socket, None, None)
@@ -239,9 +248,10 @@ def test_calculateReserves_character_with_low_reseves_who_is_resting():
     """
 
     store = Store('test', '')
+    store.world = World()
     library = Library(store)
 
-    heartbeat = Heartbeat(store, library, 10)
+    heartbeat = Heartbeat(store, library)
 
     socket = Mock()
     player = Player(socket, None, None)
@@ -272,9 +282,10 @@ def test_calculateSleep_character_who_is_standing():
     """
 
     store = Store('test', '')
+    store.world = World()
     library = Library(store)
 
-    heartbeat = Heartbeat(store, library, 10)
+    heartbeat = Heartbeat(store, library)
 
     socket = Mock()
     player = Player(socket, None, None)
@@ -300,9 +311,10 @@ def test_calculateSleep_character_who_is_sleeping():
     """
 
     store = Store('test', '')
+    store.world = World()
     library = Library(store)
 
-    heartbeat = Heartbeat(store, library, 10)
+    heartbeat = Heartbeat(store, library)
 
     socket = Mock()
     player = Player(socket, None, None)
@@ -329,9 +341,10 @@ def test_calculateSleep_character_with_low_reserves_who_is_standing():
     """
 
     store = Store('test', '')
+    store.world = World()
     library = Library(store)
 
-    heartbeat = Heartbeat(store, library, 10)
+    heartbeat = Heartbeat(store, library)
 
     socket = Mock()
     player = Player(socket, None, None)
@@ -360,9 +373,10 @@ def test_calculateSleep_character_with_low_reserves_who_is_sleeping():
     """
 
     store = Store('test', '')
+    store.world = World()
     library = Library(store)
 
-    heartbeat = Heartbeat(store, library, 10)
+    heartbeat = Heartbeat(store, library)
 
     socket = Mock()
     player = Player(socket, None, None)

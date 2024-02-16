@@ -90,7 +90,7 @@ class Generator:
         Generate the world.
         ''' 
 
-        print("Generating world %s, width [%d, %d] totaling %d rooms of size %d meters by %d meters" \
+        print("Generating world %s, width [%d, %d] totaling %d rooms of size %d meters by %d meters" 
               % (self.world.name, self.world.width, self.world.width, self.world.width * self.world.width, self.world.room_width, self.world.room_width))
 
         if self.generate_heights and (self.world.terrain.size == 0 or self.regenerate_heights): 

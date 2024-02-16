@@ -238,14 +238,15 @@ class Craftable(JsonSerializable):
         return self.fromJson(data)
 
     def toJson(self):
-        json = {}
+        data = {}
 
         materials = []
         for material in self.requiredMaterials:
             materials.append(material.toJson())
-        json['requiredMaterials'] = materials
+        data['requiredMaterials'] = materials
 
-        json['requiredTools'] = self.requiredTools 
+        data['requiredTools'] = self.requiredTools 
+        return data 
 
     def fromJson(self, data):
         for requiredMaterialJson in data['requiredMaterials']:

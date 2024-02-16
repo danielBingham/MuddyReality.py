@@ -14,8 +14,11 @@ def test_kill():
     store = Store('test', '')
     library = Library(store)
 
+
+    account_interpreter = Mock()
+
     socket = Mock()
-    player = Player(socket, None, None)
+    player = Player(socket, account_interpreter, None)
     player.write = Mock()
 
     player.character = PlayerCharacter()
@@ -113,6 +116,7 @@ def test_adjustCalories_to_death():
     socket = Mock()
     player = Player(socket, None, None)
     player.write = Mock()
+    player.setAccountState = Mock()
 
     character = PlayerCharacter()
 
@@ -194,6 +198,7 @@ def test_adjustThirst_to_death():
     socket = Mock()
     player = Player(socket, None, None)
     player.write = Mock()
+    player.setAccountState = Mock()
 
     character = PlayerCharacter()
 

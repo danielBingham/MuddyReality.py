@@ -4,7 +4,6 @@ class Heartbeat:
         self.store = store
         self.library = library
 
-
     def heartbeat(self):
         """
         A method called on every loop that can be used for actions that need to

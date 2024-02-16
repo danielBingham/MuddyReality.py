@@ -5,6 +5,7 @@ from game.store.store import Store
 from game.player import Player
 from game.store.models.character import PlayerCharacter 
 from game.store.models.room import Room
+from game.store.models.world import World
 
 from game.commands.information import Status, Look
 
@@ -33,7 +34,11 @@ character_json = {
         "maxSleep": 16,
         "maxThirst": 4000,
         "sleep": 16,
-        "thirst": 4000 
+        "thirst": 4000 ,
+        "energy": 10000,
+        "maxEnergy": 10000,
+        "wind": 30,
+        "maxWind": 30
     },
     "room": 1,
     "sex": "male",
@@ -186,6 +191,10 @@ def test_Look():
     """
 
     store = Store('test', '')
+    store.world = World()
+    store.world.time.hour = 12
+    store.world.time.night = False 
+
     library = Library(store)
 
     look = Look(library, store)
@@ -225,6 +234,10 @@ def test_Look_in_direction():
     """
 
     store = Store('test', '')
+    store.world = World()
+    store.world.time.hour = 12
+    store.world.time.night = False 
+
     library = Library(store)
 
     look = Look(library, store)

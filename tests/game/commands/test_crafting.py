@@ -6,6 +6,7 @@ from game.player import Player
 from game.store.models.character import PlayerCharacter 
 from game.store.models.room import Room
 from game.store.models.item import Item
+from game.store.models.world import World
 
 from game.commands.crafting import Craft, Harvest
 
@@ -13,7 +14,7 @@ tool_json = {
     "name": "tool",
     "description": "a tool",
     "details": "A tool for testing.",
-    "keywords": ["tool"],
+    "keywords": "tool",
     "length": 1,
     "width": 1,
     "height": 1,
@@ -41,7 +42,7 @@ tool_requiring_two_materials_json = {
     "name": "tool",
     "description": "a tool",
     "details": "A tool for testing.",
-    "keywords": ["tool"],
+    "keywords": "tool",
     "length": 1,
     "width": 1,
     "height": 1,
@@ -76,7 +77,7 @@ craftable_material_requires_tool_json = {
     "name": "craftable material",
     "description": "a craftable material",
     "details": "A material that requires a tool to craft.",
-    "keywords": ["craftable material", "material"],
+    "keywords": "craftable material",
     "length": 1,
     "width": 1,
     "height": 1,
@@ -104,7 +105,7 @@ material_json = {
     "name": "material",
     "description": "a material",
     "details": "A material for testing.",
-    "keywords": ["material"],
+    "keywords": "material",
     "length": 1,
     "width": 1,
     "height": 1,
@@ -241,6 +242,7 @@ def test_Craft_when_called_with_missing_materials():
     """
 
     store = Store('test', '')
+    store.world = World()
 
     tool = Item()
     tool.fromJson(tool_json)

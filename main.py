@@ -53,6 +53,8 @@ def gameLoop(serverSocket, library, store, account_interpreter, game_interpreter
     # The length of a single loop in nanoseconds.
     loop_length = 1000000000/store.world.time.loops_a_second
 
+    overrun = 0
+
     heartbeat = Heartbeat(store, library)
 
     # The Game Loop

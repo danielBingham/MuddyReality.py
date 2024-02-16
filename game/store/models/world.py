@@ -49,7 +49,7 @@ class Time(JsonSerializable):
 
         return data
 
-    def fromJson(self):
+    def fromJson(self, data):
         self.year = data['year']
         self.month = data['month']
         self.day = data['day']
@@ -58,6 +58,7 @@ class Time(JsonSerializable):
 
         self.night = data['night']
         self.loop = data['loop']
+        return self
 
 
 class World(NamedModel):

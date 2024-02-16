@@ -1,4 +1,4 @@
-import glob, copy, os
+import glob, os
 
 from game.store.models.world import World
 from game.store.models.account import Account
