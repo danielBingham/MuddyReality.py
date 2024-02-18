@@ -61,7 +61,7 @@ class NamedModel(Model):
         super(NamedModel, self).__init__()
         self.name = ''
 
-    def setId(self, name):
-        self.id = name
-        self.name = name
+    def setId(self, id):
+        self.id = id
+        self.name = id 
         return self

@@ -39,7 +39,6 @@ class Heartbeat:
         if time.loop % time.loops_an_hour == 0:
             self.calculateSleep()
 
-
     def saveCharacters(self):
         """
         Save all the characters currently playing the game.
@@ -49,7 +48,6 @@ class Heartbeat:
             if not player.character:
                 continue
             self.store.saveCharacter(player.character)
-
 
     def advanceActions(self):
         """

@@ -1,23 +1,25 @@
 #!/usr/bin/python3
 
-import time, random, argparse
+import time
+import random
+import argparse
 
-from game.sockets.server import ServerSocket 
+from game.sockets.server import ServerSocket
 
-from game.store.store import Store 
+from game.store.store import Store
 from game.library.library import Library
 from game.player import Player
 
 from game.interpreters.command.interpreter import CommandInterpreter
 from game.interpreters.state.interpreter import StateInterpreter
 
-import game.account_menu.welcome as welcome 
+import game.account_menu.welcome as welcome
 import game.account_menu.creation as creation
 import game.account_menu.password as password
 import game.account_menu.menu as menu
 
-import game.commands.communication as communication 
-import game.commands.information as information 
+import game.commands.communication as communication
+import game.commands.information as information
 import game.commands.movement as movement
 import game.commands.manipulation as manipulation
 import game.commands.crafting as crafting
@@ -25,6 +27,7 @@ import game.commands.reserves as reserves
 import game.commands.system as system
 
 from game.heartbeat import Heartbeat
+
 
 def gameLoop(serverSocket, library, store, account_interpreter, game_interpreter):
     """
@@ -61,7 +64,7 @@ def gameLoop(serverSocket, library, store, account_interpreter, game_interpreter
     while serverSocket.isOpen:
         start_time = time.time_ns()
 
-        library.world.time.loop() 
+        library.world.time.loop()
 
         # Poll for input and output ready clients and then handle the
         # communication.  Also accept new clients.
@@ -112,7 +115,7 @@ def gameLoop(serverSocket, library, store, account_interpreter, game_interpreter
             if sleep_time > 0:
                 time.sleep(sleep_time/1000000000.0)
         elif loop_time > loop_length:
-            overrun = loop_time - loop_length 
+            overrun = loop_time - loop_length
 
         # Reset overrun.
         if loop_time <= loop_length:
@@ -124,8 +127,10 @@ def main():
                     prog='main',
                     description='Run the Muddy Reality Server.')
 
-    parser.add_argument('-H', '--host', dest='host', default='', help="What hostname do we want to run the server on?")
-    parser.add_argument('-p', '--port', dest='port', default=3000, help="What port should we run the server on?")
+    parser.add_argument('-H', '--host', dest='host', default='',
+                        help="What hostname do we want to run the server on?")
+    parser.add_argument('-p', '--port', dest='port', default=3000,
+                        help="What port should we run the server on?")
 
     parser.add_argument('--data', default='data/', help='The location of the data directory, relative to this file.')
     parser.add_argument('--world', default='base', help='The name of the world we want to run the server for.') 

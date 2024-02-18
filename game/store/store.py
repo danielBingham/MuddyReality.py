@@ -225,7 +225,8 @@ class Store:
             The path to the data directory.
         """
         self.data_directory = 'data/'
-        self.world = world
+        self.world_name = world
+        self.world = World() 
 
         self.players = []
 
@@ -270,10 +271,8 @@ class Store:
 
         print("Loading the game store.")
 
-        world_name = self.world
-        world_path = os.path.join(self.data_directory, 'worlds', world_name, 'world.json')
+        world_path = os.path.join(self.data_directory, 'worlds', self.world_name, 'world.json')
         print("Loading the world from %s..." % world_path)
-        self.world = World() 
         self.world.load(world_path)
 
         item_path = os.path.join(self.data_directory, 'items/')
