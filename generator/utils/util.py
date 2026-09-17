@@ -8,7 +8,7 @@ import csv
 import json
 
 import numpy as np
-import scipy as sp
+#import scipy as sp
 
 # Open CSV file as a dict.
 
@@ -34,7 +34,7 @@ def fbm(shape, p, lower=-np.inf, upper=np.inf):
     return normalize(np.real(np.fft.ifft2(np.fft.fft2(phase_noise) * envelope)))
 
 
-# Returns each value of `a` with coordinates offset by `offset` (via complex 
+# Returns each value of `a` with coordinates offset by `offset` (via complex
 # values). The values at the new coordiantes are the linear interpolation of
 # neighboring values in `a`.
 def sample(a, offset):
@@ -44,7 +44,7 @@ def sample(a, offset):
 
     lower_coords = np.floor(coords).astype(int)
     upper_coords = lower_coords + 1
-    coord_offsets = coords - lower_coords 
+    coord_offsets = coords - lower_coords
     lower_coords %= shape[:, np.newaxis, np.newaxis]
     upper_coords %= shape[:, np.newaxis, np.newaxis]
 
@@ -76,7 +76,7 @@ def displace(a, delta):
     return result
 
 
-# Returns the gradient of the gaussian blur of `a` encoded as a complex number. 
+# Returns the gradient of the gaussian blur of `a` encoded as a complex number.
 def gaussian_gradient(a, sigma=1.0):
     [fy, fx] = np.meshgrid(*(np.fft.fftfreq(n, 1.0 / n) for n in a.shape))
     sigma2 = sigma**2
@@ -97,7 +97,7 @@ def simple_gradient(a):
     return 1j * dx + dy
 
 
-# Loads the terrain height array (and optionally the land mask from the given 
+# Loads the terrain height array (and optionally the land mask from the given
 # file.
 def load_from_file(path):
     result = np.load(path)
@@ -115,7 +115,7 @@ def lerp(x, y, a): return (1.0 - a) * x + a * y
 # Returns a list of grid coordinates for every (x, y) position bounded by
 # `shape`
 def make_grid_points(shape):
-    [Y, X] = np.meshgrid(np.arange(shape[0]), np.arange(shape[1])) 
+    [Y, X] = np.meshgrid(np.arange(shape[0]), np.arange(shape[1]))
     grid_points = np.column_stack([X.flatten(), Y.flatten()])
     return grid_points
 
@@ -146,7 +146,7 @@ def poisson_disc_sampling(shape, radius, retries=16):
                 diff = np.subtract(p2, p)
                 if np.dot(diff, diff) <= radius * radius:
                     return True
-        return False      
+        return False
 
     # Adds point `p` to the cell grid.
     def add_point(p):
@@ -167,7 +167,7 @@ def poisson_disc_sampling(shape, radius, retries=16):
             r2 = np.dot(diff, diff)
             new_point = diff + point
             if (new_point[0] >= 0 and new_point[0] < shape[0] and
-                    new_point[1] >= 0 and new_point[1] < shape[1] and 
+                    new_point[1] >= 0 and new_point[1] < shape[1] and
                     not has_neighbors_in_radius(new_point) and
                     r2 > radius * radius and r2 < 4 * radius * radius):
                 add_point(new_point)
@@ -179,25 +179,25 @@ def poisson_disc_sampling(shape, radius, retries=16):
 
 # Returns an array in which all True values of `mask` contain the distance to
 # the nearest False value.
-def dist_to_mask(mask):
-    border_mask = (np.maximum.reduce([
-            np.roll(mask, 1, axis=0), np.roll(mask, -1, axis=0),
-            np.roll(mask, -1, axis=1), np.roll(mask, 1, axis=1)]) * (1 - mask))
-    border_points = np.column_stack(np.where(border_mask > 0))
-
-    kdtree = sp.spatial.cKDTree(border_points)
-    grid_points = make_grid_points(mask.shape)
-
-    return kdtree.query(grid_points)[0].reshape(mask.shape)
+#def dist_to_mask(mask):
+#    border_mask = (np.maximum.reduce([
+#            np.roll(mask, 1, axis=0), np.roll(mask, -1, axis=0),
+#            np.roll(mask, -1, axis=1), np.roll(mask, 1, axis=1)]) * (1 - mask))
+#    border_points = np.column_stack(np.where(border_mask > 0))
+#
+#    kdtree = sp.spatial.cKDTree(border_points)
+#    grid_points = make_grid_points(mask.shape)
+#
+#    return kdtree.query(grid_points)[0].reshape(mask.shape)
 
 
 # Generates worley noise with points separated by `spacing`.
-def worley(shape, spacing):
-    points = poisson_disc_sampling(shape, spacing)
-    coords = np.floor(points).astype(int)
-    mask = np.zeros(shape, dtype=bool)
-    mask[coords[:, 0], coords[:, 1]] = True
-    return normalize(dist_to_mask(mask))
+#def worley(shape, spacing):
+#    points = poisson_disc_sampling(shape, spacing)
+#    coords = np.floor(points).astype(int)
+#    mask = np.zeros(shape, dtype=bool)
+#    mask[coords[:, 0], coords[:, 1]] = True
+#    return normalize(dist_to_mask(mask))
 
 
 # Peforms a gaussian blur of `a`.
