@@ -4,3 +4,4 @@ data/characters/*
 data/worlds/*
 snaps/*
 *.swp
+.venv/*

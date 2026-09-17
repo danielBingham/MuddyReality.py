@@ -1,6 +1,6 @@
 [flake8]
-count = true 
+count = true
 extend-ignore = E2,E3,E401,E501,W1,W2,W3
-exclude=generator/utils/util.py
-show-source = true 
+exclude=.venv,generator/utils/util.py
+show-source = true
 statistics = true
