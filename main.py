@@ -1,131 +1,34 @@
 #!/usr/bin/python3
 
-import time
-import random
+###############################################################################
+# MuddyReality.py
+#
+# The single entry point for the project.  Parses the command line and
+# dispatches to either the game server (`server.py`) or the world generator
+# (`generate.py`).
+#
+#   python3 main.py server [server arguments]
+#   python3 main.py generator [name] [generator arguments]
+#
+# Use `python3 main.py <command> --help` to see the arguments for a command.
+###############################################################################
+
 import argparse
 
-from game.sockets.server import ServerSocket
 
-from game.store.store import Store
-from game.library.library import Library
-from game.player import Player
-
-from game.interpreters.command.interpreter import CommandInterpreter
-from game.interpreters.state.interpreter import StateInterpreter
-
-import game.account_menu.welcome as welcome
-import game.account_menu.creation as creation
-import game.account_menu.password as password
-import game.account_menu.menu as menu
-
-import game.commands.communication as communication
-import game.commands.information as information
-import game.commands.movement as movement
-import game.commands.manipulation as manipulation
-import game.commands.crafting as crafting
-import game.commands.reserves as reserves
-import game.commands.system as system
-
-from game.heartbeat import Heartbeat
-
-
-def gameLoop(serverSocket, library, store, account_interpreter, game_interpreter):
+def addServerArguments(parser):
     """
-    The primary game loop.  This method loops indefinitely (until killed using
-    a keyboard interrupt).  It handles new connections to the game and
-    input/output for existing connections.  It also runs the game's heartbeat.
+    Define the command line arguments for the `server` command.
 
     Parameters
     ----------
-    serverSocket: ServerSocket
-        The primary server socket that player sockets will connect to.
-    library:    Library
-        The game library.
-    store: Store
-        The game store.
-    account_interpreter:    StateInterpreter
-        An interpreter to be used for players in the Account Menu.
-    game_interpreter:   CommandInterpreter
-        An interpreter to be used for players who are playing the game.
+    parser: argparse.ArgumentParser
+        The subparser for the `server` command.
 
     Returns
     -------
     void
     """
-
-    # The length of a single loop in nanoseconds.
-    loop_length = 1000000000/store.world.time.loops_a_second
-
-    overrun = 0
-
-    heartbeat = Heartbeat(store, library)
-
-    # The Game Loop
-    while serverSocket.isOpen:
-        start_time = time.time_ns()
-
-        library.world.time.loop()
-
-        # Poll for input and output ready clients and then handle the
-        # communication.  Also accept new clients.
-        serverSocket.poll()
-
-        serverSocket.handleReadSet()
-        serverSocket.handleWriteSet()
-        serverSocket.handleErrorSet()
-
-        # If we have a new connection, create a player for it and send it to
-        # the account flow starting with the welcome screen.
-        if serverSocket.hasNewConnection():
-            newConnection = serverSocket.accept() 
-            player = Player(newConnection, account_interpreter, game_interpreter)
-            player.status = player.STATUS_ACCOUNT
-            player.setAccountState("welcome-screen")
-            store.players.append(player)
-
-        serverSocket.resetPollSets()
-
-        # Handle New Input
-        for player in store.players:
-            player.interpret()
-
-        heartbeat.heartbeat()
-
-        # Write prompts at the end of the loop if any reading or writing has
-        # been done.
-        for player in store.players:
-            player.writePrompt()
-
-        # Once we reach the end of the loop, calculate how long it took and
-        # sleep the remainder of the time.  This makes sure we don't loop more
-        # than we want to.  If we're going too slow, then we'll just have to
-        # keep going and hope we catch up.
-        end_time = time.time_ns()
-        loop_time = end_time - start_time
-
-        store.world.time.average_loop_time = (store.world.time.average_loop_time * (store.world.time.loop-1) + loop_time) / store.world.time.loop
-        if store.world.time.loop % (10 * store.world.time.loops_a_second) == 0 or store.world.time.loop == 1:
-            print("Game time: {0}:{1} {2} {3}, {4}".format(store.world.time.hour, store.world.time.minute, store.world.time.MONTH_NAME[store.world.time.month], store.world.time.day, store.world.time.year))
-            print("Performance Metrics for loop #{0:,d}".format(store.world.time.loop))
-            print("\tTarget: {0:,d} ns".format(int(loop_length)))
-            print("\tTime: {0:,d} ns -- Average: {1:,d} ns.".format(int(loop_time), int(store.world.time.average_loop_time)))
-
-        if loop_time < loop_length:
-            sleep_time = loop_length - loop_time - overrun
-            if sleep_time > 0:
-                time.sleep(sleep_time/1000000000.0)
-        elif loop_time > loop_length:
-            overrun = loop_time - loop_length
-
-        # Reset overrun.
-        if loop_time <= loop_length:
-            overrun = 0
-
-
-def main():
-    parser = argparse.ArgumentParser(
-                    prog='main',
-                    description='Run the Muddy Reality Server.')
 
     parser.add_argument('-H', '--host', dest='host', default='',
                         help="What hostname do we want to run the server on?")
@@ -133,109 +36,98 @@ def main():
                         help="What port should we run the server on?")
 
     parser.add_argument('--data', default='data/', help='The location of the data directory, relative to this file.')
-    parser.add_argument('--world', default='base', help='The name of the world we want to run the server for.') 
+    parser.add_argument('--world', default='base', help='The name of the world we want to run the server for.')
 
     parser.add_argument('--loops-a-second', dest='loops_a_second', default=10, help='The number of loops to allow in a second.')
     parser.add_argument('--loop-sample-rate', dest='loop_sample_rate', default=10, help='Sample the loop time every `x` seconds.')
 
-    arguments = parser.parse_args()
 
-    random.seed()
+def addGeneratorArguments(parser):
+    """
+    Define the command line arguments for the `generator` command.
 
-    host = arguments.host
-    port = int(arguments.port)
+    Parameters
+    ----------
+    parser: argparse.ArgumentParser
+        The subparser for the `generator` command.
 
-    data_directory = arguments.data
+    Returns
+    -------
+    void
+    """
 
-    serverSocket = ServerSocket(host, port)
+    parser.add_argument('name', help='A name for the world that heights are being generated for.  This will be used as the output directory under `data/worlds/`.')
 
-    store = Store(arguments.world, data_directory)
-    store.load()
+    # World shape parameters.
+    parser.add_argument('--width', default=100, help='Width of the world in rooms.  World will be square with width^2 total rooms..')
+    parser.add_argument('--room-width', dest='room_width', default=100, help='Width of an individual room in meters.  World will be (room-width*width)^2 total area.')
 
-    store.world.time.loops_a_second = arguments.loops_a_second
+    # Parameters for controlling which parts of the generating we're doing.
+    parser.add_argument('--generate-heights', dest='generate_heights', action='store_true', help='Only generate the height map.  Will generate the worlds.json file if it does not exist.')
+    parser.add_argument('--generate-water', dest='generate_water', action='store_true', help='Only generate the worlds water.')
+    parser.add_argument('--generate-biomes', dest='generate_biomes', action='store_true', help='Only generate the biomes. world.json matching `name` must have heights already generated.')
+    parser.add_argument('--generate-rooms', dest='generate_rooms', action='store_true', help='Only generate the rooms. world.json matching `name` must have heights and biomes already generated.')
 
-    library = Library(store)
+    # Parmeters for controlling what, if anything, we should regenerate.  If
+    # none of these are true, then anything previously generated will be reused
+    # as is.  That stage of generation will be skipped.
+    parser.add_argument('--regenerate-all', dest='regenerate_all', action='store_true', help='Regenerate the world, overriding any previously generated world.')
+    parser.add_argument('--rengerate-heights', dest='regenerate_heights', action='store_true', help="Regenerate the world's heightmap, overriding any previously generated terrain.")
+    parser.add_argument('--regenerate-water', dest='regenerate_water', action='store_true', help="Regenerate the world's water, overriding any previously generated water.")
+    parser.add_argument('--regenerate-biomes', dest='regenerate_biomes', action='store_true', help="Regenerate the world's biomes, overriding any previously generated biomes.")
+    parser.add_argument('--regenerate-rooms', dest='regenerate_rooms', action='store_true', help="Regenerate the world's rooms, overriding any previously generated rooms.")
 
-    # Initialize the states for the Account flow state interpreter.
-    states = {}
-    states['welcome-screen'] = welcome.WelcomeScreen(library, store)
-    states['get-account-password'] = welcome.GetAccountPassword(library, store)
-    states['create-new-account'] = creation.CreateNewAccount(library, store)
-    states['account-menu'] = menu.AccountMenu(library, store)
-    states['get-new-account-password'] = password.GetNewAccountPassword(library, store)
-    states['confirm-new-account-password'] = password.ConfirmNewAccountPassword(library, store)
-    account_interpreter = StateInterpreter(states, library, store)
+    # Water generation parameters
+    parser.add_argument('--water-initial-amount', default=30, dest='water__initial_amount', help="The initial water that will be dumped on the world and allowed to flow to the low areas in depth (meters) per world point.")
+    parser.add_argument('--water-algorithm', default='inria', dest='water__algorithm', help='Choose the algorithm that will be used to generate water.')
+    parser.add_argument('--water-debug', dest="water__debug", action="store_true", help="Turn on debugging output for the water algorith.")
+    parser.add_argument("--water-snapshot", dest="water__snapshot", action="store_true", help="Turn on snapshotting for the water algorithm.  This will take an image snapshot of the water at the end of each iteration and then construct an animation of them showing the full water flow for the duration of the simulation at the end.  Images will be stored in the `snaps/` directory.")
+    parser.add_argument("--water-flat-terrain", dest="water__flat_terrain", action="store_true", help="Run the water simulation on a flat terrain instead of the terrain generated in the previous step.")
 
-    # Initialize the command list for commands in the game.
-    #
-    # Order matters here.  Commands are tested using `startswith` and the first
-    # match is executed.  Commands defined earlier in the list will be tested
-    # first and matched with shorter strings.  For example, if `east` is
-    # defined before `eat`, then both `e` and `ea` will match `east` and `eat`
-    # will nee to be fully typed out to match.  
-    #
-    # Keep this in mind and try to order commands by frequency of player use.
-    # List is also intentionally in alphabetic order (except where player
-    # convenience dictates breaking it) to enable ease of use.
-    commands = {}
-    commands['close'] = manipulation.Close(library, store)
-    commands['craft'] = crafting.Craft(library, store)
 
-    commands['down'] = movement.Down(library, store)
-    commands['drink'] = reserves.Drink(library, store)
-    commands['drop'] = manipulation.Drop(library, store)
+def buildParser():
+    """
+    Build the top level argument parser, with a subcommand for each of the
+    project's programs.
 
-    commands['east'] = movement.East(library, store)
-    commands['eat'] = reserves.Eat(library, store)
-    commands['equipment'] = information.Equipment(library, store)
-    commands['examine'] = information.Examine(library, store)
+    Returns
+    -------
+    argparse.ArgumentParser
+    """
 
-    commands['get'] = manipulation.Get(library, store)
+    parser = argparse.ArgumentParser(
+                    prog='main',
+                    description='Run the Muddy Reality server, or generate a world for it.')
 
-    commands['harvest'] = crafting.Harvest(library, store)
-    # Help needs a reference to the command list so that it
-    # can walk the list to describe the commands.
-    commands['help'] = system.Help(commands, library, store)
+    subparsers = parser.add_subparsers(dest='command', metavar='{server,generator}', required=True)
 
-    commands['inventory'] = information.Inventory(library, store)
+    server_parser = subparsers.add_parser(
+                    'server',
+                    help='Run the game server.',
+                    description='Run the Muddy Reality Server.')
+    addServerArguments(server_parser)
 
-    commands['look'] = information.Look(library, store)
+    generator_parser = subparsers.add_parser(
+                    'generator',
+                    help='Generate a world for the game.',
+                    description='Generate a world for Muddy Reality.')
+    addGeneratorArguments(generator_parser)
 
-    commands['north'] = movement.North(library, store)
+    return parser
 
-    commands['open'] = manipulation.Open(library, store)
 
-    commands['rest'] = reserves.Rest(library, store)
-    commands['run'] = movement.Run(library, store)
+def main():
+    arguments = buildParser().parse_args()
 
-    commands['quit'] = system.Quit(library, store)
-
-    commands['south'] = movement.South(library, store)
-    commands['say'] = communication.Say(library, store)
-    commands['sleep'] = reserves.Sleep(library, store)
-    commands['sprint'] = movement.Sprint(library, store)
-    commands['status'] = information.Status(library, store)
-
-    commands['time'] = information.Time(library, store)
-
-    commands['west'] = movement.West(library, store)
-    commands['walk'] = movement.Walk(library, store)
-    commands['wield'] = manipulation.Wield(library, store)
-    commands['wake'] = reserves.Wake(library, store)
-
-    commands['up'] = movement.Up(library, store)
-    game_interpreter = CommandInterpreter(commands, library, store)
-
-    print('Starting up the server on world "' + store.world.name + '" on port ' + repr(port))
-    try:
-        gameLoop(serverSocket, library, store, account_interpreter, game_interpreter)
-    except KeyboardInterrupt:
-        print("Shutting down.")
-        serverSocket.shutdown()
-    except Exception as ex:
-        print("Shutting down due to error.")
-        serverSocket.shutdown()
-        raise ex 
+    # Only import the module for the command we're running.  The generator
+    # depends on imaging libraries (matplotlib, Pillow, imageio) that the
+    # server has no use for, so the server shouldn't need them installed.
+    if arguments.command == 'server':
+        import server
+        server.run(arguments)
+    elif arguments.command == 'generator':
+        import generate
+        generate.run(arguments)
 
 
 if __name__ == '__main__':
