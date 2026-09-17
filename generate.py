@@ -11,11 +11,10 @@ import generator.utils.snapshot as snapshot
 
 from generator.store.store import Store
 
-from generator.generators.heights import generateTerrain, generateHeights 
-from generator.generators.water import WaterGenerator 
+from generator.generators.heights import generateTerrain, generateHeights
+from generator.generators.water import WaterGenerator
 from generator.generators.biomes import generateBiomes
 from generator.generators.rooms import generateRooms
-
 
 class Generator:
 
@@ -25,16 +24,16 @@ class Generator:
         self.arguments = {}
 
         self.generate_all = True
-        self.generate_heights = False 
-        self.generate_water = False 
-        self.generate_biomes = False 
-        self.generate_rooms = False 
-        
-        self.regenerate_all = False 
-        self.regenerate_heights = False 
-        self.regenerate_water = False 
-        self.regenerate_biomes = False 
-        self.regenerate_rooms = False 
+        self.generate_heights = False
+        self.generate_water = False
+        self.generate_biomes = False
+        self.generate_rooms = False
+
+        self.regenerate_all = False
+        self.regenerate_heights = False
+        self.regenerate_water = False
+        self.regenerate_biomes = False
+        self.regenerate_rooms = False
 
 
     def initialize(self, arguments):
@@ -54,7 +53,7 @@ class Generator:
 
         # Which stages should we generate?  If no specific stage is specified,
         # then we generate all of them.
-        self.generate_all = not (arguments.generate_heights or arguments.generate_water 
+        self.generate_all = not (arguments.generate_heights or arguments.generate_water
                                  or arguments.generate_biomes or arguments.generate_rooms)
 
         self.generate_heights = self.generate_all or arguments.generate_heights \
@@ -64,7 +63,7 @@ class Generator:
             or arguments.generate_biomes or arguments.generate_rooms
         self.generate_biomes = self.generate_all or arguments.generate_biomes \
             or arguments.generate_rooms
-        self.generate_rooms = self.generate_all or arguments.generate_rooms 
+        self.generate_rooms = self.generate_all or arguments.generate_rooms
 
         # Should we regenerate any stages? If we regenerate all, then we set
         # them all to to regenerate.
@@ -77,7 +76,7 @@ class Generator:
         if int(arguments.width) != self.world.width or int(arguments.room_width) != self.world.room_width:
             if not self.regenerate_all:
                 print("Error! You can't regenerate a single stage with different world parameters.  If you want to change the world width or room_width, please regenerate the whole world.")
-                sys.exit() 
+                sys.exit()
             elif self.regenerate_all:
                 print("Regenerating world with new world parameters...")
                 self.world.width = int(arguments.width)
@@ -88,12 +87,12 @@ class Generator:
     def generate(self):
         '''
         Generate the world.
-        ''' 
+        '''
 
-        print("Generating world %s, width [%d, %d] totaling %d rooms of size %d meters by %d meters" 
+        print("Generating world %s, width [%d, %d] totaling %d rooms of size %d meters by %d meters"
               % (self.world.name, self.world.width, self.world.width, self.world.width * self.world.width, self.world.room_width, self.world.room_width))
 
-        if self.generate_heights and (self.world.terrain.size == 0 or self.regenerate_heights): 
+        if self.generate_heights and (self.world.terrain.size == 0 or self.regenerate_heights):
             generateTerrain(self.world)
             snapshot.terrain(self.world)
 
@@ -132,7 +131,7 @@ class Generator:
 
             self.world.rooms = generateRooms(self.biomes, self.world)
 
-        self.world.save() 
+        self.world.save()
 
 
 def run(arguments):
