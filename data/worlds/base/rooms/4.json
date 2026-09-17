@@ -2,6 +2,7 @@
     "id": 4,
     "title": "A Rocky Beach",
     "description": "A thin strip of rocky shoreline between a large body of water and dense, old growth forest.",
+    "color": [250, 250, 180],
     "exits": {
         "north": {
             "direction": "north",
