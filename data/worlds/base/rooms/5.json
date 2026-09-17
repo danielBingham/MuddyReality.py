@@ -2,6 +2,7 @@
     "id": 5,
     "title": "Old Growth Forest",
     "description": "This is a patch of old growth forest.  Several towering trees stand, spaced well apart.  The ground is covered by rotting debris and fallen branches.",
+    "color": [20, 230, 0],
     "exits": {
         "north": {
             "direction": "north",
