@@ -12,7 +12,7 @@ The world generators will generate worlds by first generating a base terrain
 with fbm noise, then eroding that terrain using a water flow and sediment
 simulation, then place water in that world using a similar water flow
 simulation with rain, then generate biomes using a succession and disruption
-simulation, and finally generate rooms using all of that data. 
+simulation, and finally generate rooms using all of that data.
 
 This project is related to MuddyReality, which is the C++ implementation of the
 same engine.  The two are built to use the same world data.  Eventually the
