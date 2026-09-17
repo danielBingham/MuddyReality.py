@@ -47,7 +47,10 @@ class Generator:
         """
 
         self.store.initializeWorld(arguments.name, int(arguments.width), int(arguments.room_width))
+        self.store.loadBiomes()
+
         self.world = self.store.world
+        self.biomes = self.store.biomes
 
         self.arguments = arguments
 
