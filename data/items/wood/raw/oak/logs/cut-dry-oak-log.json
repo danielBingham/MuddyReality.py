@@ -1,0 +1,15 @@
+{
+    "name": "cut dry oak log",
+    "description": "a cut, dry log with light gray, scaly bark",
+    "details": "A thick section of oak trunk, cut square at both ends, with light gray bark broken into scaly plates by shallow fissures.  The cut ends show tight growth rings of light brown heartwood ringed by paler, nearly white sapwood.  The seasoned wood is dry, and checks run out from the heart toward the bark.",
+    "keywords": "cut dry oak log cut log dry log light gray scaly bark growth rings light brown heartwood white sapwood dry wood",
+    "length": 5,
+    "width": 2,
+    "height": 2,
+    "weight": 15100,
+    "traits": {
+        "Material": {
+            "types": [ "dry-wood", "wood", "log", "oak" ]
+        }
+    }
+}

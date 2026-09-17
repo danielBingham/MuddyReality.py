@@ -1,0 +1,15 @@
+{
+    "name": "fallen dry oak stick",
+    "description": "a small, fallen, dry stick with reddish-brown bark",
+    "details": "A small, slender oak stick, snapped from the canopy above, its ends broken and frayed.  Its reddish-brown bark is hairless and dotted with pale lenticels, and a few small, blunt, reddish-brown buds cluster near its tip.  The dry wood is brittle and snaps easily.",
+    "keywords": "fallen dry oak stick small stick fallen stick dry stick reddish-brown bark pale lenticels blunt reddish-brown buds dry wood",
+    "length": 0.3,
+    "width": 0.02,
+    "height": 0.02,
+    "weight": 0.09,
+    "traits": {
+        "Material": {
+            "types": [ "dry-wood", "wood", "oak" ]
+        }
+    }
+}
