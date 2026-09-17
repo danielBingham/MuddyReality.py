@@ -4,9 +4,9 @@ A multi-user dungeon written in python with a focus on realism.  Best used to
 create open world, survival, crafting MUDs.
 
 Includes two main pieces: the game itself and world generators.   The game is
-stored in `game` and run with `main.py`.  The generators are stored in
-`generator` and run with `generate.py`.  They both work with data stored in
-`data`.
+stored in `game` and `server.py`.  The generators are stored in `generator` and
+`generate.py`.  Both are run through `main.py`, and they both work with data
+stored in `data`.
 
 The world generators will generate worlds by first generating a base terrain
 with fbm noise, then eroding that terrain using a water flow and sediment
@@ -29,33 +29,43 @@ course of the next decade.
 
 ## Running
 
+Both the game and the generator are run through `main.py` in the top level
+directory.  Its first argument chooses what to run: `server` or `generator`.
+Everything after that is passed to the chosen command.  Use `--help` after a
+command to list its arguments.
+
+```
+$ python3 main.py server --help
+$ python3 main.py generator --help
+```
+
 ### Game
 
-To run the game, execute the `main.py` file in the top level directory.
+To run the game, run the `server` command.
 
 ```
-$ python3 main.py
+$ python3 main.py server
 ```
 
-The `main.py` file takes two optional arguments:
+The `server` command takes two optional arguments:
 
 * `--world [name]`: Run the game with the world named by `[name]`.  `[name]` must be a directory under `data/worlds/` that contains a `world.json` file and a `rooms/` directory with rooms defined in `json`.
 * `--port [port]`: Run the game on `[port]`.
 
 ```
-$ python3 --world test --port 3000
+$ python3 main.py server --world test --port 3000
 ```
 
 ### Generator
 
-To generate worlds for the game, execute the `generate.py` file in the top level directory.
+To generate worlds for the game, run the `generator` command.
 
 ```
-$ python3 generate.py [name]
+$ python3 main.py generator [name]
 ```
 
 `[name]` is the only required argument, and represents the name of the world.
-This is the same name that will be used with `main.py` to run the game.
+This is the same name that will be passed to `--world` to run the game.
 
 The generator takes a number of optional arguments that can be used to control
 how the world is generated.
