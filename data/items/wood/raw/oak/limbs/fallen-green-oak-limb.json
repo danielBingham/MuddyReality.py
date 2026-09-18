@@ -1,0 +1,32 @@
+{
+    "name": "fallen green oak limb",
+    "description": "a large, fallen, green limb with light gray bark",
+    "details": "A large limb torn from the trunk, its base splintered and ragged.  Its bark is light gray and scaly, its twigs are reddish-brown and hairless, and small, blunt, reddish-brown buds cluster at the twig tips.  The wood is still green and heavy with sap, and wilting leaves, bright green above and paler beneath, cling to the twigs.",
+    "keywords": "fallen green oak limb fallen limb green limb large limb light gray scaly bark reddish-brown hairless twigs blunt reddish-brown buds green wood",
+    "length": 2,
+    "width": 0.1,
+    "height": 0.1,
+    "weight": 20.5,
+    "traits": {
+        "Material": {
+            "types": [ "green-wood", "wood", "oak" ]
+        },
+        "Harvestable": {
+            "products": [
+                {
+                    "product": "large oak branch",
+                    "amount": 10
+                },
+                {
+                    "product": "oak log",
+                    "amount": 2
+                }
+            ],
+            "consumed": true,
+            "calories": 420,
+            "time": 60,
+            "action": "cut",
+            "required_tools": [ "axe" ]
+        }
+    }
+}

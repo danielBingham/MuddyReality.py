@@ -77,11 +77,11 @@ Get detailed information about a room or object.  If [object] is excluded, the r
             return
 
         if not arguments:
-            proxy = Look(self.store)
+            proxy = Look(self.library, self.store)
             return proxy.execute(player, arguments)
 
         if arguments in Look.DIRECTIONS:
-            proxy = Look(self.store)
+            proxy = Look(self.library, self.store)
             return proxy.execute(player, arguments)
 
         item = self.library.item.findItemByKeywords(player.character.inventory, arguments)
@@ -188,5 +188,5 @@ Get information about the date and time.
 
         ## Seasons based on months
         player.write("It is %s." % (time.SEASON_NAME[time.month]))
-         
+
 

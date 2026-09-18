@@ -1,6 +1,6 @@
 class Command:
     """
-    A base class for commands used by the CommandInterpreter. 
+    A base class for commands used by the CommandInterpreter.
     """
 
     def __init__(self, library, store):
@@ -16,9 +16,9 @@ class Command:
         """
 
         self.library = library
-        self.store = store 
+        self.store = store
 
-    def describe(self):
+    def describe(self) -> str | None:
         """
         Provide a one line description of this command.
 
@@ -33,7 +33,7 @@ class Command:
 
         pass
 
-    def help(self):
+    def help(self) -> str | None:
         """
         Provide a detailed description of this command, its arguments, and how
         it functions in the game.
