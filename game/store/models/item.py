@@ -1,5 +1,14 @@
+from __future__ import annotations
+
+from typing import TYPE_CHECKING
+
 from game.store.models.base import JsonSerializable
-from game.store.models.base import Model,NamedModel
+from game.store.models.base import Model, NamedModel
+
+if TYPE_CHECKING:
+    from game.store.models.character import Character
+    from game.store.models.room import Room
+
 
 class Decays(JsonSerializable):
     'An item that gradually decays over time.'
@@ -48,7 +57,7 @@ class Decays(JsonSerializable):
 
         self.time = data["time"]
 
-        if "timeleft" in data:
+        if "timeLeft" in data:
             self.time_left = data["timeLeft"]
 
         self.decay_product = data["decayProduct"]
@@ -57,6 +66,13 @@ class Decays(JsonSerializable):
 
 class HarvestProduct(JsonSerializable):
     'A product from an item that can be harvested.'
+
+    # The `name` attribute of the Item this harvest yields.  `None` until it
+    # is loaded from data. Required.
+    product: str | None
+
+    # The number of copies of `product` a single harvest yields. Required.
+    amount: int
 
     def __init__(self):
         self.product = None
@@ -69,10 +85,16 @@ class HarvestProduct(JsonSerializable):
         return self.fromJson(data)
 
     def toJson(self):
-        return self.__dict__
+        json = {}
+
+        json["product"] = self.product
+        json["amount"] = self.amount
+
+        return json
 
     def fromJson(self, data):
-        self.__dict__ = data
+        self.product = data["product"]
+        self.amount = data["amount"]
         return self
 
 
@@ -287,16 +309,16 @@ class RequiredMaterial(JsonSerializable):
     type: str
 
     # The amount of the material required in weight (kilograms). Required.
-    weight: int
+    weight: float
 
     # The required length of material (meters). Required.
-    length: int
+    length: float
 
     # The required width of material (meters). Required.
-    width: int
+    width: float
 
     # The required height of material (meters). Required.
-    height: int
+    height: float
 
     def __init__(self):
         self.type = "material"
@@ -386,15 +408,27 @@ class MeleeWeapon(JsonSerializable):
         'stabbing'
     ]
 
+    # The minimum damage this weapon does on striking.  Damage is a bare
+    # number rather than a measure of anything; combat is not implemented
+    # yet, so the scale is still undefined. Required.
+    #
+    # TODO Implement me.
+    min_damage: int
+
+    # The maximum damage this weapon can do on striking.  On the same scale
+    # as `min_damage`. Required.
+    #
+    # TODO Implement me.
+    max_damage: int
+
+    # What type of weapon this is, and so what kind of damage it does.  One
+    # of `TYPES`, or `NONE` for a weapon that has not been given a type.
+    # Required.
+    type: str
+
     def __init__(self):
-
-        # The minimum damage the weapon does on striking.
-        self.minDamage = 0
-
-        # The maximum damage the weapon can do on striking.
-        self.maxDamage = 0
-
-        # What type of weapon this is, what kind of damage does it do?
+        self.min_damage = 0
+        self.max_damage = 0
         self.type = MeleeWeapon.NONE
 
     def toPrototypeJson(self):
@@ -404,10 +438,18 @@ class MeleeWeapon(JsonSerializable):
         return self.fromJson(data)
 
     def toJson(self):
-        return self.__dict__
+        json = {}
+
+        json['minDamage'] = self.min_damage
+        json['maxDamage'] = self.max_damage
+        json['type'] = self.type
+
+        return json
 
     def fromJson(self, data):
-        self.__dict__ = data
+        self.min_damage = data['minDamage']
+        self.max_damage = data['maxDamage']
+        self.type = data['type']
         return self
 
 
@@ -437,15 +479,26 @@ class Wearable(JsonSerializable):
         'neck'
     ]
 
+    # The location on the body this item may be worn.  One of `LOCATIONS`,
+    # or `NONE` for an item that cannot be worn anywhere yet. Required.
+    location: str
+
+    # The warmth wearing this item grants.  A bare number rather than a
+    # measure of anything; exposure is not implemented yet, so the scale is
+    # still undefined. Optional, defaults to 0.
+    #
+    # TODO Implement me.
+    warmth: int
+
+    # The armor protection wearing this item grants.  On the same undefined
+    # scale as `warmth`. Optional, defaults to 0.
+    #
+    # TODO Implement me.
+    armor: int
+
     def __init__(self):
-
-        # The location this item may be worn on.
         self.location = Wearable.NONE
-
-        # The warmth wearing this item grants.
         self.warmth = 0
-
-        # The armor protection wearing this item grants.
         self.armor = 0
 
     def toPrototypeJson(self):
@@ -455,54 +508,147 @@ class Wearable(JsonSerializable):
         return self.fromJson(data)
 
     def toJson(self):
-        return self.__dict__
+        json = {}
+
+        json['location'] = self.location
+        json['warmth'] = self.warmth
+        json['armor'] = self.armor
+
+        return json
 
     def fromJson(self, data):
-        self.__dict__ = data
+        self.location = data['location']
+
+        if 'warmth' in data:
+            self.warmth = data['warmth']
+
+        if 'armor' in data:
+            self.armor = data['armor']
+
         return self
 
 
 class Container(JsonSerializable):
     'Provides the properties of items that are containers.  Composable into an Item to make it a Container.'
 
+    # The Items currently inside this container.  This is the container's
+    # contents at a moment in time, so `toPrototypeJson` leaves it out: a
+    # container created from a prototype starts empty. Optional.
+    contents: list[Item]
+
+    # The volume this container can hold (litres). Required.
+    volume: float
+
+    # The weight this container can hold (kilograms). Required.
+    weight_limit: float
+
     def __init__(self):
-
-        # An array of items currently contained with in the container.
         self.contents = []
-
-        # The volume the container can hold in litres.
         self.volume = 0
-
-        # The weight the container can hold in kilograms.
-        self.weightLimit = 0
+        self.weight_limit = 0
 
     def toPrototypeJson(self):
         json = {}
         json['volume'] = self.volume
-        json['weightLimit'] = self.weightLimit
+        json['weightLimit'] = self.weight_limit
         return json
 
     def fromPrototypeJson(self, data):
         self.volume = data['volume']
-        self.weightLimit = data['weightLimit']
+        self.weight_limit = data['weightLimit']
         return self
 
     def toJson(self):
         json = {}
         json['volume'] = self.volume
-        json['weightLimit'] = self.weightLimit
+        json['weightLimit'] = self.weight_limit
         json['contents'] = []
         for item in self.contents:
             json['contents'].append(item.toJson())
         return json
 
     def fromJson(self, data):
-        self.__dict__ = data
+        self.volume = data['volume']
+        self.weight_limit = data['weightLimit']
+
+        if 'contents' in data:
+            for item_json in data['contents']:
+                item = Item()
+                item.fromJson(item_json)
+                self.contents.append(item)
+
         return self
 
 
 class Item(NamedModel):
     'Represents an item in a game.'
+
+    # The Room this Item is lying in, if it is on the ground.  Runtime state
+    # set by the game as the item moves around the world, not something the
+    # item is loaded with. Optional.
+    room: Model | None
+
+    # The Character carrying, wearing or wielding this Item.  Runtime state,
+    # as with `room`. Optional.
+    character: Character | None
+
+    # The Container this Item is inside.  Runtime state, as with `room`.
+    # Optional.
+    container: Container | None
+
+    # The short description of the item.  Displayed when the item is looked
+    # at, or listed in the room the item is lying in. Required.
+    description: str
+
+    # Addendums to `description`, keyed by season ('winter', 'spring',
+    # 'summer', 'fall'), appended to it when the item is described during
+    # that season. Optional.
+    season_description: dict[str, str] | None
+
+    # The long description of the item.  Displayed when the item is examined
+    # closely. Required.
+    details: str
+
+    # Addendums to `details`, keyed by season as `season_description` is.
+    # Optional.
+    season_details: dict[str, str] | None
+
+    # The keywords that may be used to reference the item in commands, as a
+    # single space separated string. Eg. 'small greyish-brown stick'. Required.
+    keywords: str
+
+    # The length of the item, its longest dimension (meters). Required.
+    length: float
+
+    # The width of the item (meters). Required.
+    width: float
+
+    # The height of the item (meters). Required.
+    height: float
+
+    # How heavy the item is (kilograms). Required.
+    weight: float
+
+    # Can you pick up this item and carry it around? This only references
+    # whether the item is rooted to the ground in someway, not whether it
+    # is too heavy/large. Whether the character can actually pick it up
+    # based on its size/weight will be determined by the character's own
+    # attributes. Optional, defaults to `True`.
+    can_pick_up: bool
+
+    # Is this item growing from the ground? Is it a living
+    # plant/fungus/creature? Optional, defaults to `False`.
+    is_growing: bool
+
+    # Is this item embedded in the ground in someway, either as a boulder
+    # or on a foundation? Optional, defaults to `False`.
+    is_embedded: bool
+
+    # The traits of this item.  Various traits may be composed on to each
+    # items to give it a variety of uses and features.  Keyed by the trait's
+    # class name as it is written in this module. Eg. 'Material',
+    # 'Harvestable'. Required.
+    traits: dict[str, JsonSerializable]
 
     def __init__(self):
         super(Item, self).__init__()
@@ -512,41 +658,24 @@ class Item(NamedModel):
         self.character = None # If the item is on a character.
         self.container = None # If the item is in a container.
 
-        # The short description of the item.  Displayed when the item is looked at.
         self.description = ''
         self.season_description = None
 
-        # The long description of the item.  Displayed when the item is examined closely.
         self.details = ''
         self.season_details = None
 
-        # The list of keywords that may be used to reference the item in commands.
         self.keywords = ''
 
-        self.length = 0 # size in meters
-        self.width = 0 # size in meters
-        self.height = 0 # size in meters
+        self.length = 0
+        self.width = 0
+        self.height = 0
 
-        # How heavy the item is in kilograms.
         self.weight = 0
 
-        # Can you pick up this item and carry it around? This only references
-        # whether the item is rooted to the ground in someway, not whether it
-        # is too heavy/large. Whether the character can actually pick it up
-        # based on its size/weight will be determined by the character's own
-        # attributes.
         self.can_pick_up = True
-
-        # Is this item growing from the ground? Is it a living
-        # plant/fungus/creature?
         self.is_growing = False
-
-        # Is this item embedded in the ground in someway, either as a boulder
-        # or on a foundation?
         self.is_embedded = False
 
-        # The traits of this item.  Various traits may be composed on to each
-        # items to give it a variety of uses and features.
         self.traits = {}
 
     def toJson(self):
