@@ -68,14 +68,14 @@ Attempt to craft a material or tool with materials or tools.  If the [target] ca
 
         # Determine whether we have the materials necessary to craft the target.
         matchedMaterials = []
-        for requiredMaterial in craftTarget.traits["Craftable"].requiredMaterials:
+        for requiredMaterial in craftTarget.traits["Craftable"].required_materials:
             for material in materials:
                 if "Material" in material.traits \
                         and requiredMaterial.type in material.traits["Material"].types:
                     matchedMaterials.append(material)
                     break
 
-        if len(matchedMaterials) != len(craftTarget.traits["Craftable"].requiredMaterials):
+        if len(matchedMaterials) != len(craftTarget.traits["Craftable"].required_materials):
             player.write("You don't have all the materials needed to craft %s." % craftTarget.name)
             return
 
@@ -85,7 +85,7 @@ Attempt to craft a material or tool with materials or tools.  If the [target] ca
 
         # Confirm we have all the tools we need to craft it.
         matchedTools = []
-        for requiredTool in craftTarget.traits["Craftable"].requiredTools:
+        for requiredTool in craftTarget.traits["Craftable"].required_tools:
             # We're using 'material' here because the materials list will
             # contain both the materials needed and the tools needed.
             for material in materials:
@@ -94,7 +94,7 @@ Attempt to craft a material or tool with materials or tools.  If the [target] ca
                     matchedTools.append(material)
                     break
 
-        if len(matchedTools) != len(craftTarget.traits["Craftable"].requiredTools):
+        if len(matchedTools) != len(craftTarget.traits["Craftable"].required_tools):
             player.write("You don't have all the tools needed to craft %s." % craftTarget.name)
             return
 
