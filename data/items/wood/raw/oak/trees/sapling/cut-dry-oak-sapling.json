@@ -1,0 +1,16 @@
+{
+    "name": "cut dry oak sapling",
+    "description": "a small, cut, dry sapling with light gray, smooth bark",
+    "details": "A small sapling, cut through close to the ground and lying bent across the soil, the white, five-pointed pith showing at the centre of its clean-cut stump.  Its bark is light gray and smooth.  It carries no leaves, having been dead long enough that they have browned and fallen, and they lie scattered beneath it, oblong and seven-lobed.  The dry wood is brittle and snaps easily.",
+    "keywords": "cut dry oak sapling cut sapling dry sapling felled sapling small sapling light gray smooth bark oblong seven lobed leaves dry wood",
+    "length": 2,
+    "width": 1,
+    "height": 0.3,
+    "weight": 3.3,
+    "canPickUp": true,
+    "traits": {
+        "Material": {
+            "types": [ "dry-wood", "wood", "oak" ]
+        }
+    }
+}

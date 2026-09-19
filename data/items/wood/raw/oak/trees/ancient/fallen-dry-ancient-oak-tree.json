@@ -1,0 +1,16 @@
+{
+    "name": "fallen dry ancient oak tree",
+    "description": "a huge, ancient, fallen, dry tree with light gray, scaly bark",
+    "details": "A huge, ancient tree thrown down and torn out of the ground, its wide canopy collapsed into a great tangle of broken limbs and a towering plate of roots and packed earth standing on end where the trunk leaves the soil.  Its bark is light gray and scaly with shallow fissures.  It carries no leaves, having been dead long enough that they have browned and fallen, and they lie scattered beneath it, oblong and seven-lobed.  The seasoned wood is dry, the bark loosening from it, and checks run out from the heart toward the bark.",
+    "keywords": "fallen dry ancient oak tree fallen tree dry tree downed tree huge ancient tree light gray scaly bark shallow fissures oblong seven lobed leaves dry wood",
+    "length": 45,
+    "width": 18,
+    "height": 4,
+    "weight": 2980000,
+    "canPickUp": true,
+    "traits": {
+        "Material": {
+            "types": [ "dry-wood", "wood", "oak" ]
+        }
+    }
+}

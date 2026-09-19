@@ -1,0 +1,16 @@
+{
+    "name": "fallen green oak sapling",
+    "description": "a small, fallen, green sapling with light gray, smooth bark",
+    "details": "A small sapling pushed over and lying bent across the ground, its shallow roots torn free of the soil and still trailing clods of earth.  Its bark is light gray and smooth.  The wood is still green and heavy with sap, and wilting leaves, bright yellow-green, oblong and seven-lobed, still cling to the twigs.",
+    "keywords": "fallen green oak sapling fallen sapling green sapling downed sapling small sapling light gray smooth bark oblong seven lobed leaves green wood",
+    "length": 2,
+    "width": 1,
+    "height": 0.3,
+    "weight": 4.5,
+    "canPickUp": true,
+    "traits": {
+        "Material": {
+            "types": [ "green-wood", "wood", "oak" ]
+        }
+    }
+}

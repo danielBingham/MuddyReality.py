@@ -1,0 +1,16 @@
+{
+    "name": "fallen dry mature oak tree",
+    "description": "a large, mature, fallen, dry tree with light gray, scaly bark",
+    "details": "A large, mature tree thrown down and torn out of the ground, its wide canopy collapsed into a tangle of broken limbs and a great plate of roots and packed earth standing on end where the trunk leaves the soil.  Its bark is light gray and scaly with shallow fissures.  It carries no leaves, having been dead long enough that they have browned and fallen, and they lie scattered beneath it, oblong and seven-lobed.  The seasoned wood is dry, the bark loosening from it, and checks run out from the heart toward the bark.",
+    "keywords": "fallen dry mature oak tree fallen tree dry tree downed tree large mature tree light gray scaly bark shallow fissures oblong seven lobed leaves dry wood",
+    "length": 30,
+    "width": 12,
+    "height": 3,
+    "weight": 497000,
+    "canPickUp": true,
+    "traits": {
+        "Material": {
+            "types": [ "dry-wood", "wood", "oak" ]
+        }
+    }
+}
