@@ -63,23 +63,23 @@ class Reserves(JsonSerializable):
         self.thirst = 4000
         self.max_thirst = 4000
 
-        # Sleep is a measure of how much sleep you've had.  
-        self.sleep = 16 
+        # Sleep is a measure of how much sleep you've had.
+        self.sleep = 16
         self.max_sleep = 16
 
         # Wind measures how long you can push yourself during periods of
         # extreme effort.  As an example: how long can you sprint or run before
         # you need to stop and catch your breath?  Wind is determined by stamina.
         # 1 wind allows you to run for 60 seconds.
-        self.wind = 30 
-        self.max_wind = 30 
+        self.wind = 30
+        self.max_wind = 30
 
         # Energy is a measure of how much you can accomplish in a single day.
         # 1 energy is the cost equivalent of walking 1 meter.  Energy is
         # determined by stamina (stamina * 10), so as stamina increases, so too
         # will energy.
-        self.energy = 10000 
-        self.max_energy = 10000 
+        self.energy = 10000
+        self.max_energy = 10000
 
     def hungerString(self, prompt=False):
         hunger = ''
@@ -113,7 +113,7 @@ class Reserves(JsonSerializable):
         if prompt and self.thirst / self.max_thirst > 0.5:
             return thirst
 
-        if self.thirst / self.max_thirst > 0.5: 
+        if self.thirst / self.max_thirst > 0.5:
             thirst = 'hydrated'
 
         elif self.thirst / self.max_thirst <= 0.5 \
@@ -191,7 +191,7 @@ class Reserves(JsonSerializable):
     def toString(self):
         reservesString = ("You are %s, %s, and %s.\nYou are %s and %s." %
                           (self.hungerString(), self.thirstString(), self.sleepString(), self.windString(), self.energyString()))
-        return reservesString 
+        return reservesString
 
     def toJson(self):
         data = {}
@@ -265,7 +265,7 @@ class Wound(JsonSerializable):
 
     def toJson(self):
         data = {}
-        data['type'] = self.wound
+        data['type'] = self.type
         data['bleed'] = self.bleed
         data['infected'] = self.infected
         data['pain'] = self.pain
@@ -327,7 +327,7 @@ class Body(JsonSerializable):
 
 class QuadrapedalBody(Body):
 
-    # Body Parts 
+    # Body Parts
     BODY_HEAD = 'head'
     BODY_NECK = 'neck'
     BODY_CORE = 'core'
@@ -372,7 +372,7 @@ class QuadrapedalBody(Body):
 
 class BipedalBody(Body):
 
-    # Body Parts 
+    # Body Parts
     BODY_HEAD = 'head'
 
     BODY_NECK = 'neck'
@@ -462,7 +462,7 @@ class Character(NamedModel):
         self.inventory = []
 
         self.action = None
-        self.action_data = {} 
+        self.action_data = {}
         self.action_time = 0
 
         self.room = None
@@ -480,7 +480,7 @@ class Character(NamedModel):
         data['attributes'] = self.attributes.toJson()
         data['reserves'] = self.reserves.toJson()
 
-        data['bodyType'] = self.body_type 
+        data['bodyType'] = self.body_type
         data['body'] = self.body.toJson()
 
         data['inventory'] = []
@@ -542,7 +542,7 @@ class PlayerCharacter(Character):
     def __init__(self):
         super(PlayerCharacter, self).__init__()
 
-        self.is_player_character = True 
+        self.is_player_character = True
 
         self.account = None
         self.player = None

@@ -38,9 +38,9 @@ class RoomLibrary:
 
         if room.color and not time.night:
             output += self.getColorString(room)
-        output += self.wrapper.fill(str(room.title)) 
+        output += self.wrapper.fill(str(room.title))
         if room.color and not time.night:
-            output += self.getColorReset() 
+            output += self.getColorReset()
 
         output += "\n"
 
@@ -98,7 +98,7 @@ class RoomLibrary:
 
         for occupant in character.room.occupants:
             if occupant != character and isinstance(occupant, PlayerCharacter) \
-                    and occupant.player and occupant.position != occupant.POSITION_SLEEPING: 
+                    and occupant.player and occupant.position != occupant.POSITION_SLEEPING:
                 occupant.player.write(text)
 
     def findOccupantByKeywords(self, room, keywords):
@@ -117,7 +117,7 @@ class RoomLibrary:
         Character:  The matched occupant, or `None`.
         """
 
-        for occupant in self.occupants:
-            if occupant.name.startswith(keywords):  
-                return occupant 
-        return None 
+        for occupant in room.occupants:
+            if occupant.name.startswith(keywords):
+                return occupant
+        return None
