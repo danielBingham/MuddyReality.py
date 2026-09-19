@@ -11,6 +11,10 @@
     "traits": {
         "Food": {
             "calories": 840 
+        },
+        "Decays": {
+            "time": 345600,
+            "decayProduct": "rot"
         }
     }
 }

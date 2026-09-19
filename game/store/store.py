@@ -1,4 +1,6 @@
-import glob, os
+import glob
+import os
+import sys
 
 from game.store.models.world import World
 from game.store.models.account import Account
@@ -128,7 +130,7 @@ class ModelRepository:
         if id in self.repo:
             return self.repo[id]
         else:
-            return None
+            raise KeyError('No model identified by ' + id + ' found in repo.') 
 
     def hasId(self, id):
         """Determine whether a model identified by ``id`` exists in the repository.
@@ -179,6 +181,9 @@ class PrototypeRepository(ModelRepository):
 
         if self.hasId(id):
             model = self.getById(id)
+            if not model:
+                return None
+
             instance = self.type()
             instance.fromJson(model.toJson())
             return instance
@@ -224,7 +229,7 @@ class Store:
         data_directory: string
             The path to the data directory.
         """
-        self.data_directory = 'data/'
+        self.data_directory = data_directory 
         self.world_name = world
         self.world = World() 
 
@@ -235,6 +240,18 @@ class Store:
         self.rooms = ModelRepository(self, Room) 
         self.npcs = PrototypeRepository(self, Character) 
         self.items = PrototypeRepository(self, Item) 
+
+        self.items_that_decay = []
+
+    def getItemInstance(self, itemId):
+        instance = self.items.instance(itemId)
+        if not instance:
+            return None
+
+        if "Decay" in instance.traits:
+            self.items_that_decay.append(instance)
+        return instance
+
 
     def saveCharacter(self, character):
         """
@@ -334,10 +351,22 @@ class Store:
         for id in self.rooms.repo:
             room = self.rooms.getById(id)
 
+            if room is None:
+                print("Room(%d) not found!" % id)
+                sys.exit() 
+
             print("Connecting exits for Room(%s) '%s'..." % (str(id), room.title))
             for direction in room.exits:
                 exit = room.exits[direction]
-                exit.room_to = self.rooms.getById(exit.room_to)
+
+                exit_room_id = exit.room_to
+                exit.room_to = self.rooms.getById(exit_room_id)
+
+                if exit.room_to is None:
+                    print("Room(%d), referenced in '%s' direction of Room(%d) does not exist" % (exit_room_id, direction, id))
+                    sys.exit()
+                      
+
                 if Room.INVERT_DIRECTION[exit.direction] in exit.room_to.exits:
                     exit.exit_to = exit.room_to.exits[Room.INVERT_DIRECTION[exit.direction]]
 

@@ -88,3 +88,20 @@ class ItemLibrary:
                     return item
 
         return None
+
+    def addToRoom(self, item, room):
+        item.room = room
+        room.items.append(item)
+
+    def removeFromRoom(self, item):
+        room = item.room
+        if room:
+            pass
+
+        
+
+    def addToCharacterInventory(self, item, character):
+        pass
+
+    def addToContainer(self, item, container):
+        pass

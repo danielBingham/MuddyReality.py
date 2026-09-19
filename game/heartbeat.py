@@ -31,7 +31,7 @@ class Heartbeat:
         if time.loop % time.loops_a_minute == 0:
             self.advanceActions()
 
-        # Do reserves calculations once per game minute.
+        # Do reserves calculations (excluding sleep) once per game minute.
         if time.loop % time.loops_a_minute == 0:
             self.calculateReserves()
 
@@ -126,3 +126,14 @@ class Heartbeat:
 
                 # It takes two full nights of sleep to recover all of your energy.
                 self.library.character.adjustEnergy(character, 625)
+
+    def calculateDecay(self):
+        """
+        Do decay calculations for all items in the game.
+
+        Check each item in the game that decays and advance its decay timer.
+        For any item who's decay timer expires, replace the item with their
+        decay product.
+        """
+
+        pass

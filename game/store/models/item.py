@@ -1,6 +1,38 @@
 from game.store.models.base import JsonSerializable
 from game.store.models.base import NamedModel
 
+class Decays(JsonSerializable):
+    'An item that gradually decays over time.'
+
+    def __init__(self):
+        self.time = 0
+        self.time_left = self.time
+        self.decay_product = None
+
+    def toPrototypeJson(self):
+        json = self.toJson()
+        json['timeLeft'] = self.time
+        return json
+    
+
+    def fromPrototypeJson(self,  data):
+        self.fromJson(data)
+        self.time_left = self.time
+        return self
+
+    def toJson(self):
+        json = {}
+        json['time'] = self.time
+        json['timeLeft'] = self.time_left
+        json['decayProduct'] = self.decay_product
+        return json
+
+    def fromJson(self, data):
+        self.time = data['time']
+        self.time_left = data['timeLeft']
+        self.decay_product = data['decayProduct']
+        return self
+
 
 class HarvestProduct(JsonSerializable):
     'A product from an item that can be harvested.'
@@ -383,6 +415,7 @@ class Container(JsonSerializable):
         json['contents'] = []
         for item in self.contents:
             json['contents'].append(item.toJson())
+        return json
 
     def fromJson(self, data):
         self.__dict__ = data
@@ -394,6 +427,11 @@ class Item(NamedModel):
 
     def __init__(self):
         super(Item, self).__init__()
+
+        # Item's location in the game.
+        self.room = None # If the item is lying in a room.
+        self.character = None # If the item is on a character.
+        self.container = None # If the item is in a container.
 
         # The short description of the item.  Displayed when the item is looked at.
         self.description = ''

@@ -18,7 +18,7 @@ class Command:
         self.library = library
         self.store = store 
 
-    def describe(self):
+    def describe(self) -> str:
         """
         Provide a one line description of this command.
 
@@ -31,9 +31,9 @@ class Command:
             The one line description.
         """
 
-        pass
+        return "" 
 
-    def help(self):
+    def help(self) -> str:
         """
         Provide a detailed description of this command, its arguments, and how
         it functions in the game.
@@ -44,7 +44,7 @@ class Command:
             Help entry for this command.
         """
 
-        pass
+        return "" 
 
     def execute(self, player, arguments):
         """

@@ -1,0 +1,12 @@
+{
+    "name": "rot",
+    "description": "a pile of rotten mush",
+    "details": "A smelly pile of rotting mush.",
+    "keywords": "smelly pile rotten mush pile rotting mush",
+    "length": 0.2,
+    "width": 0.2,
+    "height": 0.2,
+    "weight": 1, 
+    "can_pick_up": true,
+    "traits": { }
+}
