@@ -424,9 +424,19 @@ class Item(NamedModel):
         # How heavy the item is in kilograms.
         self.weight = 0
 
-        # Can you pick up this item and carry it around?
+        # Can you pick up this item and carry it around? This only references
+        # whether the item is rooted to the ground in someway, not whether it
+        # is too heavy/large. Whether the character can actually pick it up
+        # based on its size/weight will be determined by the character's own
+        # attributes.
         self.can_pick_up = True
+
+        # Is this item growing from the ground? Is it a living
+        # plant/fungus/creature?
         self.is_growing = False
+
+        # Is this item embedded in the ground in someway, either as a boulder
+        # or on a foundation?
         self.is_embedded = False
 
         # The traits of this item.  Various traits may be composed on to each
