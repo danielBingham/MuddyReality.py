@@ -1,0 +1,16 @@
+{
+    "name": "fallen green ancient oak tree",
+    "description": "a huge, ancient, fallen, green tree with light gray, scaly bark",
+    "details": "A huge, ancient tree thrown down and torn out of the ground, its wide canopy collapsed into a great tangle of broken limbs and a towering plate of roots and packed earth standing on end where the trunk leaves the soil.  Its bark is light gray and scaly with shallow fissures.  The wood is still green and heavy with sap, and wilting leaves, bright yellow-green, oblong and seven-lobed, still cling to the twigs.",
+    "keywords": "fallen green ancient oak tree fallen tree green tree downed tree huge ancient tree light gray scaly bark shallow fissures oblong seven lobed leaves green wood",
+    "length": 45,
+    "width": 18,
+    "height": 4,
+    "weight": 4050000,
+    "canPickUp": true,
+    "traits": {
+        "Material": {
+            "types": [ "green-wood", "wood", "oak" ]
+        }
+    }
+}

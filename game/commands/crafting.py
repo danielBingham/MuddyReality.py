@@ -37,6 +37,10 @@ Attempt to craft a material or tool with materials or tools.  If the [target] ca
         craftKeywords = splitArguments[0].strip()
 
         # Get the craft target assuming the keyword is the whole name.
+        #
+        # TODO (?) Keyword matching rather than matching only the fully formed
+        # name. Look for the name first, and then do keyword matching and
+        # return the best match.
         craftTarget = self.store.items.getById(craftKeywords)
 
         if not craftTarget:
@@ -63,7 +67,7 @@ Attempt to craft a material or tool with materials or tools.  If the [target] ca
                 player.write("Couldn't find '%s' in your inventory." % keyword)
 
         # Determine whether we have the materials necessary to craft the target.
-        matchedMaterials = [] 
+        matchedMaterials = []
         for requiredMaterial in craftTarget.traits["Craftable"].requiredMaterials:
             for material in materials:
                 if "Material" in material.traits \
@@ -127,7 +131,7 @@ Harvest materials from an object in your environment.  The object can be either 
         item_harvest = item.traits["Harvestable"]
 
         calorie_cost_per_step = math.floor(item_harvest.calories / item_harvest.time)
-        player.character.reserves.calories -= calorie_cost_per_step 
+        player.character.reserves.calories -= calorie_cost_per_step
 
     def cancel(self, player):
         self.finish(player, True)
@@ -149,7 +153,7 @@ Harvest materials from an object in your environment.  The object can be either 
                 results += ", "
             results += str(amount) + " " + product.product
 
-            for instance in range(0, amount): 
+            for instance in range(0, amount):
                 productItem = self.store.items.instance(product.product)
                 player.character.inventory.append(productItem)
 
@@ -175,7 +179,7 @@ Harvest materials from an object in your environment.  The object can be either 
             harvest.harvested = True
 
         player.write("\nYou %s %s from %s." % (harvest.action, results, item.description))
-        self.library.room.writeToRoom(player.character, 
+        self.library.room.writeToRoom(player.character,
                                       "%s %s from %s." %
                                       (player.character.name, harvest.action, item.description))
 

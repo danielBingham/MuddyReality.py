@@ -1,6 +1,7 @@
-{ 
+{
     "name": "base",
     "width": 3,
+    "roomWidth": 100,
     "terrain": [
         [0, 0, 0],
         [0, 0, 0],

@@ -1,0 +1,16 @@
+{
+    "name": "cut dry young oak tree",
+    "description": "a young, cut, dry tree with light gray, scaly bark",
+    "details": "A young tree, felled and cut cleanly through at the base, lying its full length along the ground.  The cut face shows tight growth rings of light brown heartwood ringed by paler, nearly white sapwood.  Its bark is light gray and scaly with shallow fissures.  It carries no leaves, having been dead long enough that they have browned and fallen, and they lie scattered beneath it, oblong and seven-lobed.  The seasoned wood is dry, the bark loosening from it, and checks run out from the heart toward the bark.",
+    "keywords": "cut dry young oak tree cut tree dry tree felled tree young tree light gray scaly bark shallow fissures oblong seven lobed leaves dry wood",
+    "length": 10,
+    "width": 4,
+    "height": 1,
+    "weight": 1660,
+    "canPickUp": true,
+    "traits": {
+        "Material": {
+            "types": [ "dry-wood", "wood", "oak" ]
+        }
+    }
+}

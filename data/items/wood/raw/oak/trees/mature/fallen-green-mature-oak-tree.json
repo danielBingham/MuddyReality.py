@@ -1,0 +1,16 @@
+{
+    "name": "fallen green mature oak tree",
+    "description": "a large, mature, fallen, green tree with light gray, scaly bark",
+    "details": "A large, mature tree thrown down and torn out of the ground, its wide canopy collapsed into a tangle of broken limbs and a great plate of roots and packed earth standing on end where the trunk leaves the soil.  Its bark is light gray and scaly with shallow fissures.  The wood is still green and heavy with sap, and wilting leaves, bright yellow-green, oblong and seven-lobed, still cling to the twigs.",
+    "keywords": "fallen green mature oak tree fallen tree green tree downed tree large mature tree light gray scaly bark shallow fissures oblong seven lobed leaves green wood",
+    "length": 30,
+    "width": 12,
+    "height": 3,
+    "weight": 675000,
+    "canPickUp": true,
+    "traits": {
+        "Material": {
+            "types": [ "green-wood", "wood", "oak" ]
+        }
+    }
+}

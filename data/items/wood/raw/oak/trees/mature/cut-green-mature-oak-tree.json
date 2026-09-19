@@ -1,0 +1,16 @@
+{
+    "name": "cut green mature oak tree",
+    "description": "a large, mature, cut, green tree with light gray, scaly bark",
+    "details": "A large, mature tree, felled and cut cleanly through at the base, stretched across the ground with its wide canopy collapsed into a tangle of broken limbs.  The broad cut face shows tight growth rings of light brown heartwood ringed by paler, nearly white sapwood.  Its bark is light gray and scaly with shallow fissures.  The wood is still green and heavy with sap, and wilting leaves, bright yellow-green, oblong and seven-lobed, still cling to the twigs.",
+    "keywords": "cut green mature oak tree cut tree green tree felled tree large mature tree light gray scaly bark shallow fissures oblong seven lobed leaves green wood",
+    "length": 30,
+    "width": 12,
+    "height": 3,
+    "weight": 675000,
+    "canPickUp": true,
+    "traits": {
+        "Material": {
+            "types": [ "green-wood", "wood", "oak" ]
+        }
+    }
+}

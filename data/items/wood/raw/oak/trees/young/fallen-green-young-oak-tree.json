@@ -1,0 +1,16 @@
+{
+    "name": "fallen green young oak tree",
+    "description": "a young, fallen, green tree with light gray, scaly bark",
+    "details": "A young tree thrown down and torn out of the ground, lying its full length along the ground with a ragged plate of roots and packed earth standing on end where the trunk leaves the soil.  Its bark is light gray and scaly with shallow fissures.  The wood is still green and heavy with sap, and wilting leaves, bright yellow-green, oblong and seven-lobed, still cling to the twigs.",
+    "keywords": "fallen green young oak tree fallen tree green tree downed tree young tree light gray scaly bark shallow fissures oblong seven lobed leaves green wood",
+    "length": 10,
+    "width": 4,
+    "height": 1,
+    "weight": 2250,
+    "canPickUp": true,
+    "traits": {
+        "Material": {
+            "types": [ "green-wood", "wood", "oak" ]
+        }
+    }
+}

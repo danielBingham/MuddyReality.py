@@ -1,0 +1,42 @@
+{
+    "name": "mature saskatoon serviceberry shrub",
+    "description": "a tall, many-stemmed shrub with gray, shallowly furrowed bark",
+    "seasonDescription": {
+        "winter": " and slender, reddish-brown buds",
+        "spring": ", oval leaves with rounded tips, and crowded clusters of white flowers",
+        "summer": " and oval leaves with rounded tips",
+        "fall": " and oval leaves in shades of yellow, orange, and red"
+    },
+    "details": "A tall shrub grows here, nearly a small tree, its oldest stems as thick as a wrist and its suckers spread into a broad thicket.  The gray bark is shallowly furrowed on the old wood and still smooth and striped on the young stems.",
+    "seasonDetails": {
+        "winter": "The reddish-brown twigs end in narrow, pointed buds sheathed in several overlapping scales.  A few of the oldest stems have died back and stand gray and bare among the living ones.",
+        "spring": "The young leaves are oval to nearly round with blunt tips, coarsely toothed above the middle and smooth-edged below, and faintly downy beneath.  Short, crowded racemes of fragrant white flowers cover the whole thicket, each bloom carrying five narrow petals, and the shrub hums with bees.",
+        "summer": "The leaves are oval to nearly round, dull blue-green above and paler beneath, coarsely toothed along the upper half of each margin.",
+        "fall": "The leaves have turned to yellow, orange, and red.  They are oval to nearly round, coarsely toothed along the upper half of each margin."
+    },
+    "keywords": "mature saskatoon serviceberry juneberry shrub bush thicket gray furrowed bark oval leaves rounded tips stems tree",
+    "length": 4.5,
+    "width": 4.5,
+    "height": 5,
+    "weight": 150,
+    "canPickUp": false,
+    "isGrowing": true,
+    "traits": { 
+        "Harvestable": {
+            "products": [
+                {
+                    "product": "pile of serviceberries",
+                    "amount": 4
+                }
+            ],
+            "harvestTime": [ "June", "July", "August" ],
+            "preDescription": "The stems are bowed under clusters of dark purple berries, each dusted with a pale waxy bloom.",
+            "postDescription": "The shrub has been picked clean of berries.",
+            "consumed": false,
+            "calories": 225,
+            "time": 45,
+            "action": "pick",
+            "required_tools": [ ]
+        }
+    }
+}

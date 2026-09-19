@@ -1,4 +1,5 @@
 {
+    "color": [250, 250, 180],
     "description": "A thin strip of rocky shoreline between a large body of water and dense, old growth forest.",
     "exits": {
         "east": {
@@ -21,6 +22,6 @@
     ],
     "title": "A Rocky Beach",
     "water": 0,
-    "waterType": "no-water",
+    "waterType": "none",
     "waterVelocity": 0
 }

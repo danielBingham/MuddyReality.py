@@ -117,7 +117,7 @@ Drop an item described by [item] from your inventory and leave it in the current
             return
 
         item = self.library.item.findItemByKeywords(player.character.inventory, arguments)
-        if item: 
+        if item:
             player.character.inventory.remove(item)
             player.character.room.items.append(item)
             player.write("You drop " + item.description + ".")
@@ -152,7 +152,7 @@ Wield an item described by [item] as a weapon.
         if item:
             if "MeleeWeapon" in item.traits:
                 player.character.inventory.remove(item)
-                player.character.equipment['wield'] = item
+                player.character.body.worn['wield'] = item
                 player.write("You wield " + item.name + ".")
                 self.library.room.writeToRoom(player.character, player.character.name + ' wields ' + item.description + '.')
             else:

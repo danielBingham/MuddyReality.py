@@ -62,12 +62,23 @@ class Harvestable(JsonSerializable):
 
         self.products = []
 
+        # The time (months) during which harvest may occur.
+        # SCHEMA: Optional.
         self.harvest_time = None
 
-        self.pre_description = None 
+        # An optional description addendum for the parent item before harvest occurs.
+        # SCHEMA: Optional.
+        self.pre_description = None
+
+        # An optional description addendum for the parent item after harvest occurs.
+        # SCHEMA: Optional.
         self.post_description = None
 
         self.consumed = False
+
+        # When this item is harvested, it is consumed and replaced with another item.  This
+        # indicates the item or items it may be replaced with.
+        # SCHEMA: Optional.
         self.replaced_with = None
 
         self.calories = 0
@@ -164,8 +175,8 @@ class Material(JsonSerializable):
     'A material that can be used for crafting.'
 
     def __init__(self):
-        # An array of types this material fulfils 
-        self.types = [] 
+        # An array of types this material fulfils
+        self.types = []
 
     def toPrototypeJson(self):
         return self.toJson()
@@ -187,8 +198,8 @@ class Tool(JsonSerializable):
     'A tool that can be used for crafting.'
 
     def __init__(self):
-        # The an array of types this tool fulfills. 
-        self.type = [] 
+        # The an array of types this tool fulfills.
+        self.type = []
 
     def toPrototypeJson(self):
         return self.toJson()
@@ -214,13 +225,13 @@ class RequiredMaterial(JsonSerializable):
         # included by the material.  For example, if the requiredMartial types
         # are 'oak' and 'wood'.  Then a material must have both 'oak' and
         # 'wood' types to fulfill this requirement.
-        self.type = None 
+        self.type = None
 
-        # The amount of the material required in weight (kilograms). 
-        self.weight = 0 
+        # The amount of the material required in weight (kilograms).
+        self.weight = 0
 
         # The required length of material in meters.
-        self.length = 0 
+        self.length = 0
 
         # The required width of material in meters.
         self.width = 0
@@ -277,8 +288,8 @@ class Craftable(JsonSerializable):
             materials.append(material.toJson())
         data['requiredMaterials'] = materials
 
-        data['requiredTools'] = self.requiredTools 
-        return data 
+        data['requiredTools'] = self.requiredTools
+        return data
 
     def fromJson(self, data):
         for requiredMaterialJson in data['requiredMaterials']:
@@ -435,30 +446,40 @@ class Item(NamedModel):
 
         # The short description of the item.  Displayed when the item is looked at.
         self.description = ''
-        self.season_description = None 
+        self.season_description = None
 
         # The long description of the item.  Displayed when the item is examined closely.
         self.details = ''
-        self.season_details = None 
+        self.season_details = None
 
         # The list of keywords that may be used to reference the item in commands.
-        self.keywords = '' 
+        self.keywords = ''
 
-        self.length = 0 # size in meters 
-        self.width = 0 # size in meters 
+        self.length = 0 # size in meters
+        self.width = 0 # size in meters
         self.height = 0 # size in meters
 
         # How heavy the item is in kilograms.
         self.weight = 0
 
-        # Can you pick up this item and carry it around?
+        # Can you pick up this item and carry it around? This only references
+        # whether the item is rooted to the ground in someway, not whether it
+        # is too heavy/large. Whether the character can actually pick it up
+        # based on its size/weight will be determined by the character's own
+        # attributes.
         self.can_pick_up = True
+
+        # Is this item growing from the ground? Is it a living
+        # plant/fungus/creature?
         self.is_growing = False
+
+        # Is this item embedded in the ground in someway, either as a boulder
+        # or on a foundation?
         self.is_embedded = False
 
         # The traits of this item.  Various traits may be composed on to each
         # items to give it a variety of uses and features.
-        self.traits = {} 
+        self.traits = {}
 
     def toJson(self):
         json = {}
@@ -471,7 +492,7 @@ class Item(NamedModel):
         json['details'] = self.details
         if self.season_details:
             json['seasonDetails'] = self.season_details
-            
+
         json['keywords'] = self.keywords
 
         json['length'] = self.length

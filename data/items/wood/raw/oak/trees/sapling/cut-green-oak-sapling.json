@@ -1,0 +1,16 @@
+{
+    "name": "cut green oak sapling",
+    "description": "a small, cut, green sapling with light gray, smooth bark",
+    "details": "A small sapling, cut through close to the ground and lying bent across the soil, the white, five-pointed pith showing at the centre of its clean-cut stump.  Its bark is light gray and smooth.  The wood is still green and heavy with sap, and wilting leaves, bright yellow-green, oblong and seven-lobed, still cling to the twigs.",
+    "keywords": "cut green oak sapling cut sapling green sapling felled sapling small sapling light gray smooth bark oblong seven lobed leaves green wood",
+    "length": 2,
+    "width": 1,
+    "height": 0.3,
+    "weight": 4.5,
+    "canPickUp": true,
+    "traits": {
+        "Material": {
+            "types": [ "green-wood", "wood", "oak" ]
+        }
+    }
+}

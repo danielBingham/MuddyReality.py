@@ -1,0 +1,16 @@
+{
+    "name": "cut dry ancient oak tree",
+    "description": "a huge, ancient, cut, dry tree with light gray, scaly bark",
+    "details": "A huge, ancient tree, felled and cut cleanly through at the base, stretched across the ground with its wide canopy collapsed into a great tangle of broken limbs.  The broad cut face shows tight growth rings of light brown heartwood ringed by paler, nearly white sapwood.  Its bark is light gray and scaly with shallow fissures.  It carries no leaves, having been dead long enough that they have browned and fallen, and they lie scattered beneath it, oblong and seven-lobed.  The seasoned wood is dry, the bark loosening from it, and checks run out from the heart toward the bark.",
+    "keywords": "cut dry ancient oak tree cut tree dry tree felled tree huge ancient tree light gray scaly bark shallow fissures oblong seven lobed leaves dry wood",
+    "length": 45,
+    "width": 18,
+    "height": 4,
+    "weight": 2980000,
+    "canPickUp": true,
+    "traits": {
+        "Material": {
+            "types": [ "dry-wood", "wood", "oak" ]
+        }
+    }
+}

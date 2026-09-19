@@ -1,0 +1,42 @@
+{
+    "name": "young saskatoon serviceberry shrub",
+    "description": "a young, many-stemmed shrub with smooth gray bark",
+    "seasonDescription": {
+        "winter": " and slender, reddish-brown buds",
+        "spring": ", oval leaves with rounded tips, and crowded clusters of white flowers",
+        "summer": " and oval leaves with rounded tips",
+        "fall": " and oval leaves in shades of yellow, orange, and red"
+    },
+    "details": "A young shrub grows here, a clump of slender stems rising from a common base to stand a little above head height.  The bark is smooth and gray, marked with darker vertical striations.",
+    "seasonDetails": {
+        "winter": "The bare, reddish-brown twigs end in narrow, pointed buds sheathed in several overlapping scales.  A few young suckers push up through the leaf litter around the base of the clump.",
+        "spring": "The young leaves are oval to nearly round with blunt tips, coarsely toothed above the middle and smooth-edged below, and faintly downy beneath.  Short, crowded racemes of fragrant white flowers open alongside the leaves, each bloom carrying five narrow petals.",
+        "summer": "The leaves are oval to nearly round, dull blue-green above and paler beneath, coarsely toothed along the upper half of each margin.",
+        "fall": "The leaves have turned to yellow, orange, and red.  They are oval to nearly round, coarsely toothed along the upper half of each margin."
+    },
+    "keywords": "young saskatoon serviceberry juneberry shrub bush smooth gray bark oval leaves rounded tips stems tree",
+    "length": 2,
+    "width": 2,
+    "height": 2.5,
+    "weight": 4,
+    "canPickUp": false,
+    "isGrowing": true,
+    "traits": { 
+        "Harvestable": {
+            "products": [
+                {
+                    "product": "pile of serviceberries",
+                    "amount": 1
+                }
+            ],
+            "harvestTime": [ "June", "July", "August" ],
+            "preDescription": "The shrub is hung with clusters of dark purple berries, each dusted with a pale waxy bloom.",
+            "postDescription": "The shrub has been picked clean of berries.",
+            "consumed": false,
+            "calories": 100,
+            "time": 20,
+            "action": "pick",
+            "required_tools": [ ]
+        }
+    }
+}

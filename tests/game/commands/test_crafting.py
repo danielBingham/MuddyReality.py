@@ -3,7 +3,7 @@ from unittest.mock import Mock, call
 from game.library.library import Library
 from game.store.store import Store
 from game.player import Player
-from game.store.models.character import PlayerCharacter 
+from game.store.models.character import PlayerCharacter
 from game.store.models.room import Room
 from game.store.models.item import Item
 from game.store.models.world import World
@@ -211,7 +211,7 @@ def test_Craft_when_called_with_invalid_craft_target():
 
 def test_Craft_when_craft_target_isnt_craftable():
     """
-    Test a player attempting to craft something that exists, but isn't craftable. 
+    Test a player attempting to craft something that exists, but isn't craftable.
     """
 
     store = Store('test', '')
@@ -261,8 +261,8 @@ def test_Craft_when_called_with_missing_materials():
 
     craft_command.execute(player, 'tool with material')
 
-    player.write.assert_has_calls([ 
-        call("Couldn't find 'material' in your inventory."), 
+    player.write.assert_has_calls([
+        call("Couldn't find 'material' in your inventory."),
         call("You don't have all the materials needed to craft tool.")
     ])
 
@@ -296,8 +296,8 @@ def test_Craft_missing_one_material():
 
     craft_command.execute(player, 'tool with material, other material')
 
-    player.write.assert_has_calls([ 
-        call("Couldn't find 'other material' in your inventory."), 
+    player.write.assert_has_calls([
+        call("Couldn't find 'other material' in your inventory."),
         call("You don't have all the materials needed to craft tool.")
     ])
 
@@ -969,7 +969,7 @@ def test_Harvest_cancelled_partially_completed():
     player.character.room.items.append(instance)
 
     player.character.action = harvest_command
-    player.character.action_time = 5 
+    player.character.action_time = 5
     player.character.action_data = { "harvesting": instance, "in_inventory": False }
 
     harvest_command.cancel(player)
@@ -1014,7 +1014,7 @@ def test_Harvest_cancelled_incomplete():
     player.character.room.items.append(instance)
 
     player.character.action = harvest_command
-    player.character.action_time = 9 
+    player.character.action_time = 9
     player.character.action_data = { "harvesting": instance, "in_inventory": False }
 
     harvest_command.cancel(player)
@@ -1022,4 +1022,4 @@ def test_Harvest_cancelled_incomplete():
     player.write.assert_called_once_with("\nYou didn't harvest long enough to produce anything.")
     assert len([ item for item in player.character.inventory if item.getId() == harvested.getId()]) == 0
     assert len([ item for item in room.items if item.getId() == harvestable.getId() ]) == 1
-    assert instance.traits["Harvestable"].harvested is False 
+    assert instance.traits["Harvestable"].harvested is False

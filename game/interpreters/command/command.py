@@ -1,6 +1,6 @@
 class Command:
     """
-    A base class for commands used by the CommandInterpreter. 
+    A base class for commands used by the CommandInterpreter.
     """
 
     def __init__(self, library, store):
@@ -16,7 +16,7 @@ class Command:
         """
 
         self.library = library
-        self.store = store 
+        self.store = store
 
     def describe(self) -> str:
         """

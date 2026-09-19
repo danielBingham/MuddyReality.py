@@ -17,15 +17,29 @@ class ItemLibrary:
         time = self.store.world.time
 
         output = item.details
+
+        # The item may have seasonal detail addendums.
         if item.season_details and time.season in item.season_details:
             output += " " + item.season_details[time.season]
-        if "Harvestable" in item.traits:
-            if not item.traits["Harvestable"].harvest_time or time.MONTH_NAME[time.month] in item.traits["Harvestable"].harvest_time:
-                if item.traits["Harvestable"].harvested:
-                    output += " " + item.traits["Harvestable"].post_description
-                else:
-                    output += " " + item.traits["Harvestable"].pre_description
-        return output 
+
+        # If the item has the harvestable trait, then there's additional
+        # optional details.
+        if (
+            "Harvestable" in item.traits
+            and (
+                not item.traits["Harvestable"].harvest_time
+                or time.MONTH_NAME[time.month] in item.traits["Harvestable"].harvest_time
+            )
+        ):
+            if (
+                item.traits["Harvestable"].harvested
+                and "post_description" in item.traits["Harvestable"]
+            ):
+                output += " " + item.traits["Harvestable"].post_description
+            elif "pre_description" in item.traits["Harvestable"]:
+                output += " " + item.traits["Harvestable"].pre_description
+
+        return output
 
     def groundAction(self, item):
         if item.can_pick_up:
@@ -34,7 +48,7 @@ class ItemLibrary:
             return "growing"
         if item.is_embedded:
             return "embedded"
-        return None 
+        return None
 
     def matchKeywords(self, keywords, to_match):
         while True:

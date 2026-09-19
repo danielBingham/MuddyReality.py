@@ -1,0 +1,15 @@
+{
+    "name": "fallen green oak log",
+    "description": "a fallen, green log with light gray, scaly bark",
+    "details": "A thick section of tree trunk, broken off at both ends, with light gray bark broken into scaly plates by shallow fissures.  The splintered ends show tight growth rings of light brown heartwood ringed by paler, nearly white sapwood.  The wood is still green and heavy with sap, and the inner bark shows reddish-orange where it has been scraped away.",
+    "keywords": "fallen green oak log fallen log green log light gray scaly bark growth rings light brown heartwood white sapwood green wood",
+    "length": 5,
+    "width": 2,
+    "height": 2,
+    "weight": 20500,
+    "traits": {
+        "Material": {
+            "types": [ "green-wood", "wood", "log", "oak" ]
+        }
+    }
+}

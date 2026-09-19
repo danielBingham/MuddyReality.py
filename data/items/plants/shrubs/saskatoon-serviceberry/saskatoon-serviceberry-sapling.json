@@ -1,0 +1,26 @@
+{
+    "name": "saskatoon serviceberry sapling",
+    "description": "a slender sapling with smooth gray bark",
+    "seasonDescription": {
+        "winter": " and slender, reddish-brown buds",
+        "spring": ", small oval leaves with rounded tips and downy undersides",
+        "summer": " and small, oval leaves with rounded tips",
+        "fall": " and small, oval leaves in shades of yellow and orange"
+    },
+    "details": "A slender sapling grows here, standing about waist high.  It has smooth gray bark and one or two thin stems rising from a common base.",
+    "seasonDetails": {
+        "winter": "The slim, reddish-brown twigs end in narrow, pointed buds sheathed in several overlapping scales.",
+        "spring": "The young leaves are oval to nearly round with blunt tips, coarsely toothed above the middle and smooth-edged below, and faintly downy on their undersides.  The sapling is still too young to flower.",
+        "summer": "The leaves are oval to nearly round, dull blue-green above and paler beneath, with coarse teeth along the upper half of each margin.",
+        "fall": "The yellow and orange leaves are oval to nearly round, with coarse teeth along the upper half of each margin."
+    },
+    "keywords": "saskatoon serviceberry juneberry sapling smooth gray bark oval leaves rounded tips shrub bush tree",
+    "length": 0.5,
+    "width": 0.5,
+    "height": 1,
+    "weight": 0.3,
+    "canPickUp": false,
+    "isGrowing": true,
+    "traits": { 
+    }
+}

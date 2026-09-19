@@ -9,7 +9,7 @@ class Exit(JsonSerializable):
         self.room_from = room
 
         self.is_door = False
-        self.is_open = True 
+        self.is_open = True
 
         self.direction = ''
         self.room_to = None
@@ -64,10 +64,13 @@ class Room(Model):
 
         self.title = ''
         self.description = ''
-        self.color = [] 
+        self.color = []
 
+        # What type of water is present in this room (if any).
         self.water_type = self.WATER_NONE
+        # How deep the water in this room is. (meters)
         self.water = 0
+        # How fast the water in this room is moving. (meters per second)
         self.water_velocity = 0
 
         self.exits = {}
@@ -82,9 +85,10 @@ class Room(Model):
         json['description'] = self.description
         json['color'] = self.color
 
-        json['waterType'] = self.water_type
-        json['water'] = self.water
-        json['waterVelocity'] = self.water_velocity
+        if self.water_type != self.WATER_NONE:
+            json['waterType'] = self.water_type
+            json['water'] = self.water
+            json['waterVelocity'] = self.water_velocity
 
         json['exits'] = {}
         for direction in self.exits:
@@ -108,9 +112,10 @@ class Room(Model):
         self.description = data['description']
         self.color = data['color']
 
-        self.water_type = data['waterType']
-        self.water = data['water']
-        self.water_velocity = data['waterVelocity']
+        if 'waterType' in data:
+            self.water_type = data['waterType']
+            self.water = data['water']
+            self.water_velocity = data['waterVelocity']
 
         for direction in data['exits']:
             self.exits[direction] = Exit(self)
