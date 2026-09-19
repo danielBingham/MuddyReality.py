@@ -1,8 +1,19 @@
 from game.store.models.base import JsonSerializable
-from game.store.models.base import NamedModel
+from game.store.models.base import Model,NamedModel
 
 class Decays(JsonSerializable):
     'An item that gradually decays over time.'
+
+    # The time it takes this item to decay.
+    time: int
+
+    # The amount of time left out of the total time before this item
+    # decays.
+    time_left: int
+
+    # The `name` attribute of the Item that this Item will become when it
+    # decays. Optional.
+    decay_product: str | None
 
     def __init__(self):
         self.time = 0
@@ -11,9 +22,9 @@ class Decays(JsonSerializable):
 
     def toPrototypeJson(self):
         json = self.toJson()
-        json['timeLeft'] = self.time
+        json["timeLeft"] = self.time
         return json
-    
+
 
     def fromPrototypeJson(self,  data):
         self.fromJson(data)
@@ -22,15 +33,25 @@ class Decays(JsonSerializable):
 
     def toJson(self):
         json = {}
-        json['time'] = self.time
-        json['timeLeft'] = self.time_left
-        json['decayProduct'] = self.decay_product
+
+        json["time"] = self.time
+
+        # Only store the time_left if it has actually changed.
+        if self.time_left != self.time:
+            json["timeLeft"] = self.time_left
+
+        json["decayProduct"] = self.decay_product
+
         return json
 
     def fromJson(self, data):
-        self.time = data['time']
-        self.time_left = data['timeLeft']
-        self.decay_product = data['decayProduct']
+
+        self.time = data["time"]
+
+        if "timeleft" in data:
+            self.time_left = data["timeLeft"]
+
+        self.decay_product = data["decayProduct"]
         return self
 
 
@@ -58,33 +79,56 @@ class HarvestProduct(JsonSerializable):
 class Harvestable(JsonSerializable):
     'An item that can be harvested.'
 
+    # The products received from executing this particular harvest.
+    products: list[HarvestProduct]
+
+    # The time (months) during which harvest may occur. Optional.
+    harvest_time: list[str] | None
+
+    # A description addendum for the parent item before harvest occurs. Optional.
+    pre_description: str | None
+
+    # A description addendum for the parent item after harvest occurs. Optional.
+    post_description: str | None
+
+    # Is this item consumed when it is harvested?  If so, the item will be
+    # removed and optional replaced with the item identified by
+    # `replaced_with`. Required.
+    consumed: bool
+
+    # When this item is harvested, it is consumed and replaced with another item.  This
+    # indicates the item or items it may be replaced with. Optional.
+    replaced_with: str | None
+
+    # The number of calories expended by a character during the harvest process. Required.
+    calories: int
+
+    # The amount of time, in ticks, expended during the harvest process. Required.
+    time: int
+
+    # The name of the action used to havest this particular harvest and gain
+    # its products. eg. 'pick', 'cut', etc. Required.
+    action: str
+
+    # A list of tool types required to harvest this. Required.
+    required_tools: list[str]
+
+    # Whether this harvest has already been harvested. Optional.
+    harvested: bool
+
     def __init__(self):
 
         self.products = []
-
-        # The time (months) during which harvest may occur.
-        # SCHEMA: Optional.
         self.harvest_time = None
-
-        # An optional description addendum for the parent item before harvest occurs.
-        # SCHEMA: Optional.
         self.pre_description = None
-
-        # An optional description addendum for the parent item after harvest occurs.
-        # SCHEMA: Optional.
         self.post_description = None
-
         self.consumed = False
-
-        # When this item is harvested, it is consumed and replaced with another item.  This
-        # indicates the item or items it may be replaced with.
-        # SCHEMA: Optional.
         self.replaced_with = None
 
         self.calories = 0
         self.time = 0
 
-        self.action = 'harvest'
+        self.action = "harvest"
         self.required_tools = []
 
         self.harvested = False
@@ -98,52 +142,58 @@ class Harvestable(JsonSerializable):
     def toJson(self):
         json = {}
 
-        json['products'] = []
+        json["products"] = []
         for product in self.products:
-            json['products'].append(product.toJson())
+            json["products"].append(product.toJson())
 
         if self.harvest_time:
-            json['harvestTime'] = self.harvest_time
+            json["harvestTime"] = self.harvest_time
 
         if self.pre_description:
-            json['preDescription'] = self.pre_description
+            json["preDescription"] = self.pre_description
         if self.post_description:
-            json['postDescription'] = self.post_description
+            json["postDescription"] = self.post_description
 
-        json['consumed'] = self.consumed
+        json["consumed"] = self.consumed
 
         if self.replaced_with:
-            json['replacedWith'] = self.replaced_with
+            json["replacedWith"] = self.replaced_with
 
-        json['calories'] = self.calories
-        json['time'] = self.time
+        json["calories"] = self.calories
+        json["time"] = self.time
 
-        json['action'] = self.action
-        json['required_tools'] = self.required_tools
+        json["action"] = self.action
+        json["required_tools"] = self.required_tools
+
+        if self.harvested:
+            json["harvested"] = self.harvested
 
         return json
 
     def fromJson(self, data):
-        if 'harvestTime' in data:
-            self.harvest_time = data['harvestTime']
+        if "harvestTime" in data:
+            self.harvest_time = data["harvestTime"]
 
-        if 'preDescription' in data:
-            self.pre_description = data['preDescription']
-        if 'postDescription' in data:
-            self.post_description = data['postDescription']
+        if "preDescription" in data:
+            self.pre_description = data["preDescription"]
+        if "postDescription" in data:
+            self.post_description = data["postDescription"]
 
-        self.consumed = data['consumed']
+        self.consumed = data["consumed"]
 
-        if 'replacedWith' in data:
-            self.replaced_with = data['replacedWith']
+        if "replacedWith" in data:
+            self.replaced_with = data["replacedWith"]
 
-        self.calories = data['calories']
-        self.time = data['time']
+        self.calories = data["calories"]
+        self.time = data["time"]
 
-        self.action = data['action']
-        self.required_tools = data['required_tools']
+        self.action = data["action"]
+        self.required_tools = data["required_tools"]
 
-        for product_json in data['products']:
+        if "harvested" in data:
+            self.harvested = data["harvested"]
+
+        for product_json in data["products"]:
             product = HarvestProduct()
             product.fromJson(product_json)
             self.products.append(product)
@@ -153,6 +203,9 @@ class Harvestable(JsonSerializable):
 
 class Food(JsonSerializable):
     'A food that can be eaten for calories.'
+
+    # The number of calories gained from eating this food. Required.
+    calories: int
 
     def __init__(self):
         self.calories = 0
@@ -164,18 +217,23 @@ class Food(JsonSerializable):
         return self.fromJson(data)
 
     def toJson(self):
-        return self.__dict__
+        data = {}
+        data["calories"] = self.calories
+        return data
 
     def fromJson(self, data):
-        self.__dict__ = data
+        self.calories = int(data["calories"])
         return self
 
 
 class Material(JsonSerializable):
     'A material that can be used for crafting.'
 
+    # An array of material type names this Material fulfills. Eg. wood, oak,
+    # stone, etc. Required.
+    types: list[str]
+
     def __init__(self):
-        # An array of types this material fulfils
         self.types = []
 
     def toPrototypeJson(self):
@@ -197,8 +255,10 @@ class Material(JsonSerializable):
 class Tool(JsonSerializable):
     'A tool that can be used for crafting.'
 
+    # The list of tool types that this tool fulfills. Required.
+    type: list[str]
+
     def __init__(self):
-        # The an array of types this tool fulfills.
         self.type = []
 
     def toPrototypeJson(self):
@@ -220,23 +280,29 @@ class Tool(JsonSerializable):
 class RequiredMaterial(JsonSerializable):
     'A material requirement for crafting'
 
+    # The types of material required.  All of the types listed must be
+    # included by the material.  For example, if the requiredMartial types
+    # are 'oak' and 'wood'.  Then a material must have both 'oak' and
+    # 'wood' types to fulfill this requirement. Required.
+    type: str
+
+    # The amount of the material required in weight (kilograms). Required.
+    weight: int
+
+    # The required length of material (meters). Required.
+    length: int
+
+    # The required width of material (meters). Required.
+    width: int
+
+    # The required height of material (meters). Required.
+    height: int
+
     def __init__(self):
-        # The types of material required.  All of the types listed must be
-        # included by the material.  For example, if the requiredMartial types
-        # are 'oak' and 'wood'.  Then a material must have both 'oak' and
-        # 'wood' types to fulfill this requirement.
-        self.type = None
-
-        # The amount of the material required in weight (kilograms).
+        self.type = "material"
         self.weight = 0
-
-        # The required length of material in meters.
         self.length = 0
-
-        # The required width of material in meters.
         self.width = 0
-
-        # The required height of material in meters.
         self.height = 0
 
     def toPrototypeJson(self):
@@ -266,13 +332,15 @@ class RequiredMaterial(JsonSerializable):
 class Craftable(JsonSerializable):
     'An object that may be crafted.'
 
+    # A list of material types requried to craft this object. Required.
+    required_materials: list[RequiredMaterial]
+
+    # The types of tools that are required to craft this object. Required.
+    required_tools: list[str]
+
     def __init__(self):
-
-        # The materials that are required to craft this object.
-        self.requiredMaterials = []
-
-        # The types of tools that are required to craft this object.
-        self.requiredTools = []
+        self.required_materials = []
+        self.required_tools = []
 
     def toPrototypeJson(self):
         return self.toJson()
@@ -284,19 +352,19 @@ class Craftable(JsonSerializable):
         data = {}
 
         materials = []
-        for material in self.requiredMaterials:
+        for material in self.required_materials:
             materials.append(material.toJson())
         data['requiredMaterials'] = materials
 
-        data['requiredTools'] = self.requiredTools
+        data['requiredTools'] = self.required_tools
         return data
 
     def fromJson(self, data):
-        for requiredMaterialJson in data['requiredMaterials']:
-            requiredMaterial = RequiredMaterial()
-            requiredMaterial.fromJson(requiredMaterialJson)
-            self.requiredMaterials.append(requiredMaterial)
-        self.requiredTools = data['requiredTools']
+        for required_material_json in data['requiredMaterials']:
+            required_material = RequiredMaterial()
+            required_material.fromJson(required_material_json)
+            self.required_materials.append(required_material)
+        self.required_tools = data['requiredTools']
         return self
 
 
