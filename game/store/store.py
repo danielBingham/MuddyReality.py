@@ -7,7 +7,7 @@ from game.store.models.account import Account
 from game.store.models.character import Character
 from game.store.models.character import PlayerCharacter
 from game.store.models.room import Room
-from game.store.models.item import Item 
+from game.store.models.item import Item
 
 
 class ModelRepository:
@@ -16,7 +16,7 @@ class ModelRepository:
 
     Serves as a combination factory and repository for models of type ``type``,
     managing the dictionary of instances, allowing access to existing instances
-    and creation of new ones.  
+    and creation of new ones.
 
     Each instance stored represents a unique instance of that model - only one
     copy of that instance will ever exist in the game.
@@ -51,8 +51,8 @@ class ModelRepository:
             The Store that will contain this ModelRepository.  Responsible
             for loading the repositories saved data files to populate it, and
             for saving the repositories contents back to those data files.
-        type: Class 
-           The class of Model that this repository will manage. 
+        type: Class
+           The class of Model that this repository will manage.
         """
 
         self.store = store
@@ -79,7 +79,7 @@ class ModelRepository:
         """Create an instance of model ``type`` identified by ``id`` and add it to the repository.
 
         Creates a new instance of model ``type`` identified by ``id``, adds it
-        to the repository, and then returns it. 
+        to the repository, and then returns it.
 
         Parameters
         ----------
@@ -97,7 +97,7 @@ class ModelRepository:
         model = self.type()
         model.setId(id)
         self.add(model)
-        return model 
+        return model
 
     def load(self, path):
         """
@@ -130,7 +130,7 @@ class ModelRepository:
         if id in self.repo:
             return self.repo[id]
         else:
-            raise KeyError('No model identified by ' + id + ' found in repo.') 
+            return None
 
     def hasId(self, id):
         """Determine whether a model identified by ``id`` exists in the repository.
@@ -144,15 +144,12 @@ class ModelRepository:
             The identifier of the model we're seeking.
         """
 
-        if id in self.repo:
-            return True
-        else:
-            return False
+        return id in self.repo
 
 
 class PrototypeRepository(ModelRepository):
     """
-    Manages and provides access to a repository of model prototypes of type ``type``. 
+    Manages and provides access to a repository of model prototypes of type ``type``.
 
     Extends ModelRepository to allow management of a collection of model
     prototypes of type ``type``.  This is a model where there can be 0..N
@@ -200,11 +197,11 @@ class Store:
 
     Attributes
     ----------
-    players: list<Player> 
+    players: list<Player>
         A list of players currently logged into the game and playing.
     commands: list<Command>
         A list of all commands the players may execute in the game.
-    rooms: ModelRepository<Room> 
+    rooms: ModelRepository<Room>
         A ModelRepository of all Room locations that exist in the game.
     mobs: ModelPrototypeRepository<Character>
         A ModelPrototypeRepository of all the NPC characters that can exist in
@@ -229,17 +226,17 @@ class Store:
         data_directory: string
             The path to the data directory.
         """
-        self.data_directory = data_directory 
+        self.data_directory = data_directory
         self.world_name = world
-        self.world = World() 
+        self.world = World()
 
         self.players = []
 
-        self.accounts = ModelRepository(self, Account) 
+        self.accounts = ModelRepository(self, Account)
         self.characters = ModelRepository(self, PlayerCharacter)
-        self.rooms = ModelRepository(self, Room) 
-        self.npcs = PrototypeRepository(self, Character) 
-        self.items = PrototypeRepository(self, Item) 
+        self.rooms = ModelRepository(self, Room)
+        self.npcs = PrototypeRepository(self, Character)
+        self.items = PrototypeRepository(self, Item)
 
         self.items_that_decay = []
 
@@ -329,20 +326,20 @@ class Store:
 
         account_path = os.path.join(self.data_directory, 'accounts/')
         print("Loading accounts from %s..." % account_path)
-        account_list = glob.glob(account_path + '*.json') 
+        account_list = glob.glob(account_path + '*.json')
         for file_path in account_list:
             print("Loading account " + file_path + "...")
             account = self.accounts.load(file_path)
 
             characters = account.characters
-            account.characters = {} 
+            account.characters = {}
             for name in characters:
                 account.characters[name] = self.characters.getById(name)
                 account.characters[name].account = account
 
         room_path = os.path.join(self.data_directory, 'worlds', self.world.name, 'rooms/')
         print("Loading rooms from %s..." % room_path)
-        room_list = glob.glob(room_path + '*.json') 
+        room_list = glob.glob(room_path + '*.json')
         for file_path in room_list:
             print("Loading room " + file_path + "...")
             self.rooms.load(file_path)
@@ -353,7 +350,7 @@ class Store:
 
             if room is None:
                 print("Room(%d) not found!" % id)
-                sys.exit() 
+                sys.exit()
 
             print("Connecting exits for Room(%s) '%s'..." % (str(id), room.title))
             for direction in room.exits:
@@ -365,7 +362,7 @@ class Store:
                 if exit.room_to is None:
                     print("Room(%d), referenced in '%s' direction of Room(%d) does not exist" % (exit_room_id, direction, id))
                     sys.exit()
-                      
+
 
                 if Room.INVERT_DIRECTION[exit.direction] in exit.room_to.exits:
                     exit.exit_to = exit.room_to.exits[Room.INVERT_DIRECTION[exit.direction]]
@@ -377,7 +374,7 @@ class Store:
                 if self.items.hasId(itemId):
                     room.items.append(self.items.instance(itemId))
                 else:
-                    print("Error! No Item(%s) in Room(%s)." % (itemId, str(id))), 
+                    print("Error! No Item(%s) in Room(%s)." % (itemId, str(id))),
 
             print("Loading characters into Room(%s) '%s'..." % (str(id), room.title))
             occupants = room.occupants
