@@ -10,23 +10,6 @@
     "traits": {
         "Material": {
             "types": [ "green-wood", "wood", "oak" ]
-        },
-        "Harvestable": {
-            "products": [
-                {
-                    "product": "large oak branch",
-                    "amount": 10
-                },
-                {
-                    "product": "oak log",
-                    "amount": 2
-                }
-            ],
-            "consumed": true,
-            "calories": 420,
-            "time": 60,
-            "action": "cut",
-            "required_tools": [ "axe" ]
         }
     }
 }
