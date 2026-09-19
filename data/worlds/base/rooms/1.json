@@ -22,6 +22,6 @@
     ],
     "title": "A Rocky Beach",
     "water": 0,
-    "waterType": "no-water",
+    "waterType": "none",
     "waterVelocity": 0
 }

@@ -27,7 +27,7 @@ class MovementLibrary:
         if direction in room.exits:
             if room.exits[direction].is_door and room.exits[direction].is_open is False:
                 player.write("The way " + room.exits[direction] + " is closed.")
-                return False 
+                return False
 
             # These values are set based on time, not room size.
             #
@@ -45,7 +45,7 @@ class MovementLibrary:
                     player.write("You're too tired to run any further.")
                     return False
                 if player.character.reserves.wind - 1 < 0:
-                    player.character("You're too winded to run any further.")
+                    player.write("You're too winded to run any further.")
                     return False
 
                 speed = "run"
@@ -61,7 +61,7 @@ class MovementLibrary:
                     return False
 
                 speed = "sprint"
-                self.library.character.adjustCalories(player.charcter, -6)
+                self.library.character.adjustCalories(player.character, -6)
                 self.library.character.adjustEnergy(player.character, -150)
                 self.library.character.adjustWind(player.character, -3)
             else:
@@ -70,8 +70,8 @@ class MovementLibrary:
                     return False
 
                 speed = "walk"
-                player.character.reserves.calories -= 1 
-                player.character.reserves.energy -= 25 
+                player.character.reserves.calories -= 1
+                player.character.reserves.energy -= 25
 
             player.write("You %s %s." % (speed, direction))
 
