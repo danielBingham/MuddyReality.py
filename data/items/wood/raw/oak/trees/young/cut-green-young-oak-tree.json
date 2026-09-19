@@ -1,0 +1,16 @@
+{
+    "name": "cut green young oak tree",
+    "description": "a young, cut, green tree with light gray, scaly bark",
+    "details": "A young tree, felled and cut cleanly through at the base, lying its full length along the ground.  The cut face shows tight growth rings of light brown heartwood ringed by paler, nearly white sapwood.  Its bark is light gray and scaly with shallow fissures.  The wood is still green and heavy with sap, and wilting leaves, bright yellow-green, oblong and seven-lobed, still cling to the twigs.",
+    "keywords": "cut green young oak tree cut tree green tree felled tree young tree light gray scaly bark shallow fissures oblong seven lobed leaves green wood",
+    "length": 10,
+    "width": 4,
+    "height": 1,
+    "weight": 2250,
+    "canPickUp": true,
+    "traits": {
+        "Material": {
+            "types": [ "green-wood", "wood", "oak" ]
+        }
+    }
+}

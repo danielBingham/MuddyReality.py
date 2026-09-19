@@ -1,0 +1,16 @@
+{
+    "name": "fallen dry oak sapling",
+    "description": "a small, fallen, dry sapling with light gray, smooth bark",
+    "details": "A small sapling pushed over and lying bent across the ground, its shallow roots torn free of the soil and still trailing clods of earth.  Its bark is light gray and smooth.  It carries no leaves, having been dead long enough that they have browned and fallen, and they lie scattered beneath it, oblong and seven-lobed.  The dry wood is brittle and snaps easily.",
+    "keywords": "fallen dry oak sapling fallen sapling dry sapling downed sapling small sapling light gray smooth bark oblong seven lobed leaves dry wood",
+    "length": 2,
+    "width": 1,
+    "height": 0.3,
+    "weight": 3.3,
+    "canPickUp": true,
+    "traits": {
+        "Material": {
+            "types": [ "dry-wood", "wood", "oak" ]
+        }
+    }
+}

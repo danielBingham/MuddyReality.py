@@ -1,0 +1,16 @@
+{
+    "name": "cut dry mature oak tree",
+    "description": "a large, mature, cut, dry tree with light gray, scaly bark",
+    "details": "A large, mature tree, felled and cut cleanly through at the base, stretched across the ground with its wide canopy collapsed into a tangle of broken limbs.  The broad cut face shows tight growth rings of light brown heartwood ringed by paler, nearly white sapwood.  Its bark is light gray and scaly with shallow fissures.  It carries no leaves, having been dead long enough that they have browned and fallen, and they lie scattered beneath it, oblong and seven-lobed.  The seasoned wood is dry, the bark loosening from it, and checks run out from the heart toward the bark.",
+    "keywords": "cut dry mature oak tree cut tree dry tree felled tree large mature tree light gray scaly bark shallow fissures oblong seven lobed leaves dry wood",
+    "length": 30,
+    "width": 12,
+    "height": 3,
+    "weight": 497000,
+    "canPickUp": true,
+    "traits": {
+        "Material": {
+            "types": [ "dry-wood", "wood", "oak" ]
+        }
+    }
+}
