@@ -20,7 +20,8 @@ class Exit(JsonSerializable):
         json['is_door'] = self.is_door
         json['is_open'] = self.is_open
         json['direction'] = self.direction
-        json['room_to'] = self.room_to.getId()
+        if self.room_to:
+            json['room_to'] = self.room_to.getId()
         return json
 
     def fromJson(self, data):
@@ -30,7 +31,6 @@ class Exit(JsonSerializable):
         self.is_door = data['is_door']
         self.is_open = data['is_open']
         return self
-
 
 class Room(Model):
     "A location in the game world."
