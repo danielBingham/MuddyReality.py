@@ -4,7 +4,7 @@ from typing import TYPE_CHECKING
 
 from game.store.models.base import JsonSerializable
 from game.store.models.base import Model, NamedModel
-from game.store.models.validation import UnexpectedFieldError
+from game.library.validation.errors import UnexpectedFieldError
 from game.store.models.validation import Validator
 from game.store.models.validation import validateModel
 
