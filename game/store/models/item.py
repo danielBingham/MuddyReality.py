@@ -1,5 +1,19 @@
+from __future__ import annotations
+
+from typing import TYPE_CHECKING
+
 from game.store.models.base import JsonSerializable
-from game.store.models.base import Model,NamedModel
+from game.store.models.base import NamedModel
+from game.library.validation.errors import UnexpectedFieldError
+from game.library.validation.validator import (
+    Validator,
+    validateModel
+)
+
+if TYPE_CHECKING:
+    from game.store.models.character import Character
+    from game.store.models.room import Room
+
 
 class Decays(JsonSerializable):
     'An item that gradually decays over time.'
@@ -15,10 +29,38 @@ class Decays(JsonSerializable):
     # decays. Optional.
     decay_product: str | None
 
+    SCHEMA = {
+        "time": Validator().isType(int).isRequired(),
+        "timeLeft": Validator().isType(int),
+        "decayProduct": Validator().isType(str | None).isRequired(),
+    }
+
     def __init__(self):
         self.time = 0
         self.time_left = self.time
         self.decay_product = None
+
+    def validate(self, data):
+        """
+        Validate that `data` is valid Decays json.
+
+        Parameters
+        ----------
+        data:   dict
+            The json data to validate.
+
+        Returns
+        -------
+        True
+            If `data` is valid.
+
+        Raises
+        ------
+        ValidationError
+            If `data` does not match `SCHEMA`.
+        """
+
+        return validateModel(type(self), data)
 
     def toPrototypeJson(self):
         json = self.toJson()
@@ -46,9 +88,11 @@ class Decays(JsonSerializable):
 
     def fromJson(self, data):
 
+        self.validate(data)
+
         self.time = data["time"]
 
-        if "timeleft" in data:
+        if "timeLeft" in data:
             self.time_left = data["timeLeft"]
 
         self.decay_product = data["decayProduct"]
@@ -58,9 +102,43 @@ class Decays(JsonSerializable):
 class HarvestProduct(JsonSerializable):
     'A product from an item that can be harvested.'
 
+    # The `name` attribute of the Item this harvest yields.  `None` until it
+    # is loaded from data. Required.
+    product: str | None
+
+    # The number of copies of `product` a single harvest yields. Required.
+    amount: int
+
+    SCHEMA = {
+        "product": Validator().isType(str).isRequired(),
+        "amount": Validator().isType(int).isRequired(),
+    }
+
     def __init__(self):
         self.product = None
         self.amount = 0
+
+    def validate(self, data):
+        """
+        Validate that `data` is valid HarvestProduct json.
+
+        Parameters
+        ----------
+        data:   dict
+            The json data to validate.
+
+        Returns
+        -------
+        True
+            If `data` is valid.
+
+        Raises
+        ------
+        ValidationError
+            If `data` does not match `SCHEMA`.
+        """
+
+        return validateModel(type(self), data)
 
     def toPrototypeJson(self):
         return self.toJson()
@@ -69,10 +147,19 @@ class HarvestProduct(JsonSerializable):
         return self.fromJson(data)
 
     def toJson(self):
-        return self.__dict__
+        json = {}
+
+        json["product"] = self.product
+        json["amount"] = self.amount
+
+        return json
 
     def fromJson(self, data):
-        self.__dict__ = data
+
+        self.validate(data)
+
+        self.product = data["product"]
+        self.amount = data["amount"]
         return self
 
 
@@ -116,6 +203,20 @@ class Harvestable(JsonSerializable):
     # Whether this harvest has already been harvested. Optional.
     harvested: bool
 
+    SCHEMA = {
+        "products": Validator().isType(list[HarvestProduct]).isRequired(),
+        "harvestTime": Validator().isType(list[str]),
+        "preDescription": Validator().isType(str),
+        "postDescription": Validator().isType(str),
+        "consumed": Validator().isType(bool).isRequired(),
+        "replacedWith": Validator().isType(str),
+        "calories": Validator().isType(int).isRequired(),
+        "time": Validator().isType(int).isRequired(),
+        "action": Validator().isType(str).isRequired(),
+        "required_tools": Validator().isType(list[str]).isRequired(),
+        "harvested": Validator().isType(bool),
+    }
+
     def __init__(self):
 
         self.products = []
@@ -132,6 +233,28 @@ class Harvestable(JsonSerializable):
         self.required_tools = []
 
         self.harvested = False
+
+    def validate(self, data):
+        """
+        Validate that `data` is valid Harvestable json.
+
+        Parameters
+        ----------
+        data:   dict
+            The json data to validate.
+
+        Returns
+        -------
+        True
+            If `data` is valid.
+
+        Raises
+        ------
+        ValidationError
+            If `data` does not match `SCHEMA`.
+        """
+
+        return validateModel(type(self), data)
 
     def toPrototypeJson(self):
         return self.toJson()
@@ -171,6 +294,9 @@ class Harvestable(JsonSerializable):
         return json
 
     def fromJson(self, data):
+
+        self.validate(data)
+
         if "harvestTime" in data:
             self.harvest_time = data["harvestTime"]
 
@@ -207,8 +333,34 @@ class Food(JsonSerializable):
     # The number of calories gained from eating this food. Required.
     calories: int
 
+    SCHEMA = {
+        "calories": Validator().isType(int).isRequired(),
+    }
+
     def __init__(self):
         self.calories = 0
+
+    def validate(self, data):
+        """
+        Validate that `data` is valid Food json.
+
+        Parameters
+        ----------
+        data:   dict
+            The json data to validate.
+
+        Returns
+        -------
+        True
+            If `data` is valid.
+
+        Raises
+        ------
+        ValidationError
+            If `data` does not match `SCHEMA`.
+        """
+
+        return validateModel(type(self), data)
 
     def toPrototypeJson(self):
         return self.toJson()
@@ -222,6 +374,9 @@ class Food(JsonSerializable):
         return data
 
     def fromJson(self, data):
+
+        self.validate(data)
+
         self.calories = int(data["calories"])
         return self
 
@@ -233,8 +388,34 @@ class Material(JsonSerializable):
     # stone, etc. Required.
     types: list[str]
 
+    SCHEMA = {
+        "types": Validator().isType(list[str]).isRequired(),
+    }
+
     def __init__(self):
         self.types = []
+
+    def validate(self, data):
+        """
+        Validate that `data` is valid Material json.
+
+        Parameters
+        ----------
+        data:   dict
+            The json data to validate.
+
+        Returns
+        -------
+        True
+            If `data` is valid.
+
+        Raises
+        ------
+        ValidationError
+            If `data` does not match `SCHEMA`.
+        """
+
+        return validateModel(type(self), data)
 
     def toPrototypeJson(self):
         return self.toJson()
@@ -248,6 +429,9 @@ class Material(JsonSerializable):
         return data
 
     def fromJson(self, data):
+
+        self.validate(data)
+
         self.types = data['types']
         return self
 
@@ -258,8 +442,34 @@ class Tool(JsonSerializable):
     # The list of tool types that this tool fulfills. Required.
     type: list[str]
 
+    SCHEMA = {
+        "type": Validator().isType(list[str]).isRequired(),
+    }
+
     def __init__(self):
         self.type = []
+
+    def validate(self, data):
+        """
+        Validate that `data` is valid Tool json.
+
+        Parameters
+        ----------
+        data:   dict
+            The json data to validate.
+
+        Returns
+        -------
+        True
+            If `data` is valid.
+
+        Raises
+        ------
+        ValidationError
+            If `data` does not match `SCHEMA`.
+        """
+
+        return validateModel(type(self), data)
 
     def toPrototypeJson(self):
         return self.toJson()
@@ -273,6 +483,9 @@ class Tool(JsonSerializable):
         return data
 
     def fromJson(self, data):
+
+        self.validate(data)
+
         self.type = data['type']
         return self
 
@@ -287,16 +500,24 @@ class RequiredMaterial(JsonSerializable):
     type: str
 
     # The amount of the material required in weight (kilograms). Required.
-    weight: int
+    weight: float
 
     # The required length of material (meters). Required.
-    length: int
+    length: float
 
     # The required width of material (meters). Required.
-    width: int
+    width: float
 
     # The required height of material (meters). Required.
-    height: int
+    height: float
+
+    SCHEMA = {
+        "type": Validator().isType(str).isRequired(),
+        "weight": Validator().isType(float).isRequired(),
+        "length": Validator().isType(float).isRequired(),
+        "width": Validator().isType(float).isRequired(),
+        "height": Validator().isType(float).isRequired(),
+    }
 
     def __init__(self):
         self.type = "material"
@@ -304,6 +525,28 @@ class RequiredMaterial(JsonSerializable):
         self.length = 0
         self.width = 0
         self.height = 0
+
+    def validate(self, data):
+        """
+        Validate that `data` is valid RequiredMaterial json.
+
+        Parameters
+        ----------
+        data:   dict
+            The json data to validate.
+
+        Returns
+        -------
+        True
+            If `data` is valid.
+
+        Raises
+        ------
+        ValidationError
+            If `data` does not match `SCHEMA`.
+        """
+
+        return validateModel(type(self), data)
 
     def toPrototypeJson(self):
         return self.toJson()
@@ -321,6 +564,9 @@ class RequiredMaterial(JsonSerializable):
         return data
 
     def fromJson(self, data):
+
+        self.validate(data)
+
         self.type = data['type']
         self.weight = data['weight']
         self.length = data['length']
@@ -338,9 +584,36 @@ class Craftable(JsonSerializable):
     # The types of tools that are required to craft this object. Required.
     required_tools: list[str]
 
+    SCHEMA = {
+        "requiredMaterials": Validator().isType(list[RequiredMaterial]).isRequired(),
+        "requiredTools": Validator().isType(list[str]).isRequired(),
+    }
+
     def __init__(self):
         self.required_materials = []
         self.required_tools = []
+
+    def validate(self, data):
+        """
+        Validate that `data` is valid Craftable json.
+
+        Parameters
+        ----------
+        data:   dict
+            The json data to validate.
+
+        Returns
+        -------
+        True
+            If `data` is valid.
+
+        Raises
+        ------
+        ValidationError
+            If `data` does not match `SCHEMA`.
+        """
+
+        return validateModel(type(self), data)
 
     def toPrototypeJson(self):
         return self.toJson()
@@ -360,6 +633,9 @@ class Craftable(JsonSerializable):
         return data
 
     def fromJson(self, data):
+
+        self.validate(data)
+
         for required_material_json in data['requiredMaterials']:
             required_material = RequiredMaterial()
             required_material.fromJson(required_material_json)
@@ -386,16 +662,56 @@ class MeleeWeapon(JsonSerializable):
         'stabbing'
     ]
 
+    # The minimum damage this weapon does on striking.  Damage is a bare
+    # number rather than a measure of anything; combat is not implemented
+    # yet, so the scale is still undefined. Required.
+    #
+    # TODO Implement me.
+    min_damage: int
+
+    # The maximum damage this weapon can do on striking.  On the same scale
+    # as `min_damage`. Required.
+    #
+    # TODO Implement me.
+    max_damage: int
+
+    # What type of weapon this is, and so what kind of damage it does.  One
+    # of `TYPES`, or `NONE` for a weapon that has not been given a type.
+    # Required.
+    type: str
+
+    SCHEMA = {
+        "minDamage": Validator().isType(int).isRequired(),
+        "maxDamage": Validator().isType(int).isRequired(),
+        "type": Validator().isType(str).isOneOf(TYPES + [NONE]).isRequired(),
+    }
+
     def __init__(self):
-
-        # The minimum damage the weapon does on striking.
-        self.minDamage = 0
-
-        # The maximum damage the weapon can do on striking.
-        self.maxDamage = 0
-
-        # What type of weapon this is, what kind of damage does it do?
+        self.min_damage = 0
+        self.max_damage = 0
         self.type = MeleeWeapon.NONE
+
+    def validate(self, data):
+        """
+        Validate that `data` is valid MeleeWeapon json.
+
+        Parameters
+        ----------
+        data:   dict
+            The json data to validate.
+
+        Returns
+        -------
+        True
+            If `data` is valid.
+
+        Raises
+        ------
+        ValidationError
+            If `data` does not match `SCHEMA`.
+        """
+
+        return validateModel(type(self), data)
 
     def toPrototypeJson(self):
         return self.toJson()
@@ -404,10 +720,21 @@ class MeleeWeapon(JsonSerializable):
         return self.fromJson(data)
 
     def toJson(self):
-        return self.__dict__
+        json = {}
+
+        json['minDamage'] = self.min_damage
+        json['maxDamage'] = self.max_damage
+        json['type'] = self.type
+
+        return json
 
     def fromJson(self, data):
-        self.__dict__ = data
+
+        self.validate(data)
+
+        self.min_damage = data['minDamage']
+        self.max_damage = data['maxDamage']
+        self.type = data['type']
         return self
 
 
@@ -437,16 +764,55 @@ class Wearable(JsonSerializable):
         'neck'
     ]
 
+    # The location on the body this item may be worn.  One of `LOCATIONS`,
+    # or `NONE` for an item that cannot be worn anywhere yet. Required.
+    location: str
+
+    # The warmth wearing this item grants.  A bare number rather than a
+    # measure of anything; exposure is not implemented yet, so the scale is
+    # still undefined. Optional, defaults to 0.
+    #
+    # TODO Implement me.
+    warmth: int
+
+    # The armor protection wearing this item grants.  On the same undefined
+    # scale as `warmth`. Optional, defaults to 0.
+    #
+    # TODO Implement me.
+    armor: int
+
+    SCHEMA = {
+        "location": Validator().isType(str).isOneOf(LOCATIONS + [NONE]).isRequired(),
+        "warmth": Validator().isType(int),
+        "armor": Validator().isType(int),
+    }
+
     def __init__(self):
-
-        # The location this item may be worn on.
         self.location = Wearable.NONE
-
-        # The warmth wearing this item grants.
         self.warmth = 0
-
-        # The armor protection wearing this item grants.
         self.armor = 0
+
+    def validate(self, data):
+        """
+        Validate that `data` is valid Wearable json.
+
+        Parameters
+        ----------
+        data:   dict
+            The json data to validate.
+
+        Returns
+        -------
+        True
+            If `data` is valid.
+
+        Raises
+        ------
+        ValidationError
+            If `data` does not match `SCHEMA`.
+        """
+
+        return validateModel(type(self), data)
 
     def toPrototypeJson(self):
         return self.toJson()
@@ -455,54 +821,218 @@ class Wearable(JsonSerializable):
         return self.fromJson(data)
 
     def toJson(self):
-        return self.__dict__
+        json = {}
+
+        json['location'] = self.location
+        json['warmth'] = self.warmth
+        json['armor'] = self.armor
+
+        return json
 
     def fromJson(self, data):
-        self.__dict__ = data
+
+        self.validate(data)
+
+        self.location = data['location']
+
+        if 'warmth' in data:
+            self.warmth = data['warmth']
+
+        if 'armor' in data:
+            self.armor = data['armor']
+
         return self
 
 
 class Container(JsonSerializable):
     'Provides the properties of items that are containers.  Composable into an Item to make it a Container.'
 
+    # The Items currently inside this container.  This is the container's
+    # contents at a moment in time, so `toPrototypeJson` leaves it out: a
+    # container created from a prototype starts empty. Optional.
+    contents: list[Item]
+
+    # The volume this container can hold (litres). Required.
+    volume: float
+
+    # The weight this container can hold (kilograms). Required.
+    weight_limit: float
+
+    SCHEMA = {
+        "volume": Validator().isType(float).isRequired(),
+        "weightLimit": Validator().isType(float).isRequired(),
+        # `Item` is defined below this class, so the type is deferred behind a
+        # function that isn't called until the data is validated.
+        "contents": Validator().isType(lambda: list[Item]),
+    }
+
     def __init__(self):
-
-        # An array of items currently contained with in the container.
         self.contents = []
-
-        # The volume the container can hold in litres.
         self.volume = 0
+        self.weight_limit = 0
 
-        # The weight the container can hold in kilograms.
-        self.weightLimit = 0
+    def validate(self, data):
+        """
+        Validate that `data` is valid Container json.
+
+        Parameters
+        ----------
+        data:   dict
+            The json data to validate.
+
+        Returns
+        -------
+        True
+            If `data` is valid.
+
+        Raises
+        ------
+        ValidationError
+            If `data` does not match `SCHEMA`.
+        """
+
+        return validateModel(type(self), data)
 
     def toPrototypeJson(self):
         json = {}
         json['volume'] = self.volume
-        json['weightLimit'] = self.weightLimit
+        json['weightLimit'] = self.weight_limit
         return json
 
     def fromPrototypeJson(self, data):
         self.volume = data['volume']
-        self.weightLimit = data['weightLimit']
+        self.weight_limit = data['weightLimit']
         return self
 
     def toJson(self):
         json = {}
         json['volume'] = self.volume
-        json['weightLimit'] = self.weightLimit
+        json['weightLimit'] = self.weight_limit
         json['contents'] = []
         for item in self.contents:
             json['contents'].append(item.toJson())
         return json
 
     def fromJson(self, data):
-        self.__dict__ = data
+
+        self.validate(data)
+
+        self.volume = data['volume']
+        self.weight_limit = data['weightLimit']
+
+        if 'contents' in data:
+            for item_json in data['contents']:
+                item = Item()
+                item.fromJson(item_json)
+                self.contents.append(item)
+
         return self
+
+
+# The traits that may be composed on to an Item, keyed by the name they are
+# written under in an Item's `traits`.  Every trait in this module belongs
+# here; an item naming a trait that isn't listed fails validation.
+TRAITS = {
+    'Craftable': Craftable,
+    'Container': Container,
+    'Decays': Decays,
+    'Food': Food,
+    'Harvestable': Harvestable,
+    'Material': Material,
+    'MeleeWeapon': MeleeWeapon,
+    'Tool': Tool,
+    'Wearable': Wearable,
+}
 
 
 class Item(NamedModel):
     'Represents an item in a game.'
+
+    # The Room this Item is lying in, if it is on the ground.  Runtime state
+    # set by the game as the item moves around the world, not something the
+    # item is loaded with. Optional.
+    room: Room | None
+
+    # The Character carrying, wearing or wielding this Item.  Runtime state,
+    # as with `room`. Optional.
+    character: Character | None
+
+    # The Container this Item is inside.  Runtime state, as with `room`.
+    # Optional.
+    container: Container | None
+
+    # The short description of the item.  Displayed when the item is looked
+    # at, or listed in the room the item is lying in. Required.
+    description: str
+
+    # Addendums to `description`, keyed by season ('winter', 'spring',
+    # 'summer', 'fall'), appended to it when the item is described during
+    # that season. Optional.
+    season_description: dict[str, str] | None
+
+    # The long description of the item.  Displayed when the item is examined
+    # closely. Required.
+    details: str
+
+    # Addendums to `details`, keyed by season as `season_description` is.
+    # Optional.
+    season_details: dict[str, str] | None
+
+    # The keywords that may be used to reference the item in commands, as a
+    # single space separated string. Eg. 'small greyish-brown stick'. Required.
+    keywords: str
+
+    # The length of the item, its longest dimension (meters). Required.
+    length: float
+
+    # The width of the item (meters). Required.
+    width: float
+
+    # The height of the item (meters). Required.
+    height: float
+
+    # How heavy the item is (kilograms). Required.
+    weight: float
+
+    # Can you pick up this item and carry it around? This only references
+    # whether the item is rooted to the ground in someway, not whether it
+    # is too heavy/large. Whether the character can actually pick it up
+    # based on its size/weight will be determined by the character's own
+    # attributes. Optional, defaults to `True`.
+    can_pick_up: bool
+
+    # Is this item growing from the ground? Is it a living
+    # plant/fungus/creature? Optional, defaults to `False`.
+    is_growing: bool
+
+    # Is this item embedded in the ground in someway, either as a boulder
+    # or on a foundation? Optional, defaults to `False`.
+    is_embedded: bool
+
+    # The traits of this item.  Various traits may be composed on to each
+    # items to give it a variety of uses and features.  Keyed by the trait's
+    # class name as it is written in this module. Eg. 'Material',
+    # 'Harvestable'. Required.
+    traits: dict[str, JsonSerializable]
+
+    SCHEMA = {
+        "name": Validator().isType(str).isRequired(),
+        "description": Validator().isType(str).isRequired(),
+        "seasonDescription": Validator().isType(dict[str, str]),
+        "details": Validator().isType(str).isRequired(),
+        "seasonDetails": Validator().isType(dict[str, str]),
+        "keywords": Validator().isType(str).isRequired(),
+        "length": Validator().isType(float).isRequired(),
+        "width": Validator().isType(float).isRequired(),
+        "height": Validator().isType(float).isRequired(),
+        "weight": Validator().isType(float).isRequired(),
+        "canPickUp": Validator().isType(bool),
+        "isGrowing": Validator().isType(bool),
+        "isEmbedded": Validator().isType(bool),
+        # Each trait is checked against its own schema by `validate`, which
+        # knows which model belongs to which key.
+        "traits": Validator().isType(dict[str, dict]).isRequired(),
+    }
 
     def __init__(self):
         super(Item, self).__init__()
@@ -512,42 +1042,58 @@ class Item(NamedModel):
         self.character = None # If the item is on a character.
         self.container = None # If the item is in a container.
 
-        # The short description of the item.  Displayed when the item is looked at.
         self.description = ''
         self.season_description = None
 
-        # The long description of the item.  Displayed when the item is examined closely.
         self.details = ''
         self.season_details = None
 
-        # The list of keywords that may be used to reference the item in commands.
         self.keywords = ''
 
-        self.length = 0 # size in meters
-        self.width = 0 # size in meters
-        self.height = 0 # size in meters
+        self.length = 0
+        self.width = 0
+        self.height = 0
 
-        # How heavy the item is in kilograms.
         self.weight = 0
 
-        # Can you pick up this item and carry it around? This only references
-        # whether the item is rooted to the ground in someway, not whether it
-        # is too heavy/large. Whether the character can actually pick it up
-        # based on its size/weight will be determined by the character's own
-        # attributes.
         self.can_pick_up = True
-
-        # Is this item growing from the ground? Is it a living
-        # plant/fungus/creature?
         self.is_growing = False
-
-        # Is this item embedded in the ground in someway, either as a boulder
-        # or on a foundation?
         self.is_embedded = False
 
-        # The traits of this item.  Various traits may be composed on to each
-        # items to give it a variety of uses and features.
         self.traits = {}
+
+    def validate(self, data):
+        """
+        Validate that `data` is valid Item json, including the json of each
+        of its traits.
+
+        Parameters
+        ----------
+        data:   dict
+            The json data to validate.
+
+        Returns
+        -------
+        True
+            If `data` is valid.
+
+        Raises
+        ------
+        ValidationError
+            If `data`, or the data of any of its traits, does not match the
+            relevant `SCHEMA`.
+        """
+
+        validateModel(type(self), data)
+
+        for trait in data['traits']:
+            if trait not in TRAITS:
+                raise UnexpectedFieldError('Item.traits.%s' % trait,
+                                           'there is no such trait.')
+
+            TRAITS[trait]().validate(data['traits'][trait])
+
+        return True
 
     def toJson(self):
         json = {}
@@ -579,6 +1125,9 @@ class Item(NamedModel):
         return json
 
     def fromJson(self, data):
+
+        self.validate(data)
+
         self.setId(data['name'])
 
         self.description = data['description']

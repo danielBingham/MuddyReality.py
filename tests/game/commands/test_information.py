@@ -153,7 +153,7 @@ room_json = {
     "description": "A test room.  Used for testing.",
     "color": [ 255,255,255 ],
     "water": 0,
-    "waterType": "no-water",
+    "waterType": "none",
     "waterVelocity": 0,
     "exits": {
         "east": {
@@ -172,7 +172,7 @@ room_east_json = {
     "description": "A test room to the east.  Used for testing.",
     "color": [ 255,255,255 ],
     "water": 0,
-    "waterType": "no-water",
+    "waterType": "none",
     "waterVelocity": 0,
     "exits": {
         "west": {

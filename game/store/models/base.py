@@ -1,22 +1,81 @@
+from __future__ import annotations
+
 import os
 import json
 
+from typing import TYPE_CHECKING, ClassVar
+
+if TYPE_CHECKING:
+    from game.library.validation.validator import Validator
+
 
 class JsonSerializable:
+    'An object that may be serialized to JSON for storage in the filesystem.'
+
+    # The json fields that will be serialized, with their validators.
+    SCHEMA: ClassVar[dict[str, Validator]] = {}
+
     def __init__(self):
         pass
 
+    def validate(self, data) -> bool:
+        """
+        Validate that `data` is valid serialized data for this serializable.
+
+        Parameters
+        ----------
+        data:   dict
+            The json data to validate
+
+        Returns
+        -------
+        True
+            If `data` is valid.
+
+        Raises
+        ------
+        ValidationError
+            If `data` does not match `SCHEMA`.
+        """
+
+        return True
+
     def toJson(self):
-        return {} 
+        """
+        Convert this object to JSON for storage.
+
+        Returns
+        -------
+        dict
+            A dictionary containing the json data that can be directly written
+            as JSON.
+        """
+
+        return {}
 
     def fromJson(self, data):
-        return self 
+        """
+        Convert this object from JSON to load it from storage. Takes a
+        dictionary loaded directly from the JSON and loads it into this object.
+
+        Parameters
+        ----------
+        data:   dict
+            The json data loaded from file.
+
+        Returns
+        -------
+        self
+            A self reference to enable chaining.
+        """
+
+        return self
 
 
 class Model(JsonSerializable):
 
     def __init__(self):
-        self.id = ''  
+        self.id = ''
 
     def getId(self):
         return self.id
@@ -39,7 +98,7 @@ class Model(JsonSerializable):
 
         file = open(filename, 'w')
         try:
-            json.dump(self.toJson(), file)    
+            json.dump(self.toJson(), file)
         finally:
             file.close()
 
@@ -47,7 +106,7 @@ class Model(JsonSerializable):
 
     def load(self, file_path):
         file = open(file_path, 'r')
-        try: 
+        try:
             self.fromJson(json.load(file))
         finally:
             file.close()
@@ -63,5 +122,5 @@ class NamedModel(Model):
 
     def setId(self, id):
         self.id = id
-        self.name = id 
+        self.name = id
         return self
