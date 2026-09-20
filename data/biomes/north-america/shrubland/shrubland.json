@@ -25,7 +25,7 @@
         "small fallen dry oak branch"
     ],
     "debrisDensity": 0.0001, 
-    "water": "no-water",
+    "water": "none",
     "succession": "forest",
     "successionTime": 20,
     "disruptions": {
