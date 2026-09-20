@@ -274,8 +274,8 @@ def test_an_exit_starts_as_an_open_way_north():
     assert exit.direction == Direction.NORTH
     assert exit.is_door is False
     assert exit.is_open is True
-    assert exit.name is None
-    assert exit.description is None
+    assert exit.name == ''
+    assert exit.description == ''
 
 
 def test_an_exit_loads_its_required_fields():
@@ -290,8 +290,8 @@ def test_an_exit_defaults_the_fields_its_data_leaves_out():
 
     assert exit.is_door is False
     assert exit.is_open is True
-    assert exit.name is None
-    assert exit.description is None
+    assert exit.name == ''
+    assert exit.description == ''
 
 
 def test_an_exit_loads_the_door_it_is():
