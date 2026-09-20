@@ -389,6 +389,10 @@ class Store:
         for id in self.characters.repo:
             character = self.characters.getById(id)
 
+            if not character:
+                print("Error! No Character(%s) found." % (id))
+                continue
+
             if character.room:
                 character.room = self.rooms.getById(character.room)
 

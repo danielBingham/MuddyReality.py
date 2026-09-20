@@ -1,9 +1,28 @@
+from __future__ import annotations
+
 from game.store.models.base import JsonSerializable
 from game.store.models.base import Model
 
-
 class Exit(JsonSerializable):
     "An exit from one room to another."
+
+    # An object link to the room this exit comes from. Not deserialized by
+    # fromJson(), instead it is set by store after all rooms have been loaded.
+    # This is because we won't have all the rooms (and thus the ability to set
+    # the room) until then.
+    room_from: Room | None
+
+    # An object link to the room this exit goes to. Set by Store after all
+    # rooms have been loaded, so this isn't deserialized by fromJson().
+    room_to: Room | None
+
+    # Is this exit a door that can be opened and closed? If yes, True.  False
+    # otherwise. Optional.
+    is_door: bool
+
+    # If this exit is a door, is it currently open?  True is open, False is
+    # closed. Optional.
+    is_open: bool
 
     def __init__(self, room):
         self.room_from = room
