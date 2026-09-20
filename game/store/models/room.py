@@ -6,6 +6,10 @@ from enum import StrEnum
 
 from game.store.models.base import JsonSerializable
 from game.store.models.base import Model
+from game.library.validation.errors import InvalidValueError
+from game.library.validation.errors import MissingFieldError
+from game.library.validation.validator import Validator
+from game.library.validation.validator import validateModel
 
 if TYPE_CHECKING:
     from game.store.models.character import Character
@@ -27,6 +31,13 @@ class WaterType(StrEnum):
     NONE = "none"
     SALT = "salt"
     FRESH = "fresh"
+
+
+# The enum values as they are written in json, for the schemas below.  The
+# members themselves would be written into an error message by their repr,
+# which reads as `<Direction.NORTH: 'north'>` rather than `'north'`.
+DIRECTION_NAMES = [direction.value for direction in Direction]
+WATER_TYPE_NAMES = [water_type.value for water_type in WaterType]
 
 
 # A helper to invert a direction.
@@ -68,6 +79,27 @@ class Exit(JsonSerializable):
     # The direction this exit goes. Required.
     direction: Direction
 
+    # A name for what lies through this exit, used to refer to it in commands.
+    # Eg. 'old growth forest'. Optional.
+    name: str
+
+    # A description of what lies through this exit. Optional.
+    description: str
+
+    SCHEMA = {
+        "direction": Validator().isType(str).isOneOf(DIRECTION_NAMES).isRequired(),
+
+        # The `id` of the room this exit leads to.  Store swaps it for the Room
+        # itself once every room has been loaded.
+        "room_to": Validator().isType(int).isRequired(),
+
+        "is_door": Validator().isType(bool),
+        "is_open": Validator().isType(bool),
+
+        "name": Validator().isType(str),
+        "description": Validator().isType(str),
+    }
+
     def __init__(self, room):
         self.room_from = room
         self.room_to = None
@@ -78,21 +110,67 @@ class Exit(JsonSerializable):
 
         self.direction = Direction.NORTH
 
+        self.name = ''
+        self.description = ''
+
+    def validate(self, data):
+        """
+        Validate that `data` is valid Exit json.
+
+        Parameters
+        ----------
+        data:   dict
+            The json data to validate.
+
+        Returns
+        -------
+        True
+            If `data` is valid.
+
+        Raises
+        ------
+        ValidationError
+            If `data` does not match `SCHEMA`.
+        """
+
+        return validateModel(type(self), data)
+
     def toJson(self):
         json = {}
         json['is_door'] = self.is_door
         json['is_open'] = self.is_open
         json['direction'] = self.direction
+
+        if self.name:
+            json['name'] = self.name
+        if self.description:
+            json['description'] = self.description
+
+        # An exit that has not been given a destination yet has nothing to
+        # write here.  Store links `room_to` to the Room once every room has
+        # been loaded, so until then this is the room's `id`.
         if self.room_to:
             json['room_to'] = self.room_to.getId()
+
         return json
 
     def fromJson(self, data):
+
+        self.validate(data)
+
         self.direction = data['direction']
         self.room_to = data['room_to']
 
-        self.is_door = data['is_door']
-        self.is_open = data['is_open']
+        if 'is_door' in data:
+            self.is_door = data['is_door']
+        if 'is_open' in data:
+            self.is_open = data['is_open']
+
+        if 'name' in data:
+            self.name = data['name']
+        if 'description' in data:
+            self.description = data['description']
+
         return self
 
 class Room(Model):
@@ -156,6 +234,31 @@ class Room(Model):
     # Ids and converted to object references by Store after loading. Optional.
     items: list[Item]
 
+    SCHEMA = {
+        "id": Validator().isType(int).isRequired(),
+        "title": Validator().isType(str).isRequired(),
+        "description": Validator().isType(str).isRequired(),
+        "color": Validator().isType(list[int]).isRequired(),
+
+        # A room either says nothing about water or says all three of these.
+        # `validate` holds them together, since a schema can only speak about
+        # one field at a time.
+        "waterType": Validator().isType(str).isOneOf(WATER_TYPE_NAMES),
+        "water": Validator().isType(float),
+        "waterVelocity": Validator().isType(float),
+
+        # Each exit validates itself as `fromJson` builds it, so the room only
+        # checks that each one is the object an Exit loads from.  `validate`
+        # checks the keys, which a schema has no way to speak about.
+        "exits": Validator().isType(dict[str, Exit]).isRequired(),
+
+        # The `name` of each Item, and the `id` of each non player Character.
+        # Store swaps both for the objects themselves once everything has been
+        # loaded.
+        "items": Validator().isType(list[str]).isRequired(),
+        "occupants": Validator().isType(list[str]),
+    }
+
     def __init__(self):
         super(Room, self).__init__()
 
@@ -171,6 +274,50 @@ class Room(Model):
 
         self.occupants = []
         self.items = []
+
+    def validate(self, data):
+        """
+        Validate that `data` is valid Room json.
+
+        Parameters
+        ----------
+        data:   dict
+            The json data to validate.
+
+        Returns
+        -------
+        True
+            If `data` is valid.
+
+        Raises
+        ------
+        ValidationError
+            If `data` does not match `SCHEMA`, if an exit is keyed by
+            something that isn't a direction, or if the room describes its
+            water without saying how much of it there is.
+        """
+
+        validateModel(type(self), data)
+
+        for direction in data['exits']:
+            if direction not in DIRECTION_NAMES:
+                raise InvalidValueError(
+                    'Room.exits.%s' % direction,
+                    'expected one of %s, since an exit is keyed by the direction it goes.'
+                    % ', '.join(repr(name) for name in DIRECTION_NAMES))
+
+        # `fromJson` reads all three together, so a room that names a water
+        # type without the rest would fail to load rather than fail to
+        # validate.
+        if 'waterType' in data:
+            for field in ('water', 'waterVelocity'):
+                if field not in data:
+                    raise MissingFieldError(
+                        'Room.%s' % field,
+                        'a room that says what water it has must also say how '
+                        'deep it is and how fast it moves.')
+
+        return True
 
     def toJson(self):
         json = {}
@@ -206,6 +353,9 @@ class Room(Model):
         return json
 
     def fromJson(self, data):
+
+        self.validate(data)
+
         self.setId(data['id'])
         self.title = data['title']
         self.description = data['description']
