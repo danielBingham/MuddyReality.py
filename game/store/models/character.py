@@ -1,23 +1,50 @@
+from enum import StrEnum
+
 from game.store.models.base import NamedModel
 from game.store.models.base import JsonSerializable
 
 
 class Attributes(JsonSerializable):
+    """Represents a character's base attributes that determine how well a character performs in the world."""
+
+    # The character's strength. Controls:
+    # - How much damage the character does in combat or harvesting.
+    # - How much the character can lift and carry.
+
+    # The current value of strength, which can be affected by a variety
+    # of status effects.
+    strength: float
+
+    # The maximum value of strength, when unaffected.
+    max_strength: float
+
+    # The character's stamina. Controls:
+    # - How much wind and energy the character has.
+
+    # The current value of stamina, which can be affected by a variety of
+    # status effects.
+    stamina: float
+
+    # The maximum value of stamina, when unaffected.
+    max_stamina: float
+
+    # The character's constitution. Controls:
+    # - How well the character resists food poisoning, disease, and cold.
+
+    # The current value of constitution, which can be affected by a variety of
+    # status effects.
+    constitution: float
+
+    # The maximum value of constitution, when unaffected.
+    max_constitution: float
 
     def __init__(self):
-        # The character's strength. Controls:
-        # - How much damage the character does in combat or harvesting.
-        # - How much the character can lift and carry.
         self.strength = 10
         self.max_strength = 10
 
-        # The character's stamina. Controls:
-        # - How much wind and energy the character has.
         self.stamina = 10
         self.max_stamina = 10
 
-        # The character's constitution. Controls:
-        # - How well the character resists food poisoning, disease, and cold.
         self.constitution = 10
         self.max_constitution = 10
 
@@ -51,19 +78,56 @@ class Attributes(JsonSerializable):
 class Reserves(JsonSerializable):
     'Represents a characters reserves: how well fed and well rested they are.'
 
+    # Calories measure how many calories of food you have stored in your
+    # body. Calories can go negative to indicate that you are starving.
+
+    # Current calorie store.
+    calories: float
+
+    # Max calories when fully fed.  When calories = max_calories, the character
+    # is fully fed.
+    max_calories: float
+
+
+    # Thirst is a measure of how much water you have stored in your body.
+    # It can't go very far below zero before you suffer serious
+    # consequences.
+
+    # Current thirst stores.
+    thirst: float
+
+    # Max thirst when fully hydrated. When thirst = max_thirst, the character
+    # is fully hydrated.
+    max_thirst: float
+
+    # Sleep is a measure of how much sleep you've had, represented in hours you
+    # can stay awake while feeling rested.  Once sleep goes negative, a
+    # character no longer feels rested and will start to suffer the effects of
+    # sleep deprivation.
+
+    # Current sleep, representing how many hours a character can stay awake
+    # before they start to feel sleep deprived.  When it goes negative, it
+    # represents how badly sleep deprived the character is. The deeper negative
+    # it goes the higher the chance of passing out.
+    sleep: float
+
+    max_sleep: float
+
+    wind: float
+
+    max_wind: float
+
+    energy: float
+
+    max_energy: float
+
     def __init__(self):
-        # Calories measure how many calories of food you have stored in your
-        # body. Calories can go negative to indicate that you are starving.
         self.calories = 2400
         self.max_calories = 2400
 
-        # Thirst is a measure of how much water you have stored in your body.
-        # It can't go very far below zero before you suffer serious
-        # consequences.
         self.thirst = 4000
         self.max_thirst = 4000
 
-        # Sleep is a measure of how much sleep you've had.
         self.sleep = 16
         self.max_sleep = 16
 
@@ -420,6 +484,20 @@ class BipedalBody(Body):
             self.BODY_RIGHT_FOOT
         ]
 
+class Sex(StrEnum):
+    MALE = 'male'
+    FEMALE = 'female'
+
+class Speed(StrEnum):
+    WALKING = 'walking'
+    RUNNING = 'running'
+    SPRINTING = 'sprinting'
+
+class Position(StrEnum):
+    STANDING = 'standing'
+    RESTING = 'resting'
+    SLEEPING = 'sleeping'
+    DEAD = 'dead'
 
 class Character(NamedModel):
     'Represents a single character in the game.'
