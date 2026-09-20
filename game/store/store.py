@@ -1,6 +1,9 @@
 import glob
 import os
-import sys
+
+from game.store.loading import LoadError
+from game.store.loading import LoadReporter
+from game.store.loading import describeException
 
 from game.store.models.world import World
 from game.store.models.account import Account
@@ -278,81 +281,140 @@ class Store:
         account_path = os.path.join(self.data_directory, 'accounts/')
         account.save(account_path)
 
-    def load(self):
+    def load(self, reporter=None):
         """
         Populate the game store, loading the game world and all game data.
+
+        Parameters
+        ----------
+        reporter:   LoadReporter | None
+            Receives the progress of the load, and anything found wrong with
+            the data.  Defaults to `LoadReporter`, which narrates the load on
+            stdout and raises on the first problem it can't carry on past.
+            `data_validator.py` passes one that writes the problems down and
+            returns instead, which is what lets a single load report
+            everything in the data that needs fixing.
+
+        Returns
+        -------
+        void
         """
 
-        print("Loading the game store.")
+        if reporter is None:
+            reporter = LoadReporter()
+
+        reporter.progress("Loading the game store.")
 
         world_path = os.path.join(self.data_directory, 'worlds', self.world_name, 'world.json')
-        print("Loading the world from %s..." % world_path)
-        self.world.load(world_path)
+        reporter.progress("Loading the world from %s..." % world_path)
+        try:
+            self.world.load(world_path)
+        except Exception as exception:
+            reporter.error(LoadError(world_path, describeException(exception),
+                                     cause=exception, model=World))
 
         item_path = os.path.join(self.data_directory, 'items/')
-        print("Loading items from %s..." % item_path)
+        reporter.progress("Loading items from %s..." % item_path)
         item_list = glob.glob(item_path + '**/*.json', recursive=True)
         for file_path in item_list:
-            print("Loading item " + file_path + "...")
-            self.items.load(file_path)
+            reporter.progress("Loading item " + file_path + "...")
+            try:
+                self.items.load(file_path)
+            except Exception as exception:
+                reporter.error(LoadError(file_path, describeException(exception),
+                                         cause=exception, model=self.items.type))
 
         npc_path = os.path.join(self.data_directory, 'npcs/')
-        print("Loading non-player characters from %s..." % npc_path)
+        reporter.progress("Loading non-player characters from %s..." % npc_path)
         npc_list = glob.glob(npc_path + '**/*.json', recursive=True)
         for file_path in npc_list:
-            print("Loading npc %s..." % file_path)
-            self.npcs.load(file_path)
+            reporter.progress("Loading npc %s..." % file_path)
+            try:
+                self.npcs.load(file_path)
+            except Exception as exception:
+                reporter.error(LoadError(file_path, describeException(exception),
+                                         cause=exception, model=self.npcs.type))
 
         character_path = os.path.join(self.data_directory, 'characters/')
-        print("Loading player characters from %s..." % character_path)
+        reporter.progress("Loading player characters from %s..." % character_path)
         character_list = glob.glob(character_path + '*.json')
         for file_path in character_list:
-            print("Loading character %s..." % file_path)
+            reporter.progress("Loading character %s..." % file_path)
 
-            character = self.characters.load(file_path)
+            try:
+                character = self.characters.load(file_path)
+            except Exception as exception:
+                reporter.error(LoadError(file_path, describeException(exception),
+                                         cause=exception, model=self.characters.type))
+                continue
 
-            print("Loading %s's inventory..." % character.name)
+            reporter.progress("Loading %s's inventory..." % character.name)
             inventory = character.inventory
             character.inventory = []
             for itemId in inventory:
                 if self.items.hasId(itemId):
                     character.inventory.append(self.items.instance(itemId))
 
-            print("Loading %s's equipment..." % character.name)
+            reporter.progress("Loading %s's equipment..." % character.name)
             for body_part in character.body.worn:
                 itemId = character.body.worn[body_part]
                 if self.items.hasId(itemId):
                     character.body.worn[body_part] = self.items.instance(itemId)
 
         account_path = os.path.join(self.data_directory, 'accounts/')
-        print("Loading accounts from %s..." % account_path)
+        reporter.progress("Loading accounts from %s..." % account_path)
         account_list = glob.glob(account_path + '*.json')
         for file_path in account_list:
-            print("Loading account " + file_path + "...")
-            account = self.accounts.load(file_path)
+            reporter.progress("Loading account " + file_path + "...")
+            try:
+                account = self.accounts.load(file_path)
+            except Exception as exception:
+                reporter.error(LoadError(file_path, describeException(exception),
+                                         cause=exception, model=self.accounts.type))
+                continue
 
             characters = account.characters
             account.characters = {}
             for name in characters:
-                account.characters[name] = self.characters.getById(name)
-                account.characters[name].account = account
+                character = self.characters.getById(name)
 
+                if character is None:
+                    reporter.error(LoadError(file_path, "this account has a Character(%s), which does not exist." % name))
+                    continue
+
+                account.characters[name] = character
+                character.account = account
+
+        # A room's id comes out of its json rather than its filename, so
+        # remember where each one was read from, to be able to name the file
+        # in any problem found while linking them together.
+        room_files = {}
+
+        # A world that didn't load leaves no name here, and so finds no rooms.
         room_path = os.path.join(self.data_directory, 'worlds', self.world.name, 'rooms/')
-        print("Loading rooms from %s..." % room_path)
+        reporter.progress("Loading rooms from %s..." % room_path)
         room_list = glob.glob(room_path + '*.json')
         for file_path in room_list:
-            print("Loading room " + file_path + "...")
-            self.rooms.load(file_path)
+            reporter.progress("Loading room " + file_path + "...")
+            try:
+                room = self.rooms.load(file_path)
+            except Exception as exception:
+                reporter.error(LoadError(file_path, describeException(exception),
+                                         cause=exception, model=self.rooms.type))
+                continue
 
-        print("Connecting rooms and loading items into rooms...")
+            room_files[room.getId()] = file_path
+
+        reporter.progress("Connecting rooms and loading items into rooms...")
         for id in self.rooms.repo:
             room = self.rooms.getById(id)
+            room_file = room_files.get(id)
 
             if room is None:
-                print("Room(%d) not found!" % id)
-                sys.exit()
+                reporter.error(LoadError(room_file, "Room(%s) not found!" % str(id)))
+                continue
 
-            print("Connecting exits for Room(%s) '%s'..." % (str(id), room.title))
+            reporter.progress("Connecting exits for Room(%s) '%s'..." % (str(id), room.title))
             for direction in room.exits:
                 exit = room.exits[direction]
 
@@ -360,37 +422,39 @@ class Store:
                 exit.room_to = self.rooms.getById(exit_room_id)
 
                 if exit.room_to is None:
-                    print("Room(%d), referenced in '%s' direction of Room(%d) does not exist" % (exit_room_id, direction, id))
-                    sys.exit()
-
+                    reporter.error(LoadError(room_file, "the '%s' exit leads to Room(%s), which does not exist." % (direction, str(exit_room_id))))
+                    continue
 
                 if Room.INVERT_DIRECTION[exit.direction] in exit.room_to.exits:
                     exit.exit_to = exit.room_to.exits[Room.INVERT_DIRECTION[exit.direction]]
 
-            print("Loading items into Room(%s) '%s'..." % (str(id), room.title))
+            reporter.progress("Loading items into Room(%s) '%s'..." % (str(id), room.title))
             items = room.items
             room.items = []
             for itemId in items:
                 if self.items.hasId(itemId):
                     room.items.append(self.items.instance(itemId))
                 else:
-                    print("Error! No Item(%s) in Room(%s)." % (itemId, str(id))),
+                    # The room comes up without the item rather than refusing
+                    # to come up at all, which is how the game has always
+                    # treated this.
+                    reporter.error(LoadError(room_file, "there is no Item(%s) to put in this room." % itemId, fatal=False))
 
-            print("Loading characters into Room(%s) '%s'..." % (str(id), room.title))
+            reporter.progress("Loading characters into Room(%s) '%s'..." % (str(id), room.title))
             occupants = room.occupants
             room.occupants = []
             for characterId in occupants:
                 if self.npcs.hasId(characterId):
                     room.occupants.append(self.npcs.instance(characterId))
                 else:
-                    print("Error! No NPC(%s) in Room(%s)." % (characterId, room.title))
+                    reporter.error(LoadError(room_file, "there is no NPC(%s) to put in this room." % characterId, fatal=False))
 
-        print("Connect player characters to the rooms they were in...")
+        reporter.progress("Connect player characters to the rooms they were in...")
         for id in self.characters.repo:
             character = self.characters.getById(id)
 
             if not character:
-                print("Error! No Character(%s) found." % (id))
+                reporter.error(LoadError(None, "No Character(%s) found." % (id), fatal=False))
                 continue
 
             if character.room:

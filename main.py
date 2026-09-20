@@ -4,16 +4,18 @@
 # MuddyReality.py
 #
 # The single entry point for the project.  Parses the command line and
-# dispatches to either the game server (`server.py`) or the world generator
-# (`generate.py`).
+# dispatches to the game server (`server.py`), the world generator
+# (`generate.py`) or the data validator (`data_validator.py`).
 #
 #   python3 main.py server [server arguments]
 #   python3 main.py generator [name] [generator arguments]
+#   python3 main.py validator [validator arguments]
 #
 # Use `python3 main.py <command> --help` to see the arguments for a command.
 ###############################################################################
 
 import argparse
+import sys
 
 
 def addServerArguments(parser):
@@ -85,6 +87,26 @@ def addGeneratorArguments(parser):
     parser.add_argument("--water-flat-terrain", dest="water__flat_terrain", action="store_true", help="Run the water simulation on a flat terrain instead of the terrain generated in the previous step.")
 
 
+def addValidatorArguments(parser):
+    """
+    Define the command line arguments for the `validator` command.
+
+    Parameters
+    ----------
+    parser: argparse.ArgumentParser
+        The subparser for the `validator` command.
+
+    Returns
+    -------
+    void
+    """
+
+    parser.add_argument('--data', default='data/', help='The location of the data directory, relative to this file.')
+    parser.add_argument('--world', default=None, help='The name of a single world to validate.  Every world under `data/worlds/` is validated when this is left off.')
+
+    parser.add_argument('-v', '--verbose', dest='verbose', action='store_true', help='Narrate the load, printing each file as it is read.  Off by default, so that the results are all that is printed.')
+
+
 def buildParser():
     """
     Build the top level argument parser, with a subcommand for each of the
@@ -97,9 +119,9 @@ def buildParser():
 
     parser = argparse.ArgumentParser(
                     prog='main',
-                    description='Run the Muddy Reality server, or generate a world for it.')
+                    description='Run the Muddy Reality server, generate a world for it, or validate its data.')
 
-    subparsers = parser.add_subparsers(dest='command', metavar='{server,generator}', required=True)
+    subparsers = parser.add_subparsers(dest='command', metavar='{server,generator,validator}', required=True)
 
     server_parser = subparsers.add_parser(
                     'server',
@@ -113,10 +135,25 @@ def buildParser():
                     description='Generate a world for Muddy Reality.')
     addGeneratorArguments(generator_parser)
 
+    validator_parser = subparsers.add_parser(
+                    'validator',
+                    help='Load the data library and report anything wrong with it.',
+                    description='Load the whole Muddy Reality data library, validate and link it, and report every problem found.')
+    addValidatorArguments(validator_parser)
+
     return parser
 
 
 def main():
+    """
+    Run the command named on the command line.
+
+    Returns
+    -------
+    integer | None
+        The exit status, for a command that has one.
+    """
+
     arguments = buildParser().parse_args()
 
     # Only import the module for the command we're running.  The generator
@@ -128,7 +165,10 @@ def main():
     elif arguments.command == 'generator':
         import generate
         generate.run(arguments)
+    elif arguments.command == 'validator':
+        import data_validator
+        return data_validator.run(arguments)
 
 
 if __name__ == '__main__':
-    main()
+    sys.exit(main())
