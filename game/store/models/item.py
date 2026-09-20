@@ -3,13 +3,16 @@ from __future__ import annotations
 from typing import TYPE_CHECKING
 
 from game.store.models.base import JsonSerializable
-from game.store.models.base import Model, NamedModel
+from game.store.models.base import NamedModel
 from game.library.validation.errors import UnexpectedFieldError
-from game.store.models.validation import Validator
-from game.store.models.validation import validateModel
+from game.library.validation.validator import (
+    Validator,
+    validateModel
+)
 
 if TYPE_CHECKING:
     from game.store.models.character import Character
+    from game.store.models.room import Room
 
 
 class Decays(JsonSerializable):
@@ -948,7 +951,7 @@ class Item(NamedModel):
     # The Room this Item is lying in, if it is on the ground.  Runtime state
     # set by the game as the item moves around the world, not something the
     # item is loaded with. Optional.
-    room: Model | None
+    room: Room | None
 
     # The Character carrying, wearing or wielding this Item.  Runtime state,
     # as with `room`. Optional.

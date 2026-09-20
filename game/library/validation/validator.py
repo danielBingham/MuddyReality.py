@@ -1,55 +1,13 @@
-###############################################################################
-# Schema Validation
-#
-# Machinery for validating the json data a model is about to be loaded from.
-#
-# A model declares a `SCHEMA` mapping each json field it reads or writes to a
-# `Validator`, built by chaining the checks that field must pass:
-#
-#   SCHEMA = {
-#       "time": Validator().isType(int).isRequired(),
-#       "timeLeft": Validator().isType(int),
-#       "decayProduct": Validator().isType(str | None).isRequired(),
-#   }
-#
-# Each builder method appends a check to the validator's list and returns the
-# validator, so they chain in any order.  `Validator.validate` then runs the
-# checks against a value in the order they were added, and each raises a
-# `ValidationError` describing what it wanted and what it found.
-#
-# `isRequired` is different: rather than adding a check, it sets
-# `Validator.is_required`, because whether a field may be absent can only be
-# answered by whoever is walking the data.  `validateModel` reads the flag and
-# skips an absent optional field without calling `validate` at all.
-#
-# To add a validator, add a builder method that closes over its arguments and
-# appends a check.  For example, a bound on a number:
-#
-#   def greaterThan(self, minimum):
-#       'The value must be greater than `minimum`.'
-#
-#       def check(value, path):
-#           if value <= minimum:
-#               raise InvalidValueError(path, 'must be greater than %r, found %r.'
-#                                             % (minimum, value))
-#
-#       return self.check(check)
-#
-# This module deliberately imports nothing from the rest of the game, so that
-# the whole data library can be validated without standing up a game.
-###############################################################################
-
 from __future__ import annotations
 
 import types
-import typing
 
 from game.library.validation.errors import (
-    FieldTypeError, InvalidValueError, MissingFieldError
+    FieldTypeError, InvalidValueError, MissingFieldError, UnexpectedFieldError
 )
-
-NONE_TYPE = type(None)
-
+from game.library.validation.check_type import (
+    checkType, describeValue
+)
 
 
 class Validator:
@@ -207,35 +165,6 @@ def resolveType(field_type):
         return field_type()
 
     return field_type
-
-
-def describeValue(value):
-    """
-    Describe a value found in the data in a way that can be read in an error
-    message.
-
-    Parameters
-    ----------
-    value:  any
-        A value decoded from json.
-
-    Returns
-    -------
-    string
-    """
-
-    name = TYPE_NAMES.get(type(value), 'a %s' % type(value).__name__)
-
-    if value is None:
-        return name
-
-    text = repr(value)
-    if len(text) > 40:
-        text = text[:37] + '...'
-
-    return '%s (%s)' % (name, text)
-
-
 
 
 

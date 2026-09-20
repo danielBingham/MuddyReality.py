@@ -86,6 +86,32 @@ def describeType(field_type, plural=False):
 
     return '%s data' % field_type.__name__
 
+def describeValue(value):
+    """
+    Describe a value found in the data in a way that can be read in an error
+    message.
+
+    Parameters
+    ----------
+    value:  any
+        A value decoded from json.
+
+    Returns
+    -------
+    string
+    """
+
+    name = TYPE_NAMES.get(type(value), 'a %s' % type(value).__name__)
+
+    if value is None:
+        return name
+
+    text = repr(value)
+    if len(text) > 40:
+        text = text[:37] + '...'
+
+    return '%s (%s)' % (name, text)
+
 def checkType(value, field_type, path):
     """
     Check that `value` has type `field_type`, descending into lists, objects
@@ -134,6 +160,8 @@ def checkType(value, field_type, path):
     origin = typing.get_origin(field_type)
     arguments = typing.get_args(field_type)
 
+    # For a list, there will be 0 or 1 arguments that will be either a single
+    # type or a union of types.
     if origin is list:
         if not isinstance(value, list):
             fail()
@@ -142,6 +170,8 @@ def checkType(value, field_type, path):
                 checkType(value[index], arguments[0], '%s[%d]' % (path, index))
         return
 
+    # For a dictionary, if there are arguments they represent the key and the
+    # value type.
     if origin is dict:
         if not isinstance(value, dict):
             fail()
@@ -149,13 +179,6 @@ def checkType(value, field_type, path):
             for key in value:
                 checkType(key, arguments[0], '%s (key %r)' % (path, key))
                 checkType(value[key], arguments[1], '%s.%s' % (path, key))
-        return
-
-    # A nested model validates against its own schema.
-    if hasattr(field_type, 'SCHEMA'):
-        if not isinstance(value, dict):
-            fail()
-        validateModel(field_type, value, path)
         return
 
     # Booleans are a subclass of int in python, but they are a separate type
