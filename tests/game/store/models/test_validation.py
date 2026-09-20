@@ -2,17 +2,18 @@ import pytest
 
 from game.store.models.item import Decays
 from game.store.models.item import Harvestable
+from game.store.models.item import HarvestProduct
 from game.store.models.item import Item
 from game.store.models.item import Material
 from game.store.models.item import MeleeWeapon
 from game.store.models.item import Wearable
 
-from game.store.models.validation import FieldTypeError
-from game.store.models.validation import InvalidValueError
-from game.store.models.validation import MissingFieldError
-from game.store.models.validation import UnexpectedFieldError
-from game.store.models.validation import ValidationError
-from game.store.models.validation import Validator
+from game.library.validation.errors import FieldTypeError
+from game.library.validation.errors import InvalidValueError
+from game.library.validation.errors import MissingFieldError
+from game.library.validation.errors import UnexpectedFieldError
+from game.library.validation.errors import ValidationError
+from game.library.validation.validator import Validator
 
 
 def item_json(**overrides):
@@ -31,6 +32,24 @@ def item_json(**overrides):
         "height": 1,
         "weight": 1,
         "traits": {},
+    }
+    data.update(overrides)
+    return data
+
+
+def harvestable_json(**overrides):
+    """
+    Build the json for a minimal valid Harvestable, with any of its fields
+    replaced by `overrides`.
+    """
+
+    data = {
+        "products": [{"product": "an oak stick", "amount": 2}],
+        "consumed": False,
+        "calories": 10,
+        "time": 10,
+        "action": "pick",
+        "required_tools": [],
     }
     data.update(overrides)
     return data
@@ -196,6 +215,7 @@ def test_isType_resolves_a_type_deferred_behind_a_function():
     validator = Validator().isType(lambda: list[Item])
 
     assert validator.validate([item_json()], 'contents') is True
+
     with pytest.raises(FieldTypeError) as error:
         validator.validate(['not an item'], 'contents')
 
@@ -219,22 +239,51 @@ def test_validate_raises_for_a_value_outside_the_allowed_set():
 
 
 ###############################################################################
-# Nesting
+# Nested models
+#
+# A nested model validates itself when its parent's `fromJson` builds it, so
+# the parent checks only that the value is the object a model loads from.
 ###############################################################################
 
-def test_validate_descends_into_a_nested_model():
+def test_validate_accepts_a_nested_model_as_an_object():
+    assert Harvestable().validate(harvestable_json()) is True
+
+
+def test_validate_does_not_look_inside_a_nested_model():
+    # `amount` is wrong, but that is HarvestProduct's business, not
+    # Harvestable's.
+    assert Harvestable().validate(harvestable_json(
+        products=[{"product": "an oak stick", "amount": "several"}])) is True
+
+
+def test_validate_raises_when_a_nested_model_is_not_an_object():
     with pytest.raises(FieldTypeError) as error:
-        Harvestable().validate({
-            "products": [{"product": "an oak stick", "amount": "several"}],
-            "consumed": False,
-            "calories": 10,
-            "time": 10,
-            "action": "pick",
-            "required_tools": [],
-        })
+        Harvestable().validate(harvestable_json(products=["an oak stick"]))
 
-    assert error.value.path == 'Harvestable.products[0].amount'
+    assert error.value.path == 'Harvestable.products[0]'
+    assert 'expected HarvestProduct data' in error.value.message
 
+
+def test_a_nested_model_validates_itself():
+    with pytest.raises(FieldTypeError) as error:
+        HarvestProduct().validate({"product": "an oak stick", "amount": "several"})
+
+    assert error.value.path == 'HarvestProduct.amount'
+
+
+def test_fromJson_validates_nested_models_as_it_builds_them():
+    # What the parent skipped is caught here, one level down, when
+    # Harvestable.fromJson loads each product.
+    with pytest.raises(FieldTypeError) as error:
+        Harvestable().fromJson(harvestable_json(
+            products=[{"product": "an oak stick", "amount": "several"}]))
+
+    assert error.value.path == 'HarvestProduct.amount'
+
+
+###############################################################################
+# Traits
+###############################################################################
 
 def test_validate_descends_into_the_traits_of_an_item():
     with pytest.raises(FieldTypeError) as error:

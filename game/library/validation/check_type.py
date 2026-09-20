@@ -181,6 +181,14 @@ def checkType(value, field_type, path):
                 checkType(value[key], arguments[1], '%s.%s' % (path, key))
         return
 
+    # A nested model loads itself from an object, and validates that object
+    # in its own `fromJson`, so there is nothing to do here beyond checking
+    # the shape.  Descending into it would validate it a second time.
+    if hasattr(field_type, 'SCHEMA'):
+        if not isinstance(value, dict):
+            fail()
+        return
+
     # Booleans are a subclass of int in python, but they are a separate type
     # in json, so neither may stand in for the other.
     if field_type is bool:
