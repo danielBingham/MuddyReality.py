@@ -14,7 +14,7 @@
     "herbDensity": 1.0,
     "debris": [],
     "debrisDensity": 0.25, 
-    "water": "salt-water",
+    "water": "salt",
     "succession": null,
     "successionTime": 0,
     "disruptions": {} 

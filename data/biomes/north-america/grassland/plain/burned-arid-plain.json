@@ -14,7 +14,7 @@
     "herbDensity": 0.2,
     "debris": [],
     "debrisDensity": 0.25, 
-    "water": "no-water",
+    "water": "none",
     "succession": "arid-short-grass-plain",
     "successionTime": 2,
     "disruptions": {} 

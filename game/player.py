@@ -1,5 +1,10 @@
+from __future__ import annotations
+
+from typing import TYPE_CHECKING
 from textwrap import TextWrapper
 
+if TYPE_CHECKING:
+    from game.store.models.character import PlayerCharacter
 
 class Prompt:
     "A player's current prompt and methods necessary to set it."
@@ -10,7 +15,7 @@ class Prompt:
         self.is_in_buffer = False
 
         # Does the player currently need a prompt?
-        self.is_needed = True 
+        self.is_needed = True
 
         # Is the player prompt currently turned off?
         self.is_off = False
@@ -29,6 +34,8 @@ class Player:
 
     STATUS_ACCOUNT = 'account'
     STATUS_GAME = 'game'
+
+    character: PlayerCharacter | None
 
     def __init__(self, socket, account_interpreter, game_interpreter):
         """
@@ -200,7 +207,7 @@ class Player:
         Player: Returns the current player to allow chaining.
         """
 
-        if wrap: 
+        if wrap:
             # Wrap will blow away any trailing white space. We want each call
             # to `write` to define a new line, however, so we need to add a
             # newline.

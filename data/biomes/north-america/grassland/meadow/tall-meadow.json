@@ -21,7 +21,7 @@
     "herbDensity": 1.0,
     "debris": [],
     "debrisDensity": 0.25, 
-    "water": "no-water",
+    "water": "none",
     "succession": "shrub-meadow",
     "successionTime": 5,
     "disruptions": {
