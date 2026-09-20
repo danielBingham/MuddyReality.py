@@ -34,7 +34,14 @@ class Store:
         for file_path in biome_list:
             print("Loading biome " + file_path + "...")
             biome = Biome()
-            if not biome.load(file_path):
+
+            try:
+                loaded = biome.load(file_path)
+            except Exception as exception:
+                print("Error! Failed to load %s: %s" % (file_path, exception))
+                continue
+
+            if not loaded:
                 print("Error! Failed to load %s..." % file_path)
             else:
                 if biome.name not in self.biomes:

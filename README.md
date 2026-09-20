@@ -6,7 +6,8 @@ create open world, survival, crafting MUDs.
 Includes two main pieces: the game itself and world generators.   The game is
 stored in `game` and `server.py`.  The generators are stored in `generator` and
 `generate.py`.  Both are run through `main.py`, and they both work with data
-stored in `data`.
+stored in `data`.  A third command, the data validator in `data_validator.py`,
+loads that data and reports anything wrong with it.
 
 The world generators will generate worlds by first generating a base terrain
 with fbm noise, then eroding that terrain using a water flow and sediment
@@ -95,25 +96,30 @@ You can also run the virtual environment's Python without activating it:
 $ .venv/bin/python main.py server
 ```
 
-To lint the code and run the unit tests:
+To lint the code, run the unit tests, and load and validate the data library:
 
 ```
 $ ./build.sh
 ```
+
+Every step runs whether or not the ones before it passed, so that one run
+shows everything that needs fixing.  The script exits non-zero if any of them
+failed.
 
 Start your editor from a shell with the virtual environment active, so that
 its language servers and linters can find the project's packages.
 
 ## Running
 
-Both the game and the generator are run through `main.py` in the top level
-directory.  Its first argument chooses what to run: `server` or `generator`.
-Everything after that is passed to the chosen command.  Use `--help` after a
-command to list all of its arguments.
+The game, the generator and the data validator are all run through `main.py`
+in the top level directory.  Its first argument chooses what to run: `server`,
+`generator` or `validator`.  Everything after that is passed to the chosen
+command.  Use `--help` after a command to list all of its arguments.
 
 ```
 $ python main.py server --help
 $ python main.py generator --help
+$ python main.py validator --help
 ```
 
 The examples in this section assume the virtual environment is active.  To run
@@ -208,6 +214,25 @@ Water simulation:
 * `--water-flat-terrain`: Run the water simulation on flat terrain instead of the generated heights.
 * `--water-debug`: Print debugging output from the water simulation.  Used by the `inria` algorithm.
 
+### Data
+
+To check the data library, run the `validator` command.  It loads everything
+the server loads - the items, the npcs, the player characters, the accounts,
+and every world's rooms - along with the biomes the generator reads, links it
+all together the way the server does, and prints what is wrong with it.
+
+```
+$ python main.py validator
+```
+
+It reports every problem it finds rather than stopping at the first one, so
+its output is a list of files to work through, and it exits non-zero when
+there is one.  `build.sh` runs it after the tests.
+
+* `--data [path]`: The location of the data directory.  Defaults to `data/`.
+* `--world [name]`: Validate one world rather than every world under `data/worlds/`.
+* `--verbose`, `-v`: Narrate the load, printing each file as it is read.  Off by default, so that the results are all that is printed.
+
 ## Running with Docker
 
 The Docker image contains Python 3.12 and all of the project's dependencies,
@@ -266,11 +291,12 @@ $ docker run --rm -v "$(pwd)/data:/src/data" -v "$(pwd)/snaps:/src/snaps" muddyr
 
 To run your working copy of the code and data without rebuilding the image,
 mount the whole repository over the copy in the image.  This works for the
-server, the generator and `build.sh`:
+server, the generator, the validator and `build.sh`:
 
 ```
 $ docker run --rm -it -p 3000:3000 -v "$(pwd):/src" muddyreality
 $ docker run --rm -v "$(pwd):/src" muddyreality generator tiny --width 12 --room-width 50
+$ docker run --rm -v "$(pwd):/src" muddyreality validator
 $ docker run --rm -v "$(pwd):/src" --entrypoint bash muddyreality build.sh
 ```
 
