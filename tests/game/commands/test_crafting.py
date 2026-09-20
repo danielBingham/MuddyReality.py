@@ -21,7 +21,7 @@ tool_json = {
     "weight": 1,
     "traits": {
         "Tool": {
-            "type": "tool"
+            "type": ["tool"]
         },
         "Craftable": {
             "requiredMaterials": [
@@ -49,7 +49,7 @@ tool_requiring_two_materials_json = {
     "weight": 1,
     "traits": {
         "Tool": {
-            "type": "tool"
+            "type": ["tool"]
         },
         "Craftable": {
             "requiredMaterials": [
@@ -425,7 +425,7 @@ harvestable_json = {
     "name": "harvestable",
     "description": "a harvestable item",
     "details": "An item that can be harvested.",
-    "keywords": ["harvestable"],
+    "keywords": "harvestable",
     "length": 1,
     "width": 1,
     "height": 1,
@@ -453,7 +453,7 @@ harvested_item_json = {
     "name": "harvested item",
     "description": "a harvested item",
     "details": "An item that can be gained through harvesting another item.",
-    "keywords": ["harvested"],
+    "keywords": "harvested",
     "length": 1,
     "width": 1,
     "height": 1,
@@ -749,7 +749,7 @@ harvestable_consumed_json = {
     "name": "harvestable",
     "description": "a harvestable item",
     "details": "An item that can be harvested.",
-    "keywords": ["harvestable"],
+    "keywords": "harvestable",
     "length": 1,
     "width": 1,
     "height": 1,
@@ -821,7 +821,7 @@ harvestable_replaced_json = {
     "name": "harvestable",
     "description": "a harvestable item",
     "details": "An item that can be harvested.",
-    "keywords": ["harvestable"],
+    "keywords": "harvestable",
     "length": 1,
     "width": 1,
     "height": 1,
@@ -850,7 +850,7 @@ replacement_json = {
     "name": "replacement",
     "description": "a replacement item",
     "details": "An item that replaced a harvestable.",
-    "keywords": ["replacement"],
+    "keywords": "replacement",
     "length": 1,
     "width": 1,
     "height": 1,
@@ -911,7 +911,7 @@ harvestable_multiple_products_json = {
     "name": "harvestable",
     "description": "a harvestable item",
     "details": "An item that can be harvested.",
-    "keywords": ["harvestable"],
+    "keywords": "harvestable",
     "length": 1,
     "width": 1,
     "height": 1,

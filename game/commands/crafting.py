@@ -90,7 +90,7 @@ Attempt to craft a material or tool with materials or tools.  If the [target] ca
             # contain both the materials needed and the tools needed.
             for material in materials:
                 if "Tool" in material.traits \
-                        and requiredTool == material.traits["Tool"].type:
+                        and requiredTool in material.traits["Tool"].type:
                     matchedTools.append(material)
                     break
 

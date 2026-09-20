@@ -145,6 +145,9 @@ class Validator:
         return True
 
 
+# TODO TECHDEBT This allows us to reference types in checks that haven't been
+# defined yet to avoid definition loops or import loops. It's pretty hacky and
+# there's surely a better way to do this.
 def resolveType(field_type):
     """
     Resolve a type that was deferred behind a function, so that a schema may
@@ -165,8 +168,6 @@ def resolveType(field_type):
         return field_type()
 
     return field_type
-
-
 
 
 def validateModel(model, data, path=None):
