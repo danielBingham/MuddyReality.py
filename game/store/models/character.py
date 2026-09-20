@@ -1,3 +1,5 @@
+from enum import StrEnum
+
 from game.store.models.base import NamedModel
 from game.store.models.base import JsonSerializable
 
@@ -420,6 +422,20 @@ class BipedalBody(Body):
             self.BODY_RIGHT_FOOT
         ]
 
+class Sex(StrEnum):
+    MALE = 'male'
+    FEMALE = 'female'
+
+class Speed(StrEnum):
+    WALKING = 'walking'
+    RUNNING = 'running'
+    SPRINTING = 'sprinting'
+
+class Position(StrEnum):
+    STANDING = 'standing'
+    RESTING = 'resting'
+    SLEEPING = 'sleeping'
+    DEAD = 'dead'
 
 class Character(NamedModel):
     'Represents a single character in the game.'
